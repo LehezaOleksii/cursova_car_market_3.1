@@ -3,14 +3,15 @@ import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
-import { useParams, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 
 const ManagerAddAuto = () => {
-  const { id: managerId } = useParams();
   const [selectedRadio, setSelectedRadio] = useState("NEW");
   const [photo, setCarPhoto] = useState(null);
   const navigate = useNavigate();
+  const jwtStr = localStorage.getItem('jwtToken');
 
   // const [vehicleType, setVehicleType] = useState("");
   const [brandName, setCarBrand] = useState("");
@@ -79,17 +80,20 @@ const ManagerAddAuto = () => {
       usageStatus: selectedRadio,
     };
     
-      const url = `http://localhost:8080/managers/${managerId}/vehicle`;
+      const url = `http://localhost:8080/managers/vehicle`;
     
       await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
         },
+        credentials: "include",
         body: JSON.stringify(car),
       });
     
-      navigate(`/manager/${managerId}/users`);
+      navigate(`/manager/users`);
     };
     
 const convertImageToBase64 = (image) => {

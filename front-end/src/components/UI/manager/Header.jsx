@@ -1,15 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Header = () => {
   const { id } = useParams();
   const [manager, setManager] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
+  const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/managers/${id}/cabinet`;
-      const response = await fetch(url);
+      const url = `http://localhost:8080/managers/cabinet`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });
       const data = await response.json();
       setManager(data);
       fetchProfilePicture(data.profileImageUrl) 
@@ -29,7 +39,7 @@ const Header = () => {
   };
 
   const settings = async () => {
-      await fetch(`http://localhost:8080/clients/${id}/cabinet`, {
+      await fetch(`http://localhost:8080/clients/cabinet`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -48,32 +58,32 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                <Link to={`/manager/${id}/users`} className="nav-link" >
+                <Link to={`/manager/users`} className="nav-link" >
                     Home
                 </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/${id}/add_auto`} className="nav-link" >
+                  <Link to={`/manager/add_auto`} className="nav-link" >
                     Sale car
                   </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/${id}/my_autos`} className="nav-link" >
+                  <Link to={`/manager/my_autos`} className="nav-link" >
                     My cars
                   </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/${id}/approve/cars`} className="nav-link" >
+                  <Link to={`/manager/approve/cars`} className="nav-link" >
                     Approve cars
                   </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/${id}/cars`} className="nav-link" >
+                  <Link to={`/manager/cars`} className="nav-link" >
                     Cars
                   </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/${id}/view/cars`} className="nav-link" >
+                  <Link to={`/manager/view/cars`} className="nav-link" >
                     View cars
                   </Link> 
                 </li>
@@ -112,14 +122,12 @@ const Header = () => {
             aria-labelledby="dropdownUser2"
           >
             <li> 
-            <Link to={`/manager/${id}/cabinet`} className="dropdown-item" onClick={() => settings()}>
+            <Link to={`/manager/cabinet`} className="dropdown-item" onClick={() => settings()}>
               Settings
             </Link>
             </li>
             <li>
-            <Link className="dropdown-item" to={`/signin`}>
-                Sign out  
-            </Link>
+            <Link className="dropdown-item" to="/signout">Sign Out</Link>
             </li>
           </ul>
         </div>

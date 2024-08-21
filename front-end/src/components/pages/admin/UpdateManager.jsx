@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const UpdateManager = () => {
   const { id: adminId } = useParams();
@@ -14,6 +15,7 @@ const UpdateManager = () => {
     password: "",
     email: "",
   });
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
@@ -82,9 +84,16 @@ const UpdateManager = () => {
   
   useEffect(() => {
     const fetchManagerData = async () => {
-      const url = `http://localhost:8080/admins/${adminId}/managers/${managerId}`;
-      const response = await fetch(url);
-      const manager = await response.json();
+      const url = `http://localhost:8080/admins/managers/${managerId}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });      const manager = await response.json();
       setManagerData(manager);
       setProfileImageUrl(manager.profileImageUrl);
     };
@@ -93,7 +102,7 @@ const UpdateManager = () => {
   }, []); 
 
   const handleSave = async () => {
-      const url = `http://localhost:8080/admins/${adminId}/managers/${managerId}`;
+      const url = `http://localhost:8080/admins/managers/${managerId}`;
       if(validateForm()){
         const manager = {
           firstName: managerData.firstName,
@@ -102,15 +111,17 @@ const UpdateManager = () => {
           email: managerData.email,
           profileImageUrl: profileImageUrl && !isBase64(profileImageUrl) ? await convertImageToBase64(profileImageUrl) : profileImageUrl,
         };
-        const response =  await fetch(url, {
-          method: "PUT",
+        const response = await fetch(url, {
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
           },
-          body: JSON.stringify(manager),
+          credentials: "include",
         }); 
         if(response.ok){
-          navigate(`/admin/${adminId}`);
+          navigate(`/admin`);
         }
       }
   };

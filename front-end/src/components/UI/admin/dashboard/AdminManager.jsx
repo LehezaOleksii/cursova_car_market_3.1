@@ -1,33 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const AdminManager = ({ manager,removeManagerFromList }) => {
   const navigate = useNavigate();
   const { id: adminId } = useParams();
   const [profilePicture, setProfilePicture] = useState('');
   const managerId = manager.id;
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const removeManager = async (managerId) => {
-    const url = `http://localhost:8080/admins/${adminId}/managers/${managerId}/delete`;
+    const url = `http://localhost:8080/admins/managers/${managerId}/delete`;
     await fetch(url, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     removeManagerFromList(managerId);
   };
 
   const UpdateManager = async (managerId) => {
-    const url = `http://localhost:8080/admins/${adminId}/managers/${managerId}`;
+    const url = `http://localhost:8080/admins/managers/${managerId}`;
     const response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     if(response.ok){
-      navigate(`/admin/${adminId}/update/managers/${managerId}`);
+      navigate(`/admin/update/managers/${managerId}`);
     }
   };
 

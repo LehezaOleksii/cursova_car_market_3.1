@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
 
 const AdminCabinet = () => {
-  const { id: adminId } = useParams();
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const navigate = useNavigate();
-  const [aminData, setAdminData] = useState({
-    firstName: "",
-    lastName: "",
-    password: "",
-    email: "",
+  const [adminData, setAdminData] = useState({
+    firstname: "",
+    lastname: "",
+    region: ""
   });
 
   const [firstNameError, setFirstNameError] = useState("");
   const [lastNameError, setLastNameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const jwtStr = localStorage.getItem('jwtToken');
+  const id = localStorage.getItem('id');
+  const csrfToken = localStorage.getItem('csrf');
 
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
     setAdminData((prevData) => ({
       ...prevData,
-      firstName: value,
+      firstname: value,
     }));
     setFirstNameError("");
   };
@@ -32,48 +31,27 @@ const AdminCabinet = () => {
     const value = e.target.value;
     setAdminData((prevData) => ({
       ...prevData,
-      lastName: value,
+      lastname: value,
     }));
     setLastNameError("");
   };
 
-  const handleEmailChange = (e) => {
+  const handleRegionChange = (e) => {
     const value = e.target.value;
     setAdminData((prevData) => ({
       ...prevData,
-      email: value,
+      region: value,
     }));
-    setEmailError("");
-  };
-
-  const handlePasswordChange = (e) => {
-    const value = e.target.value;
-    setAdminData((prevData) => ({
-      ...prevData,
-      password: value,
-    }));
-    setPasswordError("");
   };
 
   const validateForm = () => {
     let isValid = true;
-    if (!/^[a-zA-Z]+$/.test(aminData.firstName)) {
+    if (!/^[a-zA-Z]+$/.test(adminData.firstname)) {
       setFirstNameError("First name should contain only letters.");
       isValid = false;
     }
-    if (!/^[a-zA-Z]+$/.test(aminData.lastName)) {
+    if (!/^[a-zA-Z]+$/.test(adminData.lastname)) {
       setLastNameError("Last name should contain only letters.");
-      isValid = false;
-    }
-    if (!aminData.email || aminData.email.trim() === "") {
-      setEmailError("Email is required.");
-      isValid = false;
-    } else if (!/^\S+@\S+\.\S+$/.test(aminData.email)) {
-      setEmailError("Invalid email format.");
-      isValid = false;
-    }
-    if (!aminData.password || aminData.password.trim() === "") {
-      setPasswordError("Password is required.");
       isValid = false;
     }
     return isValid;
@@ -82,35 +60,46 @@ const AdminCabinet = () => {
   
   useEffect(() => {
     const fetchAdminData = async () => {
-      const url = `http://localhost:8080/admins/${adminId}/cabinet`;
-      const response = await fetch(url);
+      const url = `http://localhost:8080/clients/cabinet/${id}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr,
+          // 'X-XSRF-TOKEN': csrfToken
+        },
+        // withCredentials : true,
+        credentials: "include",
+      });      
       const admin = await response.json();
       setAdminData(admin);
       setProfileImageUrl(admin.profileImageUrl);
     };
-
     fetchAdminData();
   }, []); 
 
   const handleSave = async () => {
-      const url = `http://localhost:8080/admins/${adminId}/cabinet`;
+      const url = `http://localhost:8080/clients/cabinet/${id}`;
       if(validateForm()){
         const admin = {
-          firstName: aminData.firstName,
-          lastName: aminData.lastName,
-          password: aminData.password,
-          email: aminData.email,
+          firstname: adminData.firstname,
+          lastname: adminData.lastname,
+          region: adminData.region,
           profileImageUrl: profileImageUrl && !isBase64(profileImageUrl) ? await convertImageToBase64(profileImageUrl) : profileImageUrl,
         };
-        const response =  await fetch(url, {
-          method: "PUT",
+        const response = await fetch(url, {
+          method: 'PUT',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr,
+            'X-XSRF-TOKEN': csrfToken
           },
-          body: JSON.stringify(admin),
+          // withCredentials : true,
+          credentials : "include",
+          body: JSON.stringify(admin)
         }); 
         if(response.ok){
-          navigate(`/admin/${adminId}`);
+          navigate(`/admin`);
         }
       }
   };
@@ -127,7 +116,6 @@ const AdminCabinet = () => {
 const convertImageToBase64 = (image) => {
   return new Promise((resolve, reject) => {
     if (typeof image === 'string') {
-      // If it's a URL, fetch the image and convert it to base64
       fetch(image)
         .then(response => response.blob())
         .then(blob => {
@@ -138,7 +126,6 @@ const convertImageToBase64 = (image) => {
         })
         .catch(reject);
     } else if (image instanceof File) {
-      // If it's a File object, directly read it as base64
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result.split(",")[1]);
       reader.onerror = reject;
@@ -196,8 +183,8 @@ const convertImageToBase64 = (image) => {
                 <input
                   type="text"
                   className={`form-control ${firstNameError && "is-invalid"}`}
-                  id="firstName"
-                  value={aminData.firstName}
+                  id="firstname"
+                  value={adminData.firstname}
                   onChange={(e) =>
                     handleFirstNameChange(e)
                   }
@@ -208,14 +195,14 @@ const convertImageToBase64 = (image) => {
         )}
               </div>
               <div className="mb-3">
-                <label htmlFor="lastName" className="form-label">
+                <label htmlFor="lastname" className="form-label">
                   Lastname
                 </label>
                 <input
                   type="text"
                   className={`form-control ${lastNameError && "is-invalid"}`}
                   id="lastName"
-                  value={aminData.lastName}
+                  value={adminData.lastname}
                   onChange={(e) =>
                     handleLastNameChange(e)
                   }
@@ -226,40 +213,19 @@ const convertImageToBase64 = (image) => {
         )}
               </div>
               <div className="mb-3">
-                <label htmlFor="email" className="form-label">
-                  Email
+                <label htmlFor="region" className="form-label">
+                  Region
                 </label>
                 <input
-                  type="text"
-                  className={`form-control ${emailError && "is-invalid"}`}
-                  id="email"
-                  value={aminData.email}
+                  type="region"
+                  className={`form-control`}
+                  id="region"
+                  value={adminData.region}
                   onChange={(e) =>
-                    handleEmailChange(e)
+                    handleRegionChange(e)
                   }
-                  placeholder="Email"
+                  placeholder="Region"
                 />
-             {emailError && (
-          <div className="invalid-feedback">{emailError}</div>
-        )}
-              </div>
-              <div className="mb-3">
-                <label htmlFor="password" className="form-label">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  className={`form-control ${passwordError && "is-invalid"}`}
-                  id="password"
-                  value={aminData.password}
-                  onChange={(e) =>
-                    handlePasswordChange(e)
-                  }
-                  placeholder="Password"
-                />
-                {passwordError && (
-                  <div className="invalid-feedback">{passwordError}</div>
-                )}
               </div>
               <div className="d-grid">
                 <button

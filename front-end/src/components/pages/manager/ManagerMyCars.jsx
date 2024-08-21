@@ -3,21 +3,31 @@ import { useParams } from "react-router-dom";
 import ManagerMyCar from "../../UI/manager/addAuto/ManagerMyCar";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ManagerMyCars = () => {
   const { id: managerId } = useParams();
   const [cars, setCars] = useState([]);
+  const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCarData = async () => {
       const url = `http://localhost:8080/managers/${managerId}/garage`;
-      const response = await fetch(url);
-      const data = await response.json();
-      setCars(data);
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
+          },
+          credentials: "include",
+        });
+        const cars = await response.json();
+        setCars(cars);
     };
-
-    fetchData();
+    fetchCarData();
   }, [managerId]);
+
 
   const removeCarFromList = (carId) => {
     setCars((prevCars) => prevCars.filter((car) => car.id !== carId));

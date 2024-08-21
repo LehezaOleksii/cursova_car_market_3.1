@@ -1,6 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.dto.mapper;
 
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.create.CreateUserDto;
+import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
 import com.oleksii.leheza.projects.carmarket.entities.VehicleBrand;
 import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
@@ -16,10 +18,11 @@ public class DtoMapper {
 
     private VehicleBrandRepository vehicleBrandRepository;
     private VehicleModelRepository vehicleModelRepository;
-    public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto){
+
+    public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto) {
         VehicleBrand brand = new VehicleBrand(vehicleDto.getBrandName());
         vehicleBrandRepository.save(brand);
-        VehicleModel model = new VehicleModel(vehicleDto.getModelName(),brand);
+        VehicleModel model = new VehicleModel(vehicleDto.getModelName(), brand);
         vehicleModelRepository.save(model);
         return Vehicle.builder()
                 .id(vehicleDto.getId())
@@ -35,7 +38,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public VehicleDto vehicleToVehicleDto(Vehicle vehicle){
+    public VehicleDto vehicleToVehicleDto(Vehicle vehicle) {
         VehicleModel model = vehicle.getModel();
         VehicleBrand brand = model.getBrand();
         return VehicleDto.builder()
@@ -50,6 +53,16 @@ public class DtoMapper {
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus().toString())
                 .photo(vehicle.getPhoto())
+                .build();
+    }
+
+    public User createUserDtoToUser(CreateUserDto createUserDto) {
+        return User.builder()
+                .email(createUserDto.getEmail())
+                .password(createUserDto.getPassword())
+                .firstName(createUserDto.getFirstName())
+                .lastName(createUserDto.getLastName())
+                .region(createUserDto.getRegion())//TODO
                 .build();
     }
 }

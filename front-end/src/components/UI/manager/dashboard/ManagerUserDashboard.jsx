@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ManagerUserDashboard = ({ user, removeUserFromList }) => {
   const { id: managerId } = useParams();
   const [profilePicture, setProfilePicture] = useState('');
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const blockUser = async () => {
     const url = `http://localhost:8080/managers/${managerId}/clients/${user.id}/block`;
     await fetch(url, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'headers': {
+          'Authorization': 'Bearer ' + jwtStr
+        }
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     removeUserFromList(user.id);
   };

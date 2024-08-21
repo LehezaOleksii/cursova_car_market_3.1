@@ -4,6 +4,7 @@ import Footer from "../../UI/client/Footer";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 
 const AddAuto = () => {
@@ -11,8 +12,8 @@ const AddAuto = () => {
   const [selectedRadio, setSelectedRadio] = useState("NEW");
   const [photo, setCarPhoto] = useState(null);
   const navigate = useNavigate();
+  const jwtStr = localStorage.getItem('jwtToken');
 
-  // const [vehicleType, setVehicleType] = useState("");
   const [brandName, setCarBrand] = useState("");
   const [modelName, setCarModel] = useState("");
   const [region, setRegion] = useState("");
@@ -22,9 +23,6 @@ const AddAuto = () => {
   const [gearbox, setGearbox] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  // const handleVehicleTypeChange = (e) => {
-  //   setVehicleType(e.target.value);
-  // };
   const handleCarBrandChange = (e) => {
     setCarBrand(e.target.value);
   };
@@ -80,12 +78,14 @@ const AddAuto = () => {
     };
     
       const url = `http://localhost:8080/clients/${clientId}/vehicle`;
-    
       await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
         },
+        credentials: "include",
         body: JSON.stringify(car),
       });
     

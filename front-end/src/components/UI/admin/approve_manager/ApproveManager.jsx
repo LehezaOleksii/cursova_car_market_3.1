@@ -1,33 +1,37 @@
 import React from "react";
-import { useParams } from "react-router";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ApproveManager = ({ manager, removeManagerFromList}) => {
-  const { id: adminId } = useParams();
   const managerId = manager.id;
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const disapproveManager = async (managerId) => {
-    const url = `http://localhost:8080/admins/${adminId}/users/${managerId}/delete`;
+    const url = `http://localhost:8080/admins/users/${managerId}/delete`;
     await fetch(url, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     removeManagerFromList(managerId);
   };
 
   const approveManager = async (userId) => {
-    const url = `http://localhost:8080/admins/${adminId}/users/${userId}/approve`;
-    await fetch(url, {
-      method: "PUT",
+    const url = `http://localhost:8080/admins/users/${userId}/approve`;
+    const response = await fetch(url, {
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     removeManagerFromList(userId);
   };
-
-
 
   return (
     <div className="card mb-3">

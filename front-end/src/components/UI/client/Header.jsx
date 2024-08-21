@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Header = () => {
   const { id } = useParams();
   const [client, setClient] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
+  const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/${id}/cabinet`;
-      const response = await fetch(url);
-      const data = await response.json();
+      const url = `http://localhost:8080/clients/cabinet`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });      const data = await response.json();
       setClient(data);
       fetchProfilePicture(data.profileImageUrl) 
     };
@@ -33,9 +42,6 @@ const Header = () => {
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <nav className="navbar navbar-expand-lg">
           <div className="container-fluid">
-            {/* <a className="navbar-brand" href="#">
-              Navbar
-            </a> */}
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
@@ -88,7 +94,7 @@ const Header = () => {
             aria-labelledby="dropdownUser2"
           >
             <li> 
-            <Link to={`/client/${id}/cabinet`} className="dropdown-item" >
+            <Link to={`/client/cabinet`} className="dropdown-item" >
               Settings
             </Link>
             </li>
@@ -101,9 +107,7 @@ const Header = () => {
               <hr className="dropdown-divider" />
             </li>
             <li>
-            <Link className="dropdown-item" to={`/signin`}>
-                Sign out  
-            </Link>
+            <Link className="dropdown-item" to="/signout">Sign Out</Link>
             </li>
           </ul>
         </div>

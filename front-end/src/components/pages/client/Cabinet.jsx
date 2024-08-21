@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import Header from "../../UI/client/Header";
 import Footer from "../../UI/client/Footer";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Cabinet = () => {
-  const { id: clientId } = useParams();
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const navigate = useNavigate();
   const [clientData, setClientData] = useState({
@@ -20,6 +20,7 @@ const Cabinet = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [regionError, setRegionError] = useState("");
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
@@ -97,8 +98,16 @@ const Cabinet = () => {
   
   useEffect(() => {
     const fetchClientData = async () => {
-      const url = `http://localhost:8080/clients/${clientId}/cabinet`;
-      const response = await fetch(url);
+      const url = `http://localhost:8080/clients/cabinet`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });
       const client = await response.json();
       setClientData(client);
       setProfileImageUrl(client.profileImageUrl);
@@ -108,7 +117,7 @@ const Cabinet = () => {
   }, []); 
 
   const handleSave = async () => {
-      const url = `http://localhost:8080/clients/${clientId}/cabinet`;
+      const url = `http://localhost:8080/clients/cabinet`;
       if(validateForm()){
         const client = {
           firstName: clientData.firstName,
@@ -122,11 +131,14 @@ const Cabinet = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
           },
+          credentials: "include",
           body: JSON.stringify(client),
         }); 
         if(response.ok){
-          navigate(`/client/${clientId}`);
+          navigate(`/client`);
         }
       }
   };

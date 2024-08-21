@@ -2,7 +2,6 @@ import React from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 
-
 const DashboardCar = ({ car }) => {
   const { id: id } = useParams();
 
@@ -42,7 +41,7 @@ const DashboardCar = ({ car }) => {
                 <p className="card-text">{`Region: ${car.region}`}</p>
                 <p className="card-text">{`Mileage: ${car.mileage}`} km</p>
               </div>
-              <Link to={`/manager/${id}/car/${car.id}`} className="dropdown-item" >
+              <Link to={`/manager/car/${car.id}`} className="dropdown-item" >
               <button className="btn btn-primary">
                 Details
               </button>

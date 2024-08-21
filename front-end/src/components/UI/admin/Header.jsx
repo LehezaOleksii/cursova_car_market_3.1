@@ -1,20 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Header = () => {
   const { id } = useParams();
   const [admin, setAdmin] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
+  const jwtStr = localStorage.getItem('jwtToken');
+  const userId = localStorage.getItem('id');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/admins/${id}/cabinet`;
-      const response = await fetch(url);
+      const url = `http://localhost:8080/clients/cabinet/${userId}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr,
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });
       const data = await response.json();
       setAdmin(data);
       fetchProfilePicture(data.profileImageUrl) 
     };
-
     fetchData();
   }, [id]);
 
@@ -28,15 +38,6 @@ const Header = () => {
     }
   };
 
-  const settings = async () => {
-      await fetch(`http://localhost:8080/clients/${id}/cabinet`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-  };
-
   return (
     <header className="py-3 mb-3 border-bottom">
       <div className="container-fluid d-flex justify-content-between align-items-center">
@@ -48,12 +49,12 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                <Link to={`/admin/${id}`} className="nav-link" >
+                <Link to={`/admin`} className="nav-link" >
                     Home
                 </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/admin/${id}/approve/managers`} className="nav-link" >
+                  <Link to={`/admin/approve/managers`} className="nav-link" >
                     Update user status
                   </Link> 
                 </li>
@@ -74,15 +75,15 @@ const Header = () => {
     <img
       src={admin.profileImageUrl ? `data:image/png;base64,${admin.profileImageUrl}` : 'default-image-url'}
       className="rounded-circle"
-      width="32"
-      height="32"
+      width="44"
+      height="44"
     />
   ) : (
     <img
       src={profilePicture}
       className="rounded-circle"
-      width="32"
-      height="32"
+      width="44"
+      height="44"
       alt="Default Profile"
     />
   )}
@@ -92,14 +93,14 @@ const Header = () => {
             aria-labelledby="dropdownUser2"
           >
             <li> 
-            <Link to={`/admin/${id}/cabinet`} className="dropdown-item" onClick={() => settings()}>
+            <Link to={`/admin/cabinet`} className="dropdown-item" 
+            // onClick={() => settings()}
+            >
               Settings
             </Link>
             </li>
             <li>
-            <Link className="dropdown-item" to={`/signin`}>
-                Sign out  
-            </Link>
+            <Link className="dropdown-item" to="/signout">Sign Out</Link>
             </li>
           </ul>
         </div>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import {useNavigate } from "react-router-dom";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Cabinet = () => {
-  const { id: managerId } = useParams();
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const navigate = useNavigate();
   const [managerData, setManagerData] = useState({
@@ -18,6 +18,7 @@ const Cabinet = () => {
   const [lastNameError, setLastNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
@@ -78,22 +79,30 @@ const Cabinet = () => {
     }
     return isValid;
   };
-  
-  
+
   useEffect(() => {
     const fetchManagerData = async () => {
-      const url = `http://localhost:8080/managers/${managerId}/cabinet`;
-      const response = await fetch(url);
-      const manager = await response.json();
-      setManagerData(manager);
-      setProfileImageUrl(manager.profileImageUrl);
+      const url = `http://localhost:8080/managers/cabinet`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
+          },
+          credentials: "include",
+        });
+        const manager = await response.json();
+        setManagerData(manager);
+        setProfileImageUrl(manager.profileImageUrl);
     };
-
     fetchManagerData();
-  }, []); 
+  });
+
+
 
   const handleSave = async () => {
-      const url = `http://localhost:8080/managers/${managerId}/cabinet`;
+      const url = `http://localhost:8080/managers/cabinet`;
       if(validateForm()){
         const manager = {
           firstName: managerData.firstName,
@@ -106,11 +115,14 @@ const Cabinet = () => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
           },
+          credentials: "include",
           body: JSON.stringify(manager),
         }); 
         if(response.ok){
-          navigate(`/manager/${managerId}/users`);
+          navigate(`/manager/users`);
         }
       }
   };

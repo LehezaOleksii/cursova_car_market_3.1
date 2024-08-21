@@ -1,16 +1,26 @@
 import React, {useState, useEffect} from "react";
 import ManagerUserDashboard from "./ManagerUserDashboard";
 import { useParams } from "react-router";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ManagerUsers = () => {
   
   const { id: managerId } = useParams();
   const [users, setUsers] = useState([]);
+  const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
       const url = `http://localhost:8080/managers/${managerId}/clients`;
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });
       const data = await response.json();
       setUsers(data);
     };

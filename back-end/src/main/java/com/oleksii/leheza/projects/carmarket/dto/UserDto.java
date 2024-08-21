@@ -4,7 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
-public class ClientDto {
+public class UserDto {
 
     @Column(length = 50)
     @Size(min = 1, max = 100, message = "First name must be between 1 and 100 characters")

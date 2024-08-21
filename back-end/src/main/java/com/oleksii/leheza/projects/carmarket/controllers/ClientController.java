@@ -1,75 +1,83 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
-import com.oleksii.leheza.projects.carmarket.dto.create.CreateClientDto;
-import com.oleksii.leheza.projects.carmarket.entities.Client;
-import com.oleksii.leheza.projects.carmarket.service.interfaces.ClientService;
+import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/clients")
 @RequiredArgsConstructor
 public class ClientController {
 
-    private final ClientService clientService;
+    private final UserService userService;
+    private final VehicleService vehicleService;
 
-    @GetMapping("/{clientId}/cabinet")
-    public ResponseEntity<Client> getClientCabinet(@PathVariable Long clientId) {
-        return new ResponseEntity<>(clientService.findById(clientId), HttpStatus.OK);
+    @GetMapping("/cabinet/{id}")
+    public ResponseEntity<UserUpdateDto> getUserData(@PathVariable Long id) {
+        UserUpdateDto user = userService.getUserUpdateDtoById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping("/{clientId}/cabinet")
-    public ResponseEntity<Client> saveClientInfo(@PathVariable Long clientId, @RequestBody Client client) {
-        client.setId(clientId);
-        return new ResponseEntity<>(clientService.save(client), HttpStatus.OK);
+    @PutMapping("/cabinet/{id}")
+    public ResponseEntity<UserUpdateDto> saveUserInfo(@PathVariable Long id,
+                                                      @RequestBody UserUpdateDto user) {
+        user.setId(id);//TODO
+        return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
     }
 
-    @PostMapping("/{clientId}/vehicle")
-    public ResponseEntity<?> postVehicle(@PathVariable Long clientId, @RequestBody VehicleDto vehicleDto) {
-        clientService.saveVehicleWithModerationStatus(vehicleDto, clientId);
+    @PostMapping("/vehicle")
+    public ResponseEntity<?> postVehicle(@AuthenticationPrincipal User user,
+                                         @RequestBody VehicleDto vehicleDto) {
+        vehicleService.saveVehicleWithModerationStatus(vehicleDto, user.getId());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/{clientId}/garage")
-    public ResponseEntity<List<VehicleDto>> userVehicles(@PathVariable Long clientId) {
-        return new ResponseEntity<>(clientService.getVehiclesByClientId(clientId), HttpStatus.OK);
+    @GetMapping("{id}/garage")
+    public ResponseEntity<List<VehicleDto>> userVehicles(@PathVariable Long id) {
+        return new ResponseEntity<>(vehicleService.getVehiclesByUserId(id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{clientId}/vehicles/{vehicleId}/remove")
-    public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long clientId, @PathVariable Long vehicleId) {
-        clientService.removeVehicleById(clientId, vehicleId);
+    @DeleteMapping("{id}/vehicles/{vehicleId}/remove")
+    public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long id,
+                                                      @PathVariable Long vehicleId) {
+        vehicleService.removeVehicleById(id, vehicleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{clientId}/vehicles/{vehicleId}")
-    public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long clientId, @PathVariable Long vehicleId) {
-        return new ResponseEntity<>(clientService.getVehicleInfo(clientId, vehicleId), HttpStatus.OK);
+    @GetMapping("/vehicles/{vehicleId}")
+    public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
+        return new ResponseEntity<>(vehicleService.getVehicleInfo(vehicleId), HttpStatus.OK);
     }
 
-    @PutMapping("/{clientId}/vehicles/{vehicleId}")
-    public ResponseEntity<?> changeVehicleById(@PathVariable Long clientId, @PathVariable Long vehicleId, @RequestBody VehicleDto vehicleDto) {
-        clientService.updateVehicle(vehicleDto, clientId, vehicleId);
+    @PutMapping("{id}/vehicles/{vehicleId}")
+    public ResponseEntity<?> changeVehicleById(@PathVariable Long id,
+                                               @PathVariable Long vehicleId,
+                                               @RequestBody VehicleDto vehicleDto) {
+        vehicleService.updateVehicle(id, vehicleDto, vehicleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/{managerId}/vehicles/{vehicleId}/block")
-    public ResponseEntity<?> disapproveVehicle(@PathVariable Long vehicleId) {
-        clientService.disapproveVehicle(vehicleId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/{clientId}/vehicles/all")
+    @GetMapping("/vehicles/all")
     public ResponseEntity<List<VehicleDto>> getAllVehicles() {
-        return new ResponseEntity<>(clientService.findAllPostedVehicles(), HttpStatus.OK);
+        return new ResponseEntity<>(vehicleService.findAllPostedVehicles(), HttpStatus.OK);
     }
 
-    @GetMapping("/{clientId}/vehicles/filter")
+    @DeleteMapping("/{managerId}/vehicles/{vehicleId}/delete")//TODO is present
+    public ResponseEntity<?> deleteVehicleById(@PathVariable Long vehicleId) {
+        vehicleService.deleteVehicleById(vehicleId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/vehicles/filter")
     public List<VehicleDto> filterVehicles(
             @RequestParam(required = false) String carBrand,
             @RequestParam(required = false) String carModel,
@@ -79,6 +87,6 @@ public class ClientController {
             @RequestParam(required = false) String gearbox,
             @RequestParam(required = false) String mileage,
             @RequestParam(required = false) String carState) {
-        return clientService.filterVehicles(carBrand, carModel, region, year, price, gearbox, mileage, carState);
+        return vehicleService.filterVehicles(carBrand, carModel, region, year, price, gearbox, mileage, carState);
     }
 }

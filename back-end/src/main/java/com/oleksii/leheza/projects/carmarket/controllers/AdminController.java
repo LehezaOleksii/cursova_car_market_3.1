@@ -1,9 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
-import com.oleksii.leheza.projects.carmarket.entities.Admin;
-import com.oleksii.leheza.projects.carmarket.entities.Client;
-import com.oleksii.leheza.projects.carmarket.entities.Manager;
-import com.oleksii.leheza.projects.carmarket.service.interfaces.AdminService;
+import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.enums.UserRole;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,49 +15,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final AdminService adminService;
+    private final UserService userService;
 
-    @GetMapping("/{adminId}/cabinet")
-    public ResponseEntity<Admin> getAdminCabinet(@PathVariable Long adminId) {
-        return new ResponseEntity<>(adminService.findById(adminId), HttpStatus.OK);
+    @GetMapping("/managers")
+    public ResponseEntity<List<User>> getManagers() { //TODO filter
+        return new ResponseEntity<>(userService.getUsersByRole(UserRole.ROLE_MANAGER), HttpStatus.OK);
     }
 
-    @PutMapping("/{adminId}/cabinet")
-    public ResponseEntity<Admin> saveAdminInfo(@PathVariable Long adminId, @RequestBody Admin admin) {
-        admin.setId(adminId);
-        return new ResponseEntity<>(adminService.save(admin), HttpStatus.OK);
-    }
-
-    @GetMapping("/{adminId}/managers")
-    public ResponseEntity<List<Manager>> getManagers() {
-        return new ResponseEntity<>(adminService.getManagers(), HttpStatus.OK);
-    }
-
-    @GetMapping("/{adminId}/users/toapprove")
-    public ResponseEntity<List<Client>> getUsersToApprove() {
-        return new ResponseEntity<>(adminService.getUsersToApprove(), HttpStatus.OK);
-    }
-
-    @PutMapping("/{adminId}/users/{userId}/approve")
+    @PutMapping("/users/{userId}/approve")
     public ResponseEntity<?> updateUserStatusToManager(@PathVariable Long userId) {
-        adminService.approveManager(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @GetMapping("/{adminId}/managers/{managerId}")
-    public ResponseEntity<Manager> getManagerInfo(@PathVariable Long managerId) {
-        return new ResponseEntity<>(adminService.findManagerById(managerId), HttpStatus.OK);
-    }
-
-    @PutMapping("/{adminId}/managers/{managerId}")
-    public ResponseEntity<?> updateManagerInfo(@PathVariable Long managerId, @RequestBody Manager manager) {
-        manager.setId(managerId);
-        return new ResponseEntity<>(adminService.saveManager(manager), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{adminId}/managers/{managerId}/delete")
-    public ResponseEntity<?> blockManager(@PathVariable Long managerId) {
-        adminService.blockManager(managerId);
+        userService.approveManager(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -3,17 +3,26 @@ import { useParams } from "react-router";
 import ApproveManager from "../../UI/admin/approve_manager/ApproveManager";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ApproveManagersPage = () => {
 
   const { id: adminId } = useParams();
   const [users, setUsers] = useState([]);
+  const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/admins/${adminId}/users/toapprove`;
-      const response = await fetch(url);
-      const data = await response.json();
+      const url = `http://localhost:8080/admins/users/toapprove`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });      const data = await response.json();
       setUsers(data);
     };
 

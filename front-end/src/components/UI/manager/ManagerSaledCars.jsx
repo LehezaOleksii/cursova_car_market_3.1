@@ -1,5 +1,6 @@
 import React from "react";
 import ManagerSaleCar from "./managerDashboard/ManagerSaleCar";
+
 const ManagerSaledCars = ({cars}) => {
   return (
     <div> 

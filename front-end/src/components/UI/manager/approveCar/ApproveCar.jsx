@@ -1,28 +1,35 @@
 import React from "react"; 
 import { useParams } from "react-router";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ApproveCar = ({ car, removeCarFromList}) => {
   
   const { id: managerId } = useParams();
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const blockCar = async () => {
     const url = `http://localhost:8080/managers/${managerId}/vehicles/${car.id}/disapprove`;
     await fetch(url, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     removeCarFromList(car.id);
   };
 
   const approveCar = async () => {
     const url = `http://localhost:8080/managers/${managerId}/vehicles/${car.id}/approve`;
-    await fetch(url, {
-      method: "PUT",
+     await fetch(url, {
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
     });
     removeCarFromList(car.id);
   };

@@ -4,12 +4,13 @@ import Footer from "../../UI/manager/Footer";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ManagerChangeAuto = () => {
-  const { id: managerId } = useParams();
   const { carId: carId } = useParams();
   const [photo, setCarPhoto] = useState(null);
   const navigate = useNavigate();
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const [carData, setCarData] = useState({
     brandName: "",
@@ -26,12 +27,15 @@ const ManagerChangeAuto = () => {
   
   useEffect(() => {
     const fetchCarData = async () => {
-      const url = `http://localhost:8080/clients/${managerId}/vehicles/${carId}`;
+      const url = `http://localhost:8080/clients/vehicles/${carId}`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
           },
+          credentials: "include",
         });
   
         const car = await response.json();
@@ -39,10 +43,10 @@ const ManagerChangeAuto = () => {
         setCarPhoto(car.photo)
     };
     fetchCarData();
-  }, [managerId]);
+  });
   
   const handleSave = async () => {
-    const url = `http://localhost:8080/managers/${managerId}/vehicles/${carId}`;
+    const url = `http://localhost:8080/managers/vehicles/${carId}`;
     const car = {
       brandName: carData.brandName,
       modelName: carData.modelName,
@@ -60,11 +64,14 @@ const ManagerChangeAuto = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
       body: JSON.stringify(car),
     });
     setCarPhoto(photo);
-    navigate(`/manager/${managerId}/users`);
+    navigate(`/manager/users`);
   };
 
   const isBase64 = (str) => {

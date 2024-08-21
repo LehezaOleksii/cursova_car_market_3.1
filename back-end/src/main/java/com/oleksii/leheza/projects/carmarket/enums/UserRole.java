@@ -1,8 +1,23 @@
 package com.oleksii.leheza.projects.carmarket.enums;
 
-public enum UserRole {
+import lombok.Getter;
+import org.springframework.security.core.GrantedAuthority;
 
-    CLIENT,
-    MANAGER,
-    ADMIN
+@Getter
+public enum UserRole implements GrantedAuthority {
+
+    ROLE_ADMIN(1),
+    ROLE_MANAGER(2),
+    ROLE_CLIENT(3);
+
+    private final int order;
+
+    UserRole(int order) {
+        this.order = order;
+    }
+
+    @Override
+    public String getAuthority() {
+        return this.name();
+    }
 }

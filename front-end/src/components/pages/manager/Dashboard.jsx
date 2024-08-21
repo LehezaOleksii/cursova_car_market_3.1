@@ -5,30 +5,46 @@ import SaledCars from "../../UI/client/dashboard/SaledCars";
 import BrandsFilter from "../../UI/client/dashboard/BrandsFilter";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Dashboard = () => {
-  const { id: managerId } = useParams();
   const [cars, setCars] = useState([]);
+  const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/${managerId}/vehicles/all`;
-      const response = await fetch(url);
-      const data = await response.json();
-      setCars(data);
+      const url = `http://localhost:8080/clients/vehicles/${carId}`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr
+            // [getCsrfHeaderName()]: getCsrfToken(),
+          },
+          credentials: "include",
+        });
     };
+      const data = response.json();
+      setCars(data);
     fetchData();
-  }, [managerId]);
+  });
 
   const filterCars = async (filterData) => {
     const queryParams = new URLSearchParams(filterData);
-    const url = `http://localhost:8080/clients/${managerId}/vehicles/filter?${queryParams.toString()}`;
-    const response = await fetch(url);
+    const url = `http://localhost:8080/clients/vehicles/filter?${queryParams.toString()}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
+      },
+      credentials: "include",
+    });
     const data = await response.json();
     setCars(data);
   };
   
-
   return (
     <div className="body">
       <Header />

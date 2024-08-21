@@ -4,12 +4,13 @@ import Footer from "../../UI/client/Footer";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
+// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ClientChangeAuto = () => {
-  const { id: clientId } = useParams();
   const { carId: carId } = useParams();
   const [photo, setCarPhoto] = useState(null);
   const navigate = useNavigate();
+  const jwtStr = localStorage.getItem('jwtToken');
 
   const [carData, setCarData] = useState({
     brandName: "",
@@ -26,23 +27,25 @@ const ClientChangeAuto = () => {
   
   useEffect(() => {
     const fetchCarData = async () => {
-      const url = `http://localhost:8080/clients/${clientId}/vehicles/${carId}`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-
+      const url = `http://localhost:8080/clients/vehicles/${carId}`;
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+          // [getCsrfHeaderName()]: getCsrfToken(),
+        },
+        credentials: "include",
+      });
         const car = await response.json();
         setCarData(car);
         setCarPhoto(car.photo)
     };
     fetchCarData();
-  }, [clientId]);
+  });
   
   const handleSave = async () => {
-    const url = `http://localhost:8080/clients/${clientId}/vehicles/${carId}`;
+    const url = `http://localhost:8080/clients/vehicles/${carId}`;
     const car = {
       brandName: carData.brandName,
       modelName: carData.modelName,
@@ -55,16 +58,18 @@ const ClientChangeAuto = () => {
       usageStatus: carData.usageStatus,
       photo: photo && !isBase64(photo) ? await convertImageToBase64(photo) : photo,
     };
-  
     await fetch(url, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        'Authorization': 'Bearer ' + jwtStr
+        // [getCsrfHeaderName()]: getCsrfToken(),
       },
+      credentials: "include",
       body: JSON.stringify(car),
     });
     setCarPhoto(photo);
-    navigate(`/client/${clientId}`);
+    navigate(`/client`);
   };
 
   const isBase64 = (str) => {

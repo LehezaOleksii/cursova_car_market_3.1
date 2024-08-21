@@ -29,12 +29,12 @@ public class Vehicle {
     @ManyToOne
     @JsonBackReference
     @ToString.Exclude
-    private User client;
+    private User user;
     @OneToOne(cascade = CascadeType.PERSIST)
     private VehicleModel model;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private VehicleStatus status;
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private UsageStatus usageStatus;
     private String region;
     private String phoneNumber;

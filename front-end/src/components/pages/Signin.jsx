@@ -42,13 +42,13 @@ const SignIn = () => {
   
         switch (role) {
           case "CLIENT":
-            navigate(`/client/${userData.id}`);
+            navigate(`/client`);
             break;
           case "MANAGER":
-            navigate(`/manager/${userData.id}/users`);
+            navigate(`/manager/users`);
             break;
           case "ADMIN":
-            navigate(`/admin/${userData.id}`);
+            navigate(`/admin`);
             break;
           default:
             alert("User with this data does not exist at the system");
@@ -60,61 +60,45 @@ const SignIn = () => {
       alert(`Signin error: ${error.message}`);
     }
   };
-  
-  
-
   return (
-    <div className="container mt-5">
+    <div className="container">
       <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
+        <div className="col-md-4">
+          <div className="card mt-5">
+            <div className="card-header text-center">
+              <h3>Login</h3>
+            </div>
             <div className="card-body">
-              <h2 className="card-title text-center">Sign In</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                  <label htmlFor="email" className="form-label">
-                    Email
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    placeholder="Email address"
-                  />
+              <form action="/auth/login" method="post">
+                <div className="mb-2">
+                  <label htmlFor="username" className="form-label">Username</label>
+                  <input type="text" className="form-control" id="username" name="username" placeholder="Enter your username" required />
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="password" className="form-label">
-                    Password
-                  </label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    placeholder="Password"
-                  />
-                              <p className="mt-3">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-primary">
-                      Sign Up
-                    </Link>
-                  </p>
-                </div> 
-                <div className="d-grid">
-                  <button type="submit" className="btn btn-primary d-grid gap-2 col-8 mx-auto"   onClick={() => signIn()}>
-                    Login
-                  </button>
-                </div> 
+                  <label htmlFor="password" className="form-label">Password</label>
+                  <input type="password" className="form-control" id="password" name="password" placeholder="Enter your password" required />
+                </div>
+                <div className="d-flex justify-content-between mb-3">
+                  <div className="form-check">
+                    <input type="checkbox" className="form-check-input" id="rememberMe" name="remember-me" />
+                    <label htmlFor="rememberMe" className="form-check-label">Remember Me</label>
+                  </div>
+                  <div>
+                    <a href="/auth/forgot-password">Forgot Password?</a>
+                  </div>
+                </div>
+                <div className="d-grid mb-3">
+                  <button type="submit" className="btn btn-primary btn-block btn-pill">Login</button>
+                </div>
               </form>
+            </div>
+            <div className="card-footer text-center">
+              <small className="text-muted">Don't have an account? <a href="/signup">Sign up</a></small>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
+}
 export default SignIn;

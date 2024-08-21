@@ -1,8 +1,10 @@
 package com.oleksii.leheza.projects.carmarket.repositories;
 
 import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
-import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
+import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -28,4 +30,11 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
                                @Param("price") Integer price,
                                @Param("gearbox") String gearbox,
                                 @Param("mileage") Integer mileage);
+
+    List<Vehicle> findAllByStatus(VehicleStatus status);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Vehicle v SET v.status = :status WHERE v.id = :vehicleId")
+    void updateVehicleStatus(@Param("vehicleId") Long vehicleId, @Param("status") VehicleStatus status);
 }
