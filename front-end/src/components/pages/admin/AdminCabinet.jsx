@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import {useNavigate } from "react-router-dom";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
+import getCsrfToken from "../../../csrf";
 
 const AdminCabinet = () => {
+  const csrfToken = getCsrfToken();
   const [profileImageUrl, setProfileImageUrl] = useState("");
   const navigate = useNavigate();
   const [adminData, setAdminData] = useState({
@@ -16,7 +18,6 @@ const AdminCabinet = () => {
   const [lastNameError, setLastNameError] = useState("");
   const jwtStr = localStorage.getItem('jwtToken');
   const id = localStorage.getItem('id');
-  const csrfToken = localStorage.getItem('csrf');
 
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
@@ -57,7 +58,6 @@ const AdminCabinet = () => {
     return isValid;
   };
   
-  
   useEffect(() => {
     const fetchAdminData = async () => {
       const url = `http://localhost:8080/clients/cabinet/${id}`;
@@ -66,10 +66,8 @@ const AdminCabinet = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr,
-          // 'X-XSRF-TOKEN': csrfToken
         },
-        // withCredentials : true,
-        credentials: "include",
+        credentials: 'include',
       });      
       const admin = await response.json();
       setAdminData(admin);
@@ -79,7 +77,6 @@ const AdminCabinet = () => {
   }, []); 
 
   const handleSave = async () => {
-      const url = `http://localhost:8080/clients/cabinet/${id}`;
       if(validateForm()){
         const admin = {
           firstname: adminData.firstname,
@@ -87,15 +84,15 @@ const AdminCabinet = () => {
           region: adminData.region,
           profileImageUrl: profileImageUrl && !isBase64(profileImageUrl) ? await convertImageToBase64(profileImageUrl) : profileImageUrl,
         };
+        const url = `http://localhost:8080/clients/cabinet/${id}`;
         const response = await fetch(url, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jwtStr,
-            'X-XSRF-TOKEN': csrfToken
+            'X-XSRF-TOKEN': csrfToken 
           },
-          // withCredentials : true,
-          credentials : "include",
+          credentials: 'include',
           body: JSON.stringify(admin)
         }); 
         if(response.ok){
@@ -138,6 +135,8 @@ const convertImageToBase64 = (image) => {
 
   return (
     <div className="body">
+      <meta name="_csrf" content="${_csrf.token}"/>
+      <meta name="_csrf_header" content="${_csrf.headerName}"/>
       <Header/>
       <div className="row justify-content-center mt-5">
         <div className="col-md-6 ">

@@ -30,4 +30,10 @@ public interface UserService extends UserDetailsService {
     User findByEmail(String email);
 
     UserUpdateDto getUserUpdateDtoById(Long id);
+
+    boolean existByEmail(String email);
+
+    void updateUserPasswordByEmail(String email, String newPassword);
+
+    void confirmEmail(String token);
 }

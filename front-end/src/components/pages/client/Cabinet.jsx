@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import {useNavigate } from "react-router-dom";
 import Header from "../../UI/client/Header";
 import Footer from "../../UI/client/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Cabinet = () => {
   const [profileImageUrl, setProfileImageUrl] = useState("");
@@ -104,7 +103,6 @@ const Cabinet = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });
@@ -132,7 +130,6 @@ const Cabinet = () => {
           headers: {
             "Content-Type": "application/json",
             'Authorization': 'Bearer ' + jwtStr
-            // [getCsrfHeaderName()]: getCsrfToken(),
           },
           credentials: "include",
           body: JSON.stringify(client),

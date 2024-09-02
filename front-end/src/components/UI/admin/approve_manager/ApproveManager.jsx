@@ -1,5 +1,4 @@
 import React from "react";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ApproveManager = ({ manager, removeManagerFromList}) => {
   const managerId = manager.id;
@@ -12,9 +11,7 @@ const ApproveManager = ({ manager, removeManagerFromList}) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
-      credentials: "include",
     });
     removeManagerFromList(managerId);
   };
@@ -26,9 +23,7 @@ const ApproveManager = ({ manager, removeManagerFromList}) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
-      credentials: "include",
     });
     removeManagerFromList(userId);
   };

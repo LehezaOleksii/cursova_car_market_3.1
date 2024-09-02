@@ -4,7 +4,6 @@ import CarFilter from "../../UI/client/dashboard/CarFilter";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
 import ManagerSaledCars from "../../UI/manager/ManagerSaledCars";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ManagerViewCars = () => {
   const { id: clientId } = useParams();
@@ -20,7 +19,6 @@ const ManagerViewCars = () => {
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });

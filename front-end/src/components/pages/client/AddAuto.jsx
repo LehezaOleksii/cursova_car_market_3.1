@@ -4,7 +4,6 @@ import Footer from "../../UI/client/Footer";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 
 const AddAuto = () => {
@@ -83,7 +82,6 @@ const AddAuto = () => {
         headers: {
           "Content-Type": "application/json",
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
         body: JSON.stringify(car),

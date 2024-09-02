@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const AdminManager = ({ manager,removeManagerFromList }) => {
   const navigate = useNavigate();
@@ -16,9 +15,7 @@ const AdminManager = ({ manager,removeManagerFromList }) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
-      credentials: "include",
     });
     removeManagerFromList(managerId);
   };
@@ -30,9 +27,7 @@ const AdminManager = ({ manager,removeManagerFromList }) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
-      credentials: "include",
     });
     if(response.ok){
       navigate(`/admin/update/managers/${managerId}`);

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Auto from "./Auto";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const SaledAutos = () => {
   const { id: managerId } = useParams();
@@ -16,7 +15,6 @@ const SaledAutos = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });

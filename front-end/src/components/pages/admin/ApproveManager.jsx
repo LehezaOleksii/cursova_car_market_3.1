@@ -3,7 +3,6 @@ import { useParams } from "react-router";
 import ApproveManager from "../../UI/admin/approve_manager/ApproveManager";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ApproveManagersPage = () => {
 
@@ -19,9 +18,7 @@ const ApproveManagersPage = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
-        credentials: "include",
       });      const data = await response.json();
       setUsers(data);
     };

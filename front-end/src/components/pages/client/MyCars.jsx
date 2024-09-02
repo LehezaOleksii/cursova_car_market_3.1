@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 import MyCar from "../../UI/client/AddAuto/MyCar";
 import Header from "../../UI/client/Header";
 import Footer from "../../UI/client/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const MyCars = () => {
   const [cars, setCars] = useState([]);
@@ -17,7 +16,6 @@ const MyCars = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });      const data = await response.json();

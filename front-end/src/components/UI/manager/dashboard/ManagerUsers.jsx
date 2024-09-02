@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from "react";
 import ManagerUserDashboard from "./ManagerUserDashboard";
 import { useParams } from "react-router";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ManagerUsers = () => {
   
@@ -17,9 +16,7 @@ const ManagerUsers = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
-        credentials: "include",
       });
       const data = await response.json();
       setUsers(data);

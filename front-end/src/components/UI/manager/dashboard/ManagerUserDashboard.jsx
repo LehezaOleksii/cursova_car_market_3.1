@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ManagerUserDashboard = ({ user, removeUserFromList }) => {
   const { id: managerId } = useParams();
@@ -16,7 +15,6 @@ const ManagerUserDashboard = ({ user, removeUserFromList }) => {
         'headers': {
           'Authorization': 'Bearer ' + jwtStr
         }
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
       credentials: "include",
     });

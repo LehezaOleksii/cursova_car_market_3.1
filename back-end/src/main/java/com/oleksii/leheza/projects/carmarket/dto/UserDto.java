@@ -14,5 +14,4 @@ public class UserDto {
     @Email(message = "Please provide a valid email address")
     @Column(unique=true)
     private String email;
-    private String region;
 }

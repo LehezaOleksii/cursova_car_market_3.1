@@ -5,7 +5,6 @@ import SaledCars from "../../UI/client/dashboard/SaledCars";
 import BrandsFilter from "../../UI/client/dashboard/BrandsFilter";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Dashboard = () => {
   const [cars, setCars] = useState([]);
@@ -19,9 +18,7 @@ const Dashboard = () => {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jwtStr
-            // [getCsrfHeaderName()]: getCsrfToken(),
           },
-          credentials: "include",
         });
     };
       const data = response.json();
@@ -37,7 +34,6 @@ const Dashboard = () => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
       credentials: "include",
     });

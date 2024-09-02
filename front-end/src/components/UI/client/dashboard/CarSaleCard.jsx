@@ -1,6 +1,5 @@
 import React from "react";
 import { useParams,Link } from "react-router-dom";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const CarSaleCard = ({ car, removeCarFromList }) => {
   const { id: clientId } = useParams();
@@ -15,7 +14,6 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
       credentials: "include",
     });

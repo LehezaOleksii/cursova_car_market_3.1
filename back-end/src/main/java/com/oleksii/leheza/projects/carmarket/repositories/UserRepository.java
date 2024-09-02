@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,7 +19,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByEmail(String email);
 
-    ////////////////////////
     @Modifying
     @Transactional
     @Query("UPDATE User u SET u.userRole = :role WHERE u.id = :userId")
@@ -31,4 +31,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByUserRole(UserRole role);
 
     Optional<User> findByEmailIgnoreCase(String email);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE User u SET u.password = :newPassword WHERE u.email = :email")
+    void updateUserPasswordByEmail(@Param("email") String email, @Param("newPassword") String newPassword);
+
 }

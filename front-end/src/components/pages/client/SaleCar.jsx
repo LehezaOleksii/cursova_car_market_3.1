@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import Header from "../../UI/client/Header";
 import Footer from "../../UI/client/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const SaleCar = () => {
   const [car, setCarData] = useState([]);
@@ -18,7 +17,6 @@ const SaleCar = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });

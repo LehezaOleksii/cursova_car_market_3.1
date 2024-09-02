@@ -33,6 +33,11 @@ import ManagerViewCars from "./components/pages/manager/ManagerViewCars";
 import ManagerSaleCar from "./components/pages/manager/ManagerSaleCar";
 import Chat from "./components/pages/Chat";
 import SignOut from './components/login/SignOut';
+import ForgotPassword from "./components/login/ForgotPassword";
+import OtpVerification from "./components/login/OtpVerification";
+import ChangePassword from "./components/login/ChangePassword";
+import SignupSuccess from "./components/login/SignupSuccess";
+import ConfirmEmail from "./components/login/ConfirmEmail";
 
 const App = () => {
 
@@ -48,9 +53,16 @@ const App = () => {
 
   return (
     <Routes>
+      {/* login */}
       <Route path="/login" element={<Login />} />  
-      <Route path="/signup" element={<Signup />} />  
+      <Route path="/signup" element={<Signup />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/forgot-password-otp" element={<OtpVerification />} />
+      <Route path="/change-password" element={<ChangePassword />} />
+      <Route path="/signup-success" element={<SignupSuccess />} />
+      <Route path="/confirm-email" element={<ConfirmEmail />} />
 
+      {/* client */}
       <Route path="/client" element={wrapPrivateRoute(<Dashboard />, isLoggedIn, 'client')} />  
       <Route path="/client/car/:carId" element={wrapPrivateRoute(<SaleCar />, isLoggedIn, 'saleCar')} />  
       <Route path="/client/cabinet" element={wrapPrivateRoute(<Cabinet />, isLoggedIn, 'cabinet')} />  

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const Header = () => {
   const { id } = useParams();
@@ -17,9 +16,7 @@ const Header = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr,
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
-        credentials: "include",
       });
       const data = await response.json();
       setAdmin(data);

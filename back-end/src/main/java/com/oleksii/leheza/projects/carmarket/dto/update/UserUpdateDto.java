@@ -12,6 +12,5 @@ public class UserUpdateDto {
     private Long id;
     private String firstname;
     private String lastname;
-    private String region;
     private byte[] profileImageUrl;
 }

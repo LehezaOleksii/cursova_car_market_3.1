@@ -62,7 +62,6 @@ public class DtoMapper {
                 .password(createUserDto.getPassword())
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
-                .region(createUserDto.getRegion())//TODO
                 .build();
     }
 }

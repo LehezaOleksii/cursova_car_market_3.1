@@ -3,10 +3,12 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateUserDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.entities.EmailConfirmation;
 import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
+import com.oleksii.leheza.projects.carmarket.repositories.EmailConfirmationRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EmailConfirmationRepository emailConfirmationRepository;
+    private final UserService userService;
 
 
     @Override
@@ -54,7 +58,6 @@ public class UserServiceImpl implements UserService {
         user = user.toBuilder()
                 .firstName(userUpdate.getFirstname())
                 .lastName(userUpdate.getLastname())
-                .region(userUpdate.getRegion())
                 .profileImageUrl(userUpdate.getProfileImageUrl())
                 .build();
         userRepository.save(user);
@@ -86,9 +89,27 @@ public class UserServiceImpl implements UserService {
                 .id(id)
                 .lastname(user.getLastName())
                 .firstname(user.getFirstName())
-                .region(user.getRegion())
                 .profileImageUrl(user.getProfileImageUrl())
                 .build();
+    }
+
+    @Override
+    public boolean existByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public void updateUserPasswordByEmail(String email, String newPassword) {
+        String password = passwordEncoder.encode(newPassword);
+        userRepository.updateUserPasswordByEmail(email, password);
+    }
+
+    @Override
+    public void confirmEmail(String token) {
+        EmailConfirmation confirmation = emailConfirmationRepository.findByToken(token)
+                .orElseThrow(() -> new ResourceNotFoundException("Confirmation email does not exist"));
+        userService.updateUserStatusById(confirmation.getUser().getId(), UserStatus.ACTIVE);
+        emailConfirmationRepository.delete(confirmation);
     }
 
     @Override

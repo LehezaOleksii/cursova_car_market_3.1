@@ -1,6 +1,5 @@
 import React from "react"; 
 import { useParams } from "react-router";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../../csrf"
 
 const ApproveCar = ({ car, removeCarFromList}) => {
   
@@ -14,7 +13,6 @@ const ApproveCar = ({ car, removeCarFromList}) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
       credentials: "include",
     });
@@ -27,7 +25,7 @@ const ApproveCar = ({ car, removeCarFromList}) => {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        // [getCsrfHeaderName()]: getCsrfToken(),
+        'Authorization': 'Bearer ' + jwtStr
       },
       credentials: "include",
     });

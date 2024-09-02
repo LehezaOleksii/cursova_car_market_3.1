@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const UpdateManager = () => {
   const { id: adminId } = useParams();
@@ -90,7 +89,6 @@ const UpdateManager = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });      const manager = await response.json();
@@ -116,7 +114,6 @@ const UpdateManager = () => {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jwtStr
-            // [getCsrfHeaderName()]: getCsrfToken(),
           },
           credentials: "include",
         }); 

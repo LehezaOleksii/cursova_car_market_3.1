@@ -4,7 +4,6 @@ import Footer from "../../UI/manager/Footer";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ManagerChangeAuto = () => {
   const { carId: carId } = useParams();
@@ -33,9 +32,7 @@ const ManagerChangeAuto = () => {
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jwtStr
-            // [getCsrfHeaderName()]: getCsrfToken(),
           },
-          credentials: "include",
         });
   
         const car = await response.json();
@@ -65,9 +62,7 @@ const ManagerChangeAuto = () => {
       headers: {
         "Content-Type": "application/json",
         'Authorization': 'Bearer ' + jwtStr
-        // [getCsrfHeaderName()]: getCsrfToken(),
       },
-      credentials: "include",
       body: JSON.stringify(car),
     });
     setCarPhoto(photo);

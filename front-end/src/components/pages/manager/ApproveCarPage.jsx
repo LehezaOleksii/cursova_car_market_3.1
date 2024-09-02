@@ -2,7 +2,6 @@ import React, {useState, useEffect} from "react";
 import ApproveCar from "../../UI/manager/approveCar/ApproveCar";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
-// import {getCsrfToken, getCsrfHeaderName} from "../../../csrf"
 
 const ApproveCarPage = () => {
   const [cars, setCars] = useState([]);
@@ -16,7 +15,6 @@ const ApproveCarPage = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
-          // [getCsrfHeaderName()]: getCsrfToken(),
         },
         credentials: "include",
       });

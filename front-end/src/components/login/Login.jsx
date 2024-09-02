@@ -12,17 +12,7 @@ const Login = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        // credentials: "include",
       });
-
-      const responseCsrf = await axios.get('/auth/csrf', { email, password }, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // credentials: "include",
-      });
-      localStorage.setItem('csrf', responseCsrf.data);
-
   
       const { userId, jwt, role } = response.data;
       localStorage.setItem('jwtToken', jwt);
@@ -92,7 +82,7 @@ const Login = () => {
                   <label htmlFor="rememberMe" className="form-check-label">Remember Me</label>
                 </div>
                 <div>
-                  <a href="/auth/forgot-password">Forgot Password?</a>
+                  <a href="/forgot-password">Forgot Password?</a>
                 </div>
               </div>
               <div className="d-grid mb-3">
@@ -101,7 +91,7 @@ const Login = () => {
               {error && <p className="text-danger">{error}</p>}
             </div>
             <div className="card-footer text-center">
-              <small className="text-muted">Don't have an account? <a href="/auth/signup">Sign up</a></small>
+              <small className="text-muted">Don't have an account? <a href="/signup">Sign up</a></small>
             </div>
           </div>
         </div>
