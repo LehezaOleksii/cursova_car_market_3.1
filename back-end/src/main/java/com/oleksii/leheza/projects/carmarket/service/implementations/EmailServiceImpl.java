@@ -3,6 +3,7 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.entities.OtpToken;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
+import com.oleksii.leheza.projects.carmarket.exceptions.SmtpException;
 import com.oleksii.leheza.projects.carmarket.repositories.OtpRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
@@ -27,14 +28,18 @@ public class EmailServiceImpl implements EmailService {
     @Async
     @Override
     public void sendConformationEmailRequest(String to, String token) {
-        log.info("Start sending confirmation request to user {}", to);
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
-        simpleMailMessage.setTo(USER_EMAIL);//TODO prod input "to" variable
-        simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
-        simpleMailMessage.setText(getEmailMessage("http://localhost:3000", token));//TODO change path
-        mailSender.send(simpleMailMessage);
-        log.info("Email ");
+        try {
+            log.info("Start sending confirmation request to user {}", to);
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
+            simpleMailMessage.setTo(USER_EMAIL);//TODO prod input "to" variable
+            simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+            simpleMailMessage.setText(getEmailMessage("http://localhost:3000", token));//TODO change path
+            mailSender.send(simpleMailMessage);
+            log.info("Email ");
+        } catch (SmtpException e) {
+            throw new SmtpException("Could not send OTP to user " + to);
+        }
     }
 
     private String getEmailMessage(String host, String token) {
@@ -45,17 +50,21 @@ public class EmailServiceImpl implements EmailService {
     @Async
     @Override
     public void sendOTP(String email) {
-        log.info("Start sending OTP to user {}", email);
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
-        simpleMailMessage.setTo(USER_EMAIL);//TODO prod input to variable
-        simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
-        OtpToken otp = new OtpToken(userRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new ResourceNotFoundException("user with email " + email + " does not found")));
-        otpRepository.save(otp);
-        simpleMailMessage.setText(Integer.toString(otp.getPassword()));
-        mailSender.send(simpleMailMessage);
-        log.info("Sent OTP to user {}", email);
+        try {
+            log.info("Start sending OTP to user {}", email);
+            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+            simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
+            simpleMailMessage.setTo(USER_EMAIL);//TODO prod input to variable
+            simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+            OtpToken otp = new OtpToken(userRepository.findByEmailIgnoreCase(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("user with email " + email + " does not found")));
+            otpRepository.save(otp);
+            simpleMailMessage.setText(Integer.toString(otp.getPassword()));
+            mailSender.send(simpleMailMessage);
+            log.info("Sent OTP to user {}", email);
+        } catch (SmtpException e) {
+            throw new SmtpException("Could not send OTP to user " + email);
+        }
     }
 
     public String getVerificationUrl(String host, String token) {
