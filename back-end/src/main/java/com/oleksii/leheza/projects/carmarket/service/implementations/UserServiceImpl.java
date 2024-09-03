@@ -12,6 +12,7 @@ import com.oleksii.leheza.projects.carmarket.repositories.EmailConfirmationRepos
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,18 +22,18 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailConfirmationRepository emailConfirmationRepository;
-    private final UserService userService;
-
 
     @Override
     public void approveManager(Long userId) {
         userRepository.updateUserRole(userId, UserRole.ROLE_MANAGER);
+        log.info("Update user with id: {} to role: {}", userId, UserRole.ROLE_MANAGER);
     }
 
     @Override
@@ -43,6 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserStatusById(Long userId, UserStatus status) {
         userRepository.updateUserStatus(userId, status);
+        log.info("Update user with id: {} to status: {}", userId, status);
     }
 
     @Override
@@ -108,8 +110,9 @@ public class UserServiceImpl implements UserService {
     public void confirmEmail(String token) {
         EmailConfirmation confirmation = emailConfirmationRepository.findByToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("Confirmation email does not exist"));
-        userService.updateUserStatusById(confirmation.getUser().getId(), UserStatus.ACTIVE);
+        updateUserStatusById(confirmation.getUser().getId(), UserStatus.ACTIVE);
         emailConfirmationRepository.delete(confirmation);
+        log.info("Confirm email: " + token);
     }
 
     @Override

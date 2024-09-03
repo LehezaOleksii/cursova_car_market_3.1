@@ -4,7 +4,7 @@ mvnw
 mvnw.cmd
 */target/
 !.mvn/wrapper/maven-wrapper.jar
-
+*.log
 
 ### STS ###
 .apt_generated

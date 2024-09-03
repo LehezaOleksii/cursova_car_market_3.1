@@ -7,6 +7,7 @@ import com.oleksii.leheza.projects.carmarket.repositories.ChatMessageRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.ChatRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatServiceImpl implements ChatService {
 
     private final ChatRepository chatRepository;

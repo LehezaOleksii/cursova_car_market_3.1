@@ -27,12 +27,14 @@ public class EmailServiceImpl implements EmailService {
     @Async
     @Override
     public void sendConformationEmailRequest(String to, String token) {
+        log.info("Start sending confirmation request to user {}", to);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
         simpleMailMessage.setTo(USER_EMAIL);//TODO prod input "to" variable
         simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
         simpleMailMessage.setText(getEmailMessage("http://localhost:3000", token));//TODO change path
         mailSender.send(simpleMailMessage);
+        log.info("Email ");
     }
 
     private String getEmailMessage(String host, String token) {
@@ -43,6 +45,7 @@ public class EmailServiceImpl implements EmailService {
     @Async
     @Override
     public void sendOTP(String email) {
+        log.info("Start sending OTP to user {}", email);
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
         simpleMailMessage.setTo(USER_EMAIL);//TODO prod input to variable
@@ -52,6 +55,7 @@ public class EmailServiceImpl implements EmailService {
         otpRepository.save(otp);
         simpleMailMessage.setText(Integer.toString(otp.getPassword()));
         mailSender.send(simpleMailMessage);
+        log.info("Sent OTP to user {}", email);
     }
 
     public String getVerificationUrl(String host, String token) {
