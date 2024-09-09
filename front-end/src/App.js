@@ -5,7 +5,7 @@ import Dashboard from "./components/pages/client/Dashboard";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
 import SaleCar from "./components/pages/client/SaleCar";
-import Cabinet from "./components/pages/client/Cabinet";
+import ClientCabinet from "./components/pages/client/ClientCabinet";
 import AddAuto from "./components/pages/client/AddAuto";
 import MyCars from "./components/pages/client/MyCars";
 import ClientChangeAuto from "./components/pages/client/ClientChangeAuto";
@@ -65,7 +65,7 @@ const App = () => {
       {/* client */}
       <Route path="/client" element={wrapPrivateRoute(<Dashboard />, isLoggedIn, 'client')} />  
       <Route path="/client/car/:carId" element={wrapPrivateRoute(<SaleCar />, isLoggedIn, 'saleCar')} />  
-      <Route path="/client/cabinet" element={wrapPrivateRoute(<Cabinet />, isLoggedIn, 'cabinet')} />  
+      <Route path="/client/cabinet" element={wrapPrivateRoute(<ClientCabinet />, isLoggedIn, 'cabinet')} />  
       <Route path="/client/add_auto" element={wrapPrivateRoute(<AddAuto />, isLoggedIn, 'addAuto')} />  
       <Route path="/client/change_auto/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto')} />  
       <Route path="/client/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars')} /> 
