@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ***************
-    username: ************
-    password: ***************
+    url: jdbc:postgresql://localhost:5432/car_market_database
+    username: postgres
+    password: 1234
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
@@ -11,12 +11,12 @@ spring:
       ddl-auto: create-drop
     show-sql: true
   security:
-    remember-me: *****************
+    remember-me: "Remember-me-secret-key"
   mail:
-    host: **************
+    host: smtp.elasticemail.com
     port: 2525
-    username: ***************
-    password: *********
+    username: leheza.oleksii@gmail.com
+    password: B69402AB00A3E28FA99E0377513A8A3E4F12
     properties:
       mail:
         smtp:
