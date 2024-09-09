@@ -3,12 +3,15 @@ package com.oleksii.leheza.projects.carmarket.controllers;
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.exceptions.ResourceAlreadyExistsException;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,11 +31,16 @@ public class ClientController {
     }
 
     @PutMapping("/cabinet/{id}")
-    public ResponseEntity<UserUpdateDto> saveUserInfo(@PathVariable Long id,
-                                                      @RequestBody UserUpdateDto user) {
-        user.setId(id);//TODO
-        return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
+    public ResponseEntity<UserUpdateDto> saveUserInfo(@RequestBody UserUpdateDto user) {
+        try {
+            String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            user.setId(userService.getUserIdByEmail(email));
+            return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
+        } catch (ResourceAlreadyExistsException e) {
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }
     }
+
 
     @PostMapping("/vehicle")
     public ResponseEntity<?> postVehicle(@AuthenticationPrincipal User user,

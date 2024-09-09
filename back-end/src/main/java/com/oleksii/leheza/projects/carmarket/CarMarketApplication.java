@@ -26,14 +26,7 @@ public class CarMarketApplication {
     @Bean
     CommandLineRunner runner(UserRepository userRepository) {
         return args -> {
-            String adminEmail = "admin@gmail.com";
-            String adminPassword = "password";
-            userRepository.save(User.builder()
-                    .email(adminEmail)
-                    .password(passwordEncoder().encode(adminPassword))
-                    .userRole(UserRole.ROLE_ADMIN)
-                    .status(UserStatus.ACTIVE)
-                    .build());
+            generateMainUsers(userRepository);
         };
     }
 
@@ -53,5 +46,39 @@ public class CarMarketApplication {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+    private void generateMainUsers(UserRepository userRepository) {
+        String adminEmail = "admin@gmail.com";
+        String password = "password";
+        userRepository.save(User.builder()
+                .email(adminEmail)
+                .password(passwordEncoder().encode(password))
+                .userRole(UserRole.ROLE_ADMIN)
+                .status(UserStatus.ACTIVE)
+                .build());
+        String userEmail = "user@gmail.com";
+        userRepository.save(User.builder()
+                .email(userEmail)
+                .password(passwordEncoder().encode(password))
+                .userRole(UserRole.ROLE_ADMIN)
+                .status(UserStatus.ACTIVE)
+                .build());
+        String managerEmail = "manager@gmail.com";
+        userRepository.save(User.builder()
+                .email(managerEmail)
+                .password(passwordEncoder().encode(password))
+                .userRole(UserRole.ROLE_MANAGER)
+                .status(UserStatus.ACTIVE)
+                .build());
+        String clientEmail = "client@gmail.com";
+        userRepository.save(User.builder()
+                .email(clientEmail)
+                .firstName("John")
+                .lastName("Smith")
+                .password(passwordEncoder().encode(password))
+                .userRole(UserRole.ROLE_CLIENT)
+                .status(UserStatus.ACTIVE)
+                .build());
     }
 }

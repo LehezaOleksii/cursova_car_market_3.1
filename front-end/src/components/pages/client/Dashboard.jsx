@@ -10,19 +10,21 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/vehicles/all`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwtStr
-        },
-        credentials: "include",
-      });      const data = await response.json();
-      setCars(data);
+        const url = `http://localhost:8080/clients/vehicles/all`;
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + jwtStr
+          },
+          credentials: 'include',
+        });
+        const data = await response.json();
+        setCars(data);
     };
+
     fetchData();
-  });
+  }, [jwtStr]); 
 
   const filterCars = async (filterData) => {
     const queryParams = new URLSearchParams(filterData);

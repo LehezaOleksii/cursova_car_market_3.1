@@ -40,9 +40,6 @@ const Header = () => {
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <nav className="navbar navbar-expand-lg">
           <div className="container-fluid">
-            {/* <a className="navbar-brand" href="#">
-              Navbar
-            </a> */}
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
@@ -91,7 +88,6 @@ const Header = () => {
           >
             <li> 
             <Link to={`/admin/cabinet`} className="dropdown-item" 
-            // onClick={() => settings()}
             >
               Settings
             </Link>

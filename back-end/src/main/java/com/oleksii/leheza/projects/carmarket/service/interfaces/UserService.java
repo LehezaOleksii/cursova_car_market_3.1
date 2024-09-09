@@ -17,8 +17,6 @@ public interface UserService extends UserDetailsService {
 
     void updateUserStatusById(Long userId, UserStatus status);
 
-    User update(CreateUserDto createUserDto);
-
     UserUpdateDto update(UserUpdateDto user);
 
     List<User> findAll();
@@ -36,4 +34,6 @@ public interface UserService extends UserDetailsService {
     void updateUserPasswordByEmail(String email, String newPassword);
 
     void confirmEmail(String token);
+
+    Long getUserIdByEmail(String username);
 }

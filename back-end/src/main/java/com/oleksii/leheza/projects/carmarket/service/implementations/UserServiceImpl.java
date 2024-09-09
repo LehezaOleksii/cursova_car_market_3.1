@@ -1,12 +1,11 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
-import com.oleksii.leheza.projects.carmarket.dto.create.CreateUserDto;
-import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.entities.EmailConfirmation;
 import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
+import com.oleksii.leheza.projects.carmarket.exceptions.ResourceAlreadyExistsException;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.EmailConfirmationRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
@@ -26,7 +25,6 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final DtoMapper dtoMapper;
     private final PasswordEncoder passwordEncoder;
     private final EmailConfirmationRepository emailConfirmationRepository;
 
@@ -45,13 +43,6 @@ public class UserServiceImpl implements UserService {
     public void updateUserStatusById(Long userId, UserStatus status) {
         userRepository.updateUserStatus(userId, status);
         log.info("Update user with id: {} to status: {}", userId, status);
-    }
-
-    @Override
-    public User update(CreateUserDto createUserDto) {
-        User user = dtoMapper.createUserDtoToUser(createUserDto);
-        user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-        return userRepository.save(user);
     }
 
     @Override
@@ -113,6 +104,12 @@ public class UserServiceImpl implements UserService {
         updateUserStatusById(confirmation.getUser().getId(), UserStatus.ACTIVE);
         emailConfirmationRepository.delete(confirmation);
         log.info("Confirm email: " + token);
+    }
+
+    @Override
+    public Long getUserIdByEmail(String username) {
+        return userRepository.getUserIdByEmail(username)
+                .orElseThrow(() -> new RuntimeException("User with email " + username + " not found"));
     }
 
     @Override

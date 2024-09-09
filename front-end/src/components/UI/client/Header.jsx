@@ -2,14 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
 const Header = () => {
-  const { id } = useParams();
   const [client, setClient] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
   const jwtStr = localStorage.getItem('jwtToken');
+  const id = localStorage.getItem('id');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/cabinet`;
+      const url = `http://localhost:8080/clients/cabinet/`+id;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -42,17 +42,17 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                  <Link to={`/client/${id}`} className="nav-link" >
+                  <Link to={`/client`} className="nav-link" >
                     Home
                   </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/client/${id}/add_auto`} className="nav-link" >
+                  <Link to={`/client/add_auto`} className="nav-link" >
                     Sale car
                   </Link> 
                 </li>
                 <li className="nav-item">
-                  <Link to={`/client/${id}/my_autos`} className="nav-link" >
+                  <Link to={`/client/my_autos`} className="nav-link" >
                     My cars
                   </Link> 
                 </li> 
@@ -69,19 +69,19 @@ const Header = () => {
   data-bs-toggle="dropdown"
   aria-expanded="false"
 >
-  {client.profileImageUrl ? (
+{client.profileImageUrl ? (
     <img
       src={client.profileImageUrl ? `data:image/png;base64,${client.profileImageUrl}` : 'default-image-url'}
       className="rounded-circle"
-      width="32"
-      height="32"
+      width="44"
+      height="44"
     />
   ) : (
     <img
       src={profilePicture}
       className="rounded-circle"
-      width="32"
-      height="32"
+      width="44"
+      height="44"
       alt="Default Profile"
     />
   )}
@@ -92,13 +92,8 @@ const Header = () => {
           >
             <li> 
             <Link to={`/client/cabinet`} className="dropdown-item" >
-              Settings
+              Profile
             </Link>
-            </li>
-            <li>
-              {/* <a className="dropdown-item" href="#">
-                Profile
-              </a> */}
             </li>
             <li>
               <hr className="dropdown-divider" />
