@@ -34,7 +34,7 @@
     </appender>
 
     <!-- Root logger configuration -->
-Upd    <AsyncRoot level="DEBUG">
+    <AsyncRoot level="DEBUG">
         <appender-ref ref="INFO_FILE"/>
         <appender-ref ref="ERROR_FILE"/>
     </AsyncRoot>
