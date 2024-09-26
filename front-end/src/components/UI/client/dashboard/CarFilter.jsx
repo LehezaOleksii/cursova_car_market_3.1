@@ -8,7 +8,6 @@ const CarFilter = ({ onFilter }) => {
   const [region, setRegion] = useState("");
   const [year, setYear] = useState("");
   const [price, setPrice] = useState("");
-  const [gearbox, setGearbox] = useState("");
   const [mileage, setMileage] = useState("");
   const [carState, setCarState] = useState("ALL");
 
@@ -26,9 +25,6 @@ const CarFilter = ({ onFilter }) => {
   };
   const handlePriceChange = (e) => {
     setPrice(e.target.value);
-  };
-  const handleGearboxChange = (e) => {
-    setGearbox(e.target.value);
   };
   const handleMileageChange = (e) => {
     setMileage(e.target.value);
@@ -52,10 +48,6 @@ const CarFilter = ({ onFilter }) => {
 
     if (region) {
       carData.region = region;
-    }
-
-    if (gearbox) {
-      carData.gearbox = gearbox;
     }
 
     carData.carState = carState;
@@ -98,9 +90,9 @@ const CarFilter = ({ onFilter }) => {
         <div className="col-md-6">
           <CarFilterField
             type="text"
-            value={gearbox}
-            onChange={handleGearboxChange}
-            placeholder="Gearbox type"
+            value={mileage}
+            onChange={handleMileageChange}
+            placeholder="Mileage"
           />
         </div>
       </div>
@@ -121,24 +113,28 @@ const CarFilter = ({ onFilter }) => {
             placeholder="Price"
           />
         </div>
-        <div className="col-md-6">
-          <CarFilterField
-            type="text"
-            value={mileage}
-            onChange={handleMileageChange}
-            placeholder="Mileage"
-          />
-        </div>
       </div>
       <div className="row">
-        <div className="col-md-6">
-          <button
-            className="btn btn-primary w-100"
-            onClick={handleSearch}
-          >
-            Search
-          </button>
-        </div>
+      <div className="row">
+  <div className="col-md-6 mx-auto">
+    <button
+      className="btn btn-primary w-100"
+      onClick={handleSearch}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        fill="currentColor"
+        className="bi bi-search"
+        viewBox="0 0 18 18"
+      >
+        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+      </svg>
+      Search
+    </button>
+  </div>
+</div>
       </div>
     </div>
   );

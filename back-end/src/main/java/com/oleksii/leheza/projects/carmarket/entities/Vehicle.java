@@ -1,7 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
+import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import jakarta.persistence.*;
@@ -16,22 +16,23 @@ import java.time.Year;
 @Builder (toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "vehicles")
 public class Vehicle {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Year year;
     @Min(0)
     private int price;
     @Min(0)
     private int mileage;
-    private String gearbox;
+    private GearBox gearBox;
     @ManyToOne
     @JsonBackReference
     @ToString.Exclude
     private User user;
-    @OneToOne(cascade = CascadeType.PERSIST)
-    private VehicleModel model;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private VehicleBrand brand;
     @Enumerated(EnumType.ORDINAL)
     private VehicleStatus status;
     @Enumerated(EnumType.ORDINAL)
@@ -39,12 +40,4 @@ public class Vehicle {
     private String region;
     private String phoneNumber;
     private byte[] photo;
-
-    public void setModelName(String modelName) {
-        model.setModelName(modelName);
-    }
-
-    public void setBrandName(String brandName) {
-        model.getBrand().setBrandName(brandName);
-    }
 }

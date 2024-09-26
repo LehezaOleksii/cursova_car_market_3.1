@@ -30,7 +30,7 @@ import java.util.List;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Size(min = 1, max = 100, message = "First name must be between 1 and 100 characters")
     private String firstName;

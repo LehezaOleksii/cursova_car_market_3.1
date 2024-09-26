@@ -52,10 +52,11 @@ public class VehicleServiceImpl implements VehicleService {
         Year year = (stringYear != null && !stringYear.isEmpty()) ? Year.parse(stringYear) : null;
         Integer price = (stringPrice != null && !stringPrice.isEmpty()) ? Integer.parseInt(stringPrice) : null;
         Integer mileage = (stringMileage != null && !stringMileage.isEmpty()) ? Integer.parseInt(stringMileage) : null;
-        List<VehicleDto> vehicles = vehicleRepository.findByClientFilter(
-                        carBrand, carModel, region, year, price, gearbox, mileage).stream()
-                .map(dtoMapper::vehicleToVehicleDto)
-                .collect(Collectors.toList());
+        List<VehicleDto> vehicles = null; //TODO
+        //        List<VehicleDto> vehicles = vehicleRepository.findByClientFilter(
+//                        carBrand, carModel, region, year, price, gearbox, mileage).stream()
+//                .map(dtoMapper::vehicleToVehicleDto)
+//                .collect(Collectors.toList());
         String defaultUsageStatus = "ALL";
         UsageStatus usageStatus;
         if (stringUsageStatus.equals(defaultUsageStatus)) {
@@ -91,7 +92,7 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void updateVehicle(Long userId,VehicleDto vehicleDto, Long vehicleId) {
+    public void updateVehicle(Long userId, VehicleDto vehicleDto, Long vehicleId) {
 
     }
 

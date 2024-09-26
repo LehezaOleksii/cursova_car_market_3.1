@@ -17,7 +17,7 @@ import java.util.UUID;
 public class EmailConfirmation {
     @Id
     @SequenceGenerator(name = "token_sequence", sequenceName = "token_sequence")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "token_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String token;
     @OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)

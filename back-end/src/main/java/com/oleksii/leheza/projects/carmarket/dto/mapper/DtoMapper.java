@@ -22,15 +22,13 @@ public class DtoMapper {
     public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto) {
         VehicleBrand brand = new VehicleBrand(vehicleDto.getBrandName());
         vehicleBrandRepository.save(brand);
-        VehicleModel model = new VehicleModel(vehicleDto.getModelName(), brand);
+        VehicleModel model = new VehicleModel();//TODO
         vehicleModelRepository.save(model);
         return Vehicle.builder()
                 .id(vehicleDto.getId())
-                .model(model)
                 .price(vehicleDto.getPrice())
                 .mileage(vehicleDto.getMileage())
                 .year(vehicleDto.getYear())
-                .gearbox(vehicleDto.getGearbox())
                 .region(vehicleDto.getRegion())
                 .phoneNumber(vehicleDto.getPhoneNumber())
                 .usageStatus(UsageStatus.valueOf(vehicleDto.getUsageStatus()))
@@ -39,16 +37,16 @@ public class DtoMapper {
     }
 
     public VehicleDto vehicleToVehicleDto(Vehicle vehicle) {
-        VehicleModel model = vehicle.getModel();
-        VehicleBrand brand = model.getBrand();
+//        VehicleModel model = vehicle.getModel();
+//        VehicleBrand brand = model.getBrand();
         return VehicleDto.builder()
                 .id(vehicle.getId())
-                .brandName(brand.getBrandName())
-                .modelName(model.getModelName())
+//                .brandName(brand.getBrandName())
+//                .modelName(model.getModelName())
                 .price(vehicle.getPrice())
                 .mileage(vehicle.getMileage())
                 .year(vehicle.getYear())
-                .gearbox(vehicle.getGearbox())
+//                .gearbox(vehicle.getGearBox())
                 .region(vehicle.getRegion())
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus().toString())
