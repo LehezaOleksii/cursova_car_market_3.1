@@ -3,8 +3,14 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
+import com.oleksii.leheza.projects.carmarket.entities.VehicleBodyType;
+import com.oleksii.leheza.projects.carmarket.entities.VehicleBrand;
+import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
+import com.oleksii.leheza.projects.carmarket.repositories.VehicleBodyTypeRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.VehicleBrandRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.VehicleModelRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +25,9 @@ import java.util.stream.Collectors;
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
+    private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
+    private final VehicleBrandRepository vehicleBrandRepository;
+    private final VehicleModelRepository vehicleModelRepository;
     private final DtoMapper dtoMapper;
 
     @Override
@@ -28,10 +37,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDto> getVehiclesByStatus(VehicleStatus status) {
-        return vehicleRepository.findAllByStatus(status)
-                .stream()
-                .map(dtoMapper::vehicleToVehicleDto)
-                .toList();
+        return vehicleRepository.findAllByStatus(status).stream().map(dtoMapper::vehicleToVehicleDto).toList();
     }
 
     @Override
@@ -41,10 +47,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDto> findAllPostedVehicles() {
-        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED)
-                .stream()
-                .map(dtoMapper::vehicleToVehicleDto)
-                .toList();
+        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED).stream().map(dtoMapper::vehicleToVehicleDto).toList();
     }
 
     @Override
@@ -65,11 +68,9 @@ public class VehicleServiceImpl implements VehicleService {
             usageStatus = UsageStatus.valueOf(stringUsageStatus);
         }
         if (usageStatus == UsageStatus.NEW) {
-            vehicles = vehicles.stream().filter(vehicle -> UsageStatus.valueOf(vehicle.getUsageStatus()) == UsageStatus.NEW)
-                    .collect(Collectors.toList());
+            vehicles = vehicles.stream().filter(vehicle -> UsageStatus.valueOf(vehicle.getUsageStatus()) == UsageStatus.NEW).collect(Collectors.toList());
         } else if (usageStatus == UsageStatus.USED) {
-            vehicles = vehicles.stream().filter(vehicle -> UsageStatus.valueOf(vehicle.getUsageStatus()) == UsageStatus.USED)
-                    .collect(Collectors.toList());
+            vehicles = vehicles.stream().filter(vehicle -> UsageStatus.valueOf(vehicle.getUsageStatus()) == UsageStatus.USED).collect(Collectors.toList());
         }
         return vehicles;
     }
@@ -109,5 +110,26 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void approveVehicle(Long vehicleId) {
 
+    }
+
+    @Override
+    public List<String> getBodyTypeNames() {
+        return vehicleBodyTypeRepository.findAll().stream()
+                .map(VehicleBodyType::getBodyTypeName)
+                .toList();
+    }
+
+    @Override
+    public List<String> getModelsByBrandName(String brandName) {
+        return vehicleModelRepository.findByBrandName(brandName).stream()
+                .map(VehicleModel::getModelName)
+                .toList();
+    }
+
+    @Override
+    public List<String> getVehicleBrandNames() {
+        return vehicleBrandRepository.findAll().stream()
+                .map(VehicleBrand::getBrandName)
+                .toList();
     }
 }

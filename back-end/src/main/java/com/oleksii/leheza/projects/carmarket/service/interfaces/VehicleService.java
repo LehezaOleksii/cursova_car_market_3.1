@@ -30,4 +30,10 @@ public interface VehicleService {
     void disapproveVehicle(Long vehicleId);
 
     void approveVehicle(Long vehicleId);
+
+    List<String> getBodyTypeNames();
+
+    List<String> getModelsByBrandName(String brandName);
+
+    List<String> getVehicleBrandNames();
 }

@@ -17,9 +17,9 @@ public class VehicleBodyType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String bodyType;
+    private String bodyTypeName;
 
-    public VehicleBodyType(String bodyType) {
-        this.bodyType = bodyType;
+    public VehicleBodyType(String bodyTypeName) {
+        this.bodyTypeName = bodyTypeName;
     }
 }
