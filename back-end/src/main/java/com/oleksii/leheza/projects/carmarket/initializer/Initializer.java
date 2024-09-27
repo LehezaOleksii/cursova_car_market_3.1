@@ -16,6 +16,6 @@ public class Initializer implements CommandLineRunner {
     @Override
     public void run(String... args) {
         carDatasetParser.parseDataset();
-//        citiesInitializer.initializeCities(CITY_NAME);
+        citiesInitializer.initializeCities(CITY_NAME);
     }
 }

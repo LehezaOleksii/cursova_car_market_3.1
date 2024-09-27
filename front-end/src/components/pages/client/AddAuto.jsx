@@ -7,6 +7,7 @@ import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
 import Select from "react-select";
 
+
 const AddAuto = () => {
   const { id: clientId } = useParams();
   const [selectedRadio, setSelectedRadio] = useState("NEW");
@@ -20,7 +21,7 @@ const AddAuto = () => {
   const [year, setYear] = useState("");
   const [mileage, setMileage] = useState("");
   const [price, setPrice] = useState("");
-  const [gearbox, setGearbox] = useState("");
+  const [gearbox, setGearbox] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [bodyType, setBodyType] = useState("");
   const [engine, setEngine] = useState("");
@@ -29,11 +30,13 @@ const AddAuto = () => {
   const [models, setModels] = useState([]);
   const [bodyTypes, setBodyTypes] = useState([]);
   const [engines, setEngines] = useState([]);
-
+  const [gearboxes, setGearboxes] = useState([]);
+  const [regions, setRegions] = useState([]);
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [brandsResponse, bodyTypesResponse] = await Promise.all([
+        const [brandsResponse, bodyTypesResponse, gearboxesResponse, regionsResponse] = await Promise.all([
           fetch(`http://localhost:8080/vehicles/brands`, {
             method: "GET",
             headers: {
@@ -48,18 +51,32 @@ const AddAuto = () => {
               Authorization: "Bearer " + jwtStr,
             },
           }),
+          fetch(`http://localhost:8080/vehicles/gearboxes`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + jwtStr,
+            },
+          }),
+          fetch(`http://localhost:8080/cities`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + jwtStr,
+            },
+          })
         ]);
+
         const brandsData = await brandsResponse.json();
         const bodyTypesData = await bodyTypesResponse.json();
-        setBrands(
-          brandsData.map((brand) => ({ value: brand, label: brand }))
-        );
-        setBodyTypes(
-          bodyTypesData.map((bodyType) => ({
-            value: bodyType,
-            label: bodyType,
-          }))
-        );
+        const gearboxesData = await gearboxesResponse.json();
+        const regionsData = await regionsResponse.json();
+
+        setBrands(brandsData.map((brand) => ({ value: brand, label: brand })));
+        setBodyTypes(bodyTypesData.map((bodyType) => ({ value: bodyType, label: bodyType })));
+        setGearboxes(gearboxesData.map((gearbox) => ({ value: gearbox, label: gearbox })));
+        setRegions(regionsData.map((region) => ({ value: region, label: region })));
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -277,25 +294,9 @@ const AddAuto = () => {
                   <div className="col-md-6">
                     <CarFilterField
                       type="text"
-                      value={gearbox}
-                      onChange={(e) => setGearbox(e.target.value)}
-                      placeholder="Gearbox type"
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <CarFilterField
-                      type="text"
                       value={mileage}
                       onChange={(e) => setMileage(e.target.value)}
                       placeholder="Mileage"
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <CarFilterField
-                      type="text"
-                      value={region}
-                      onChange={(e) => setRegion(e.target.value)}
-                      placeholder="Region"
                     />
                   </div>
                   <div className="col-md-6">
@@ -311,12 +312,20 @@ const AddAuto = () => {
                   <div className="col-md-6">
                     <Select
                       value={gearbox}
-                      onChange={(e) => setGearbox(e?.value)}
-                      options={bodyTypes}
-                      placeholder="Select Body Type"
+                      onChange={setGearbox}
+                      options={gearboxes}
+                      placeholder="Select Gearbox"
                     />
                   </div>
-                </div>
+                  <div className="col-md-6">
+                    <Select
+                      value={region}
+                      onChange={setRegion}
+                      options={regions}
+                      placeholder="Select Region"
+                    />
+                  </div>
+                  </div>
                 <button
                   type="submit"
                   className="btn btn-primary"

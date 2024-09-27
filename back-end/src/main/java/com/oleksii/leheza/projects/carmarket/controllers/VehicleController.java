@@ -1,5 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
+import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -36,5 +38,10 @@ public class VehicleController {
     @GetMapping("/brands/models/{vehicleModelName}/engines")
     public ResponseEntity<List<String>> getVehicleEnginesNames(@PathVariable String vehicleModelName) {
         return new ResponseEntity<>(vehicleService.getVehicleEngineNames(vehicleModelName), HttpStatus.OK);
+    }
+
+    @GetMapping("/gearboxes")
+    public ResponseEntity<List<GearBox>> getGearBoxes() {
+        return new ResponseEntity<>(Arrays.asList(GearBox.values()), HttpStatus.OK);
     }
 }

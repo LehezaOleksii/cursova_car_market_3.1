@@ -19,6 +19,6 @@ public class CityController {
 
     @GetMapping
     public ResponseEntity<List<String>> getCityNames() {
-        return new ResponseEntity<>(cityService.getAll(), HttpStatus.OK);
+        return new ResponseEntity<>(cityService.getAllNames(), HttpStatus.OK);
     }
 }

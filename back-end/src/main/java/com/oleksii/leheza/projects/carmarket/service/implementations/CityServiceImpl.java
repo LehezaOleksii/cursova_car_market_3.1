@@ -15,7 +15,7 @@ public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
 
     @Override
-    public List<String> getAll() {
+    public List<String> getAllNames() {
         return cityRepository.findAll().stream()
                 .map(City::getName)
                 .toList();

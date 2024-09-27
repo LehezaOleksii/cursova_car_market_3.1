@@ -1,15 +1,17 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
-
 import com.oleksii.leheza.projects.carmarket.entities.City;
 import com.oleksii.leheza.projects.carmarket.repositories.CityRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.CitiesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +19,6 @@ import java.util.List;
 public class CitiesServiceImpl implements CitiesService {
 
     private static final String GET_CITIES_URL = "https://countriesnow.space/api/v0.1/countries/cities/q?country=";
-    private static final String API_CITIES_DELIMITER = ",";
 
     private final CityRepository cityRepository;
     private final RestTemplate restTemplate;
@@ -27,9 +28,21 @@ public class CitiesServiceImpl implements CitiesService {
         try {
             String url = GET_CITIES_URL + country;
             response = restTemplate.getForEntity(url, String.class);
+
             if (response != null && !response.getStatusCode().isError() && response.getBody() != null && !response.getBody().isEmpty()) {
                 log.info("Cities successfully retrieved: {}", response.getBody());
-                return List.of(response.getBody().split(API_CITIES_DELIMITER));
+
+                // Parse the response body as JSON
+                JSONObject jsonResponse = new JSONObject(response.getBody());
+                if (!jsonResponse.getBoolean("error")) {
+                    JSONArray citiesArray = jsonResponse.getJSONArray("data");
+                    // Map the JSONArray to a List<String>
+                    return citiesArray.toList().stream()
+                            .map(Object::toString) // Convert to String
+                            .collect(Collectors.toList());
+                } else {
+                    log.error("Error in API response: {}", jsonResponse.getString("msg"));
+                }
             } else {
                 log.error("Error in API response: {}", response != null ? response : "No response");
             }

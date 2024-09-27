@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface CityService {
 
-    List<String> getAll();
+    List<String> getAllNames();
 }
