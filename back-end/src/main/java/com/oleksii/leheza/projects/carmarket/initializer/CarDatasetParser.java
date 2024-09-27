@@ -76,7 +76,7 @@ public class CarDatasetParser {
 
     private VehicleBodyType saveBodyStyle(String bodyStyle) {
         return vehicleBodyTypeRepository
-                .findByBodyType(bodyStyle)
+                .findByBodyTypeName(bodyStyle)
                 .orElseGet(() -> {
                     VehicleBodyType newBodyType = new VehicleBodyType(bodyStyle);
                     vehicleBodyTypeRepository.save(newBodyType);
