@@ -32,4 +32,9 @@ public class VehicleController {
     public ResponseEntity<List<String>> getVehicleBodyTypeNames() {
         return new ResponseEntity<>(vehicleService.getBodyTypeNames(), HttpStatus.OK);
     }
+
+    @GetMapping("/brands/models/{vehicleModelName}/engines")
+    public ResponseEntity<List<String>> getVehicleEnginesNames(@PathVariable String vehicleModelName) {
+        return new ResponseEntity<>(vehicleService.getVehicleEngineNames(vehicleModelName), HttpStatus.OK);
+    }
 }

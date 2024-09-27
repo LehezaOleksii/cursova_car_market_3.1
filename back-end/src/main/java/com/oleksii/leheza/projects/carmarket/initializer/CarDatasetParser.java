@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class CarDatasetParser {
 
-    private static final String DATASET_PATH = "/vehicle_dataset.csv";
+    private static final String DATASET_PATH = "/test_vehicle_dataset.csv";
     private static final String DELIMITER = ";";
     private static final String YEAR_SEPARATOR = ",";
     private static final int BRAND_NAME_INDEX = 0;
@@ -50,14 +50,16 @@ public class CarDatasetParser {
                 int fromYear = parseYear(years[0].trim());
                 int toYear = parseYear(years[years.length - 1].trim());
                 String brandName = data[BRAND_NAME_INDEX].trim();
-                VehicleBrand brand = saveBrand(brandName);
                 String bodyStyle = parseBodyStyle(data);
-                VehicleBodyType vehicleBodyType = saveBodyStyle(bodyStyle);
                 String modelName = data[MODEL_NAME_INDEX].trim();
-                Engine engine = saveEngine(parseEngine(data));
-                VehicleModel vehicleModel = new VehicleModel(modelName, fromYear, toYear, vehicleBodyType, brand);
-                vehicleModel.addEngine(engine);
-                saveModel(vehicleModel);
+                if (!brandName.isEmpty() && !modelName.isEmpty() && !bodyStyle.isEmpty()) {
+                    VehicleBrand brand = saveBrand(brandName);
+                    VehicleBodyType vehicleBodyType = saveBodyStyle(bodyStyle);
+                    Engine engine = saveEngine(parseEngine(data));
+                    VehicleModel vehicleModel = new VehicleModel(modelName, fromYear, toYear, vehicleBodyType, brand);
+                    vehicleModel.addEngine(engine);
+                    saveModel(vehicleModel);
+                }
             });
         } catch (Exception e) {
             log.error("Exception while parsing dataset; exception : {}", e.getMessage(), e);
@@ -86,11 +88,7 @@ public class CarDatasetParser {
 
     private VehicleModel saveModel(VehicleModel vehicleModel) {
         Optional<VehicleModel> vehicleModelOptional = vehicleModelRepository
-                .findByModelNameAndFirstProductionYearAndLastProductionYear(
-                        vehicleModel.getModelName(),
-                        vehicleModel.getFirstProductionYear(),
-                        vehicleModel.getLastProductionYear());
-
+                .findByModelName(vehicleModel.getModelName());
         if (vehicleModelOptional.isEmpty()) {
             vehicleModelRepository.save(vehicleModel);
             return vehicleModel;

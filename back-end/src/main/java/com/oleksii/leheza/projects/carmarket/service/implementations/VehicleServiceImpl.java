@@ -2,16 +2,10 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBodyType;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBrand;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
+import com.oleksii.leheza.projects.carmarket.entities.*;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleBodyTypeRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleBrandRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleModelRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.*;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,6 +22,7 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
     private final VehicleBrandRepository vehicleBrandRepository;
     private final VehicleModelRepository vehicleModelRepository;
+    private final EngineRepository engineRepository;
     private final DtoMapper dtoMapper;
 
     @Override
@@ -130,6 +125,13 @@ public class VehicleServiceImpl implements VehicleService {
     public List<String> getVehicleBrandNames() {
         return vehicleBrandRepository.findAll().stream()
                 .map(VehicleBrand::getBrandName)
+                .toList();
+    }
+
+    @Override
+    public List<String> getVehicleEngineNames(String vehicleModelName) {
+        return engineRepository.findByVehicleModelName(vehicleModelName).stream()
+                .map(Engine::getName)
                 .toList();
     }
 }

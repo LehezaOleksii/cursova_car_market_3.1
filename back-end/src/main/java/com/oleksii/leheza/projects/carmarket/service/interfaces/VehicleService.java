@@ -36,4 +36,6 @@ public interface VehicleService {
     List<String> getModelsByBrandName(String brandName);
 
     List<String> getVehicleBrandNames();
+
+    List<String> getVehicleEngineNames(String vehicleModelName);
 }

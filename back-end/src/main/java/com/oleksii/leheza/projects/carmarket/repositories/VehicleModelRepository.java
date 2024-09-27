@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface VehicleModelRepository extends JpaRepository<VehicleModel, Long> {
 
-    Optional<VehicleModel> findByModelNameAndFirstProductionYearAndLastProductionYear(String modelName, int firstProductionYear, int lastProductionYear);
+    Optional<VehicleModel> findByModelName(String modelName);
 
     @Query("SELECT m FROM VehicleModel m JOIN m.vehicleBrand vb WHERE vb.brandName = :brandName")
     List<VehicleModel> findByBrandName(@Param("brandName") String brandName);

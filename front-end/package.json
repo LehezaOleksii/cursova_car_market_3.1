@@ -15,6 +15,7 @@
     "react-router": "^6.21.0",
     "react-router-dom": "^6.21.0",
     "react-scripts": "^5.0.1",
+    "react-select": "^5.8.1",
     "react-stomp-hooks": "^3.0.1",
     "sockjs-client": "^1.6.1",
     "web-vitals": "^2.1.4"
