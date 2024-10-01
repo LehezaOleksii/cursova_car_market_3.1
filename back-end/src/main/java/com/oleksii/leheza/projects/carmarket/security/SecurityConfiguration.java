@@ -26,16 +26,15 @@ public class SecurityConfiguration {
     @Value("${spring.security.remember-me}")
     private String rememberMeKey;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .userDetailsService(userService)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/clients/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
-                        .requestMatchers("/managers/**").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/admins/**").hasRole("ADMIN")
+                        .requestMatchers("/clients/**").hasRole("CLIENT")
+                        .requestMatchers("/managers/**").hasAnyRole("CLIENT", "MANAGER")
+                        .requestMatchers("/admins/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
