@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import { useParams } from "react-router";
 import CarFilter from "../../UI/client/dashboard/CarFilter";
 import SaledCars from "../../UI/client/dashboard/SaledCars";
 import BrandsFilter from "../../UI/client/dashboard/BrandsFilter";
@@ -20,9 +19,9 @@ const Dashboard = () => {
             'Authorization': 'Bearer ' + jwtStr
           },
         });
-    };
       const data = response.json();
-      setCars(data);
+      setCars(data)
+    };;
     fetchData();
   });
 

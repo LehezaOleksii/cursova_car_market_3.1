@@ -36,4 +36,10 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     @Transactional
     @Query("UPDATE Vehicle v SET v.status = :status WHERE v.id = :vehicleId")
     void updateVehicleStatus(@Param("vehicleId") Long vehicleId, @Param("status") VehicleStatus status);
+
+    @Query("SELECT v FROM Vehicle v WHERE v.user.id = :userId AND v.status  = :status")
+    List<Vehicle> findAllByUserIdAndVehicleStatus(Long userId, VehicleStatus status);
+
+    @Query("SELECT v FROM Vehicle v WHERE v.user.email = :email")
+    List<Vehicle> findAllByUserEmail(String email);
 }

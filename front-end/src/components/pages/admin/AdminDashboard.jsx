@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
-import { useParams } from "react-router";
 import Header from "../../UI/admin/Header";
 import Footer from "../../UI/admin/Footer";
 import AdminManager from "../../UI/admin/dashboard/AdminManager";
 
 const AdminDashboard = () => {
-  const { id: adminId } = useParams();
+  
+  const adminId = localStorage.getItem("id");
   const [managers, setManagers] = useState([]);
   const jwtStr = localStorage.getItem('jwtToken');
 

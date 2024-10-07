@@ -5,7 +5,8 @@ import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
 
 const ManagerMyCars = () => {
-  const { id: managerId } = useParams();
+
+  const managerId = localStorage.getItem("id");
   const [cars, setCars] = useState([]);
   const jwtStr = localStorage.getItem('jwtToken');
 

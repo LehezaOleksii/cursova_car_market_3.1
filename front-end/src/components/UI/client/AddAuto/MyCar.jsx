@@ -1,9 +1,8 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 import CarSaleCard from "../dashboard/CarSaleCard";
 
 const MyCar = ({ car, removeCarFromList }) => {
-  const { id: clientId } = useParams();
+  const clientId = localStorage.getItem("id");
 
   return <CarSaleCard car={car} id={clientId} removeCarFromList={removeCarFromList} />;
 };

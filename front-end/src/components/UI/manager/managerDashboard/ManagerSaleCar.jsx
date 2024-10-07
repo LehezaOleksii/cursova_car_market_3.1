@@ -1,10 +1,9 @@
 import React from "react"; 
-import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 
 
 const ManagerSaleCar = ({ car }) => {
-  const { id: id } = useParams();
+  const id = localStorage.getItem("id");
 
   return (
     <div className="card mb-4">

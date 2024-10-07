@@ -1,8 +1,10 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
+import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceAlreadyExistsException;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
@@ -10,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,34 +24,30 @@ public class ClientController {
     private final UserService userService;
     private final VehicleService vehicleService;
 
-    @GetMapping("/cabinet/{id}")
-    public ResponseEntity<UserUpdateDto> getUserData(@PathVariable Long id) {
+    @GetMapping("/cabinet")
+    public ResponseEntity<UserUpdateDto> getUserData(@AuthenticationPrincipal String email) {
+        Long id = userService.getUserIdByEmail(email);
         UserUpdateDto user = userService.getUserUpdateDtoById(id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
-    @PutMapping("/cabinet/{id}")
-    public ResponseEntity<UserUpdateDto> saveUserInfo(@RequestBody UserUpdateDto user) {
+    @PutMapping("/cabinet")
+    public ResponseEntity<UserUpdateDto> saveUserInfo(@AuthenticationPrincipal String email) {
         try {
-            String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            user.setId(userService.getUserIdByEmail(email));
+            Long id = userService.getUserIdByEmail(email);
+            UserUpdateDto user = userService.getUserUpdateDtoById(id);
             return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
         } catch (ResourceAlreadyExistsException e) {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         }
     }
 
-
     @PostMapping("/vehicle")
-    public ResponseEntity<?> postVehicle(@AuthenticationPrincipal User user,
+    public ResponseEntity<?> postVehicle(@AuthenticationPrincipal String email,
                                          @RequestBody VehicleDto vehicleDto) {
-        vehicleService.saveVehicleWithModerationStatus(vehicleDto, user.getId());
+        User user = userService.findByEmail(email);
+        vehicleService.saveVehicleWithModerationStatus(vehicleDto, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @GetMapping("{id}/garage")
-    public ResponseEntity<List<VehicleDto>> userVehicles(@PathVariable Long id) {
-        return new ResponseEntity<>(vehicleService.getVehiclesByUserId(id), HttpStatus.OK);
     }
 
     @DeleteMapping("{id}/vehicles/{vehicleId}/remove")
@@ -63,7 +59,7 @@ public class ClientController {
 
     @GetMapping("/vehicles/{vehicleId}")
     public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
-        return new ResponseEntity<>(vehicleService.getVehicleInfo(vehicleId), HttpStatus.OK);
+        return new ResponseEntity<>(vehicleService.getVehicleDtoById(vehicleId), HttpStatus.OK);
     }
 
     @PutMapping("{id}/vehicles/{vehicleId}")
@@ -77,6 +73,12 @@ public class ClientController {
     @GetMapping("/vehicles/all")
     public ResponseEntity<List<VehicleDto>> getAllVehicles() {
         return new ResponseEntity<>(vehicleService.findAllPostedVehicles(), HttpStatus.OK);
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<Response> getUserRole(@AuthenticationPrincipal String email) {
+        Response response = new Response(userService.getUserRoleByEmail(email));
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{managerId}/vehicles/{vehicleId}/delete")//TODO is present

@@ -47,12 +47,12 @@ const Cabinet = ({ Header, Footer }) => {
 
   useEffect(() => {
     const fetchClientData = async () => {
-      const url = `http://localhost:8080/clients/cabinet/${id}`;
+      const url = `http://localhost:8080/clients/cabinet`;
       const response = await fetch(url, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + jwtStr,
+          "Authorization": "Bearer " + jwtStr,
         },
         credentials: "include",
       });
@@ -65,7 +65,7 @@ const Cabinet = ({ Header, Footer }) => {
   }, [id, jwtStr]); 
 
   const handleSave = async () => {
-    const url = `http://localhost:8080/clients/cabinet/${id}`;
+    const url = `http://localhost:8080/clients/cabinet`;
     if (validateForm()) {
       const client = {
         firstname: clientData.firstname,
@@ -79,7 +79,7 @@ const Cabinet = ({ Header, Footer }) => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + jwtStr,
+          "Authorization": "Bearer " + jwtStr,
         },
         credentials: "include",
         body: JSON.stringify(client),

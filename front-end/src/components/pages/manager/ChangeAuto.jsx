@@ -81,7 +81,6 @@ const ManagerChangeAuto = () => {
 const convertImageToBase64 = (image) => {
   return new Promise((resolve, reject) => {
     if (typeof image === 'string') {
-      // If it's a URL, fetch the image and convert it to base64
       fetch(image)
         .then(response => response.blob())
         .then(blob => {
@@ -92,7 +91,6 @@ const convertImageToBase64 = (image) => {
         })
         .catch(reject);
     } else if (image instanceof File) {
-      // If it's a File object, directly read it as base64
       const reader = new FileReader();
       reader.onloadend = () => resolve(reader.result.split(",")[1]);
       reader.onerror = reject;
@@ -148,16 +146,6 @@ const convertImageToBase64 = (image) => {
                 <h5 className="card-title">Add Auto</h5> 
                 <CarState selectedRadio={carData.usageStatus} onRadioChange={(usageStatus) => setCarData({ ...carData, usageStatus })} />
                   <div className="row ">
-                    {/* <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.vehicleType}
-                        onChange={(e) =>
-                          setCarData({ ...carData, vehicleType: e.target.value })
-                        }
-                        placeholder="Vehicle type"
-                      />
-                    </div> */}
                     <div className="col-md-6">
                       <CarFilterField
                         type="text"

@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
-  const { id } = useParams();
+  const id = localStorage.getItem("id");
   const [manager, setManager] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
   const jwtStr = localStorage.getItem('jwtToken');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/managers/cabinet`;
+      const url = `http://localhost:8080/clients/cabinet`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwtStr
+          Authorization: 'Bearer ' + jwtStr
         },
-        credentials: "include",
       });
       const data = await response.json();
       setManager(data);
@@ -41,6 +40,7 @@ const Header = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + jwtStr
         },
       });
   };
@@ -50,13 +50,10 @@ const Header = () => {
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <nav className="navbar navbar-expand-lg">
           <div className="container-fluid">
-            {/* <a className="navbar-brand" href="#">
-              Navbar
-            </a> */}
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                <Link to={`/manager/users`} className="nav-link" >
+                <Link to={`/manager`} className="nav-link" >
                     Home
                 </Link> 
                 </li>
@@ -100,20 +97,20 @@ const Header = () => {
 >
   {manager.profileImageUrl ? (
     <img
-      src={manager.profileImageUrl ? `data:image/png;base64,${manager.profileImageUrl}` : 'default-image-url'}
-      className="rounded-circle"
-      width="32"
-      height="32"
-    />
-  ) : (
-    <img
-      src={profilePicture}
-      className="rounded-circle"
-      width="32"
-      height="32"
-      alt="Default Profile"
-    />
-  )}
+    src={manager.profileImageUrl ? `data:image/png;base64,${manager.profileImageUrl}` : 'default-image-url'}
+    className="rounded-circle"
+    width="44"
+    height="44"
+  />
+) : (
+  <img
+    src={profilePicture}
+    className="rounded-circle"
+    width="44"
+    height="44"
+    alt="Default Profile"
+  />
+)}
 </a>
           <ul
             className="dropdown-menu text-small shadow"

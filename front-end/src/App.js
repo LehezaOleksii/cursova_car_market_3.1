@@ -16,6 +16,7 @@ import ManagerDashboard from "./components/pages/manager/ManagerDashboard";
 import Autos from "./components/pages/manager/Autos";
 import ApproveCarPage from "./components/pages/manager/ApproveCarPage";
 import ManagerCabinet from "./components/pages/manager/ManagerCabinet";
+import CarDetails from "./components/UI/manager/approveCar/CarDetails";
 
 import AdminDashboard from "./components/pages/admin/AdminDashboard";
 import AdminCabinet from "./components/pages/admin/AdminCabinet";
@@ -71,10 +72,11 @@ const App = () => {
       <Route path="/client/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars')} /> 
 
       {/* manager */}
-      <Route path="/manager/users" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard')} /> 
+      <Route path="/manager" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard')} /> 
       <Route path="/manager/cars" element={wrapPrivateRoute(<Autos />, isLoggedIn, 'Auto')} />   
       <Route path="/manager/cars/:carId" element={wrapPrivateRoute(<ChangeAuto />, isLoggedIn, 'ChangeAuto')} />   
       <Route path="/manager/approve/cars" element={wrapPrivateRoute(<ApproveCarPage />, isLoggedIn, 'ApproveCarPage')} />  
+      <Route path="/manager/approve/car/:carId" element={wrapPrivateRoute(<CarDetails />, isLoggedIn, 'CarDetails')} /> 
       <Route path="/manager/cabinet" element={wrapPrivateRoute(<ManagerCabinet />, isLoggedIn, 'ManagerCabinet')} />  
       <Route path="/manager/add_auto" element={wrapPrivateRoute(<ManagerAddAuto />, isLoggedIn, 'ManagerAddAuto')} />  
       <Route path="/manager/my_autos" element={wrapPrivateRoute(<ManagerMyCars />, isLoggedIn, 'ManagerMyCars')} />  

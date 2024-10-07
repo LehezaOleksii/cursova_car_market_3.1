@@ -1,15 +1,16 @@
-import React from "react"; 
-import { useParams } from "react-router";
+import React from "react";
+import { useNavigate, useParams } from "react-router";
 
-const ApproveCar = ({ car, removeCarFromList}) => {
-  
+const ApproveCar = ({ car, removeCarFromList }) => {
+
   const { id: managerId } = useParams();
   const jwtStr = localStorage.getItem('jwtToken');
+  const navigate = useNavigate();
 
   const blockCar = async () => {
-    const url = `http://localhost:8080/managers/${managerId}/vehicles/${car.id}/disapprove`;
+    const url = `http://localhost:8080/vehicles/${car.id}/disapprove`;
     await fetch(url, {
-      method: 'DELETE',
+      method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + jwtStr
@@ -20,8 +21,8 @@ const ApproveCar = ({ car, removeCarFromList}) => {
   };
 
   const approveCar = async () => {
-    const url = `http://localhost:8080/managers/${managerId}/vehicles/${car.id}/approve`;
-     await fetch(url, {
+    const url = `http://localhost:8080/vehicles/${car.id}/approve`;
+    await fetch(url, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -31,21 +32,27 @@ const ApproveCar = ({ car, removeCarFromList}) => {
     });
     removeCarFromList(car.id);
   };
-  
+
+  const getDetailsInformation = async () => {
+    navigate(`/manager/approve/car/${car.id}`);
+  };
+
   return (
     <div className="card mb-4">
       <div className="row g-0">
         <div className="col-md-4">
           <img
-            src={car.photo ? `data:image/png;base64,${car.photo}` : 'default-image-url'}
+            src={car.photos && car.photos.length > 0
+              ? `data:image/png;base64,${car.photos[0]}`
+              : 'default-image-url'}
             alt="Car"
             style={{
-              height: "200px",
+              height: "260px",
               width: "100%",
               objectFit: "cover",
+              borderRadius: "10px"
             }}
           />
-
         </div>
         <div className="col-md-8">
           <div className="card-body">
@@ -66,9 +73,13 @@ const ApproveCar = ({ car, removeCarFromList}) => {
             </div>
             <div className="d-flex justify-content-end mt-3">
               <div className="d-flex align-items-center">
-                <button className="btn btn-primary mr-2" onClick={approveCar}>Approve car</button>
+                <button className="btn btn-primary" onClick={getDetailsInformation}>Details</button>
               </div>
-              <div style={{ width: "10px" }}></div>
+              <div style={{ width: "15px" }}></div>
+              <div className="d-flex align-items-center">
+                <button className="btn btn-primary" onClick={approveCar}>Approve car</button>
+              </div>
+              <div style={{ width: "15px" }}></div>
               <div className="d-flex align-items-center">
                 <button className="btn btn-danger" onClick={blockCar}>Disapprove car</button>
               </div>

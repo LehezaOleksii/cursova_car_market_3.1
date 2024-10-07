@@ -2,55 +2,83 @@ package com.oleksii.leheza.projects.carmarket.dto.mapper;
 
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateUserDto;
-import com.oleksii.leheza.projects.carmarket.entities.User;
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBrand;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
+import com.oleksii.leheza.projects.carmarket.entities.*;
+import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
+import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
+import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
+import com.oleksii.leheza.projects.carmarket.repositories.EngineRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.VehicleBodyTypeRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleBrandRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleModelRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Slf4j
 public class DtoMapper {
 
-    private VehicleBrandRepository vehicleBrandRepository;
-    private VehicleModelRepository vehicleModelRepository;
+    private final VehicleBrandRepository vehicleBrandRepository;
+    private final VehicleModelRepository vehicleModelRepository;
+    private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
+    private final EngineRepository engineRepository;
 
-    public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto) {
-        VehicleBrand brand = new VehicleBrand(vehicleDto.getBrandName());
-        vehicleBrandRepository.save(brand);
-        VehicleModel model = new VehicleModel();//TODO
-        vehicleModelRepository.save(model);
-        return Vehicle.builder()
+    public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto, List<Photo> photos) {
+        VehicleBrand brand = vehicleBrandRepository.findByBrandName(vehicleDto.getBrandName())
+                .orElseThrow(() -> new ResourceNotFoundException("Brand not found : " + vehicleDto.getBrandName()));
+        VehicleModel model = vehicleModelRepository.findByModelName(vehicleDto.getModelName())
+                .orElseThrow(() -> new ResourceNotFoundException("Model not found : " + vehicleDto.getModelName()));
+        Engine engine = engineRepository.findByName(vehicleDto.getEngine())
+                .orElseThrow(() -> new ResourceNotFoundException("Engine not found : " + vehicleDto.getEngine()));
+        Vehicle vehicle = new Vehicle();
+        if (vehicleDto.getStatus() != null) {
+            vehicle.setStatus(VehicleStatus.valueOf(vehicleDto.getStatus()));
+        }
+        VehicleBodyType bodyType = vehicleBodyTypeRepository.findByBodyTypeName(vehicleDto.getBodyType())
+                .orElseThrow(() -> new ResourceNotFoundException("BodyType not found : " + vehicleDto.getBodyType()));
+        return vehicle.toBuilder()
                 .id(vehicleDto.getId())
                 .price(vehicleDto.getPrice())
                 .mileage(vehicleDto.getMileage())
-                .year(vehicleDto.getYear())
+                .year(Year.of(vehicleDto.getYear()))
                 .region(vehicleDto.getRegion())
                 .phoneNumber(vehicleDto.getPhoneNumber())
                 .usageStatus(UsageStatus.valueOf(vehicleDto.getUsageStatus()))
-                .photo(vehicleDto.getPhoto())
+                .photos(photos)
+                .gearBox(GearBox.valueOf(vehicleDto.getGearbox()))
+                .vehicleModel(model)
+                .brand(brand)
+                .description(vehicleDto.getDescription())
+                .engine(engine)
+                .bodyType(bodyType)
                 .build();
     }
 
     public VehicleDto vehicleToVehicleDto(Vehicle vehicle) {
-//        VehicleModel model = vehicle.getModel();
-//        VehicleBrand brand = model.getBrand();
+        VehicleModel model = vehicle.getVehicleModel();
+        VehicleBrand brand = model.getVehicleBrand();
         return VehicleDto.builder()
                 .id(vehicle.getId())
-//                .brandName(brand.getBrandName())
-//                .modelName(model.getModelName())
+                .brandName(brand.getBrandName())
+                .modelName(model.getModelName())
                 .price(vehicle.getPrice())
                 .mileage(vehicle.getMileage())
-                .year(vehicle.getYear())
-//                .gearbox(vehicle.getGearBox())
+                .year(vehicle.getYear().getValue())
+                .gearbox(vehicle.getGearBox().toString())
                 .region(vehicle.getRegion())
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus().toString())
-                .photo(vehicle.getPhoto())
+                .status(vehicle.getStatus().toString())
+                .photos(getBytePhotos(vehicle.getPhotos()))
+                .description(vehicle.getDescription())
+                .engine(vehicle.getEngine().getName())
+                .bodyType(vehicle.getBodyType().getBodyTypeName())
                 .build();
     }
 
@@ -61,5 +89,13 @@ public class DtoMapper {
                 .firstName(createUserDto.getFirstName())
                 .lastName(createUserDto.getLastName())
                 .build();
+    }
+
+    private List<byte[]> getBytePhotos(List<Photo> photos) {
+        List<byte[]> bytePhotoList = new ArrayList<>();
+        photos.forEach(photo -> {
+            bytePhotoList.add(photo.getPhoto());
+        });
+        return bytePhotoList;
     }
 }

@@ -1,33 +1,38 @@
 package com.oleksii.leheza.projects.carmarket.dto;
 
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBrand;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-import java.time.Year;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder(toBuilder = true)
+@ToString
 public class VehicleDto {
 
     private Long id;
-    private Year year;
+    private int year;
     @Min(0)
     private int price;
     @Min(0)
     private int mileage;
-    private String clientName;
+    @Size(min = 1, max = 255, message = "Brand name must be from 1 to 255 characters")
     private String brandName;
+    @Size(min = 1, max = 50, message = "Vehicle model must be from 1 to 50 characters")
     private String modelName;
     private String gearbox;
     private String status;
     private String region;
     private String phoneNumber;
+    private String bodyType;
     private String usageStatus;
-    private byte[] photo;
+    @Size(max = 250, message = "Description is too long. It must be less than 250 characters")
+    private String description;
+    private String engine;
+    private List<byte[]> photos;
 }

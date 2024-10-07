@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 const Header = () => {
-  const { id } = useParams();
+
+  const id = localStorage.getItem("id");
   const [admin, setAdmin] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
   const jwtStr = localStorage.getItem('jwtToken');
-  const userId = localStorage.getItem('id');
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/cabinet/${userId}`;
+      const url = `http://localhost:8080/clients/cabinet`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwtStr,
+          Authorization: 'Bearer ' + jwtStr,
         },
       });
       const data = await response.json();
@@ -67,20 +67,20 @@ const Header = () => {
 >
   {admin.profileImageUrl ? (
     <img
-      src={admin.profileImageUrl ? `data:image/png;base64,${admin.profileImageUrl}` : 'default-image-url'}
-      className="rounded-circle"
-      width="44"
-      height="44"
-    />
-  ) : (
-    <img
-      src={profilePicture}
-      className="rounded-circle"
-      width="44"
-      height="44"
-      alt="Default Profile"
-    />
-  )}
+    src={admin.profileImageUrl ? `data:image/png;base64,${admin.profileImageUrl}` : 'default-image-url'}
+    className="rounded-circle"
+    width="44"
+    height="44"
+  />
+) : (
+  <img
+    src={profilePicture}
+    className="rounded-circle"
+    width="44"
+    height="44"
+    alt="Default Profile"
+  />
+)}
 </a>
           <ul
             className="dropdown-menu text-small shadow"

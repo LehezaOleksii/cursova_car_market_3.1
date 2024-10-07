@@ -1,6 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.service.interfaces;
 
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
+import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 
 import java.util.List;
@@ -17,19 +19,17 @@ public interface VehicleService {
 
     List<VehicleDto> filterVehicles(String carBrand, String carModel, String region, String year, String price, String gearbox, String mileage, String carState);
 
-    void saveVehicleWithModerationStatus(VehicleDto vehicleDto, Long userId);
+    void saveVehicleWithModerationStatus(VehicleDto vehicleDto, User user);
 
     void removeVehicleById(Long userId, Long vehicleId);
 
-    VehicleDto getVehicleInfo(Long vehicleId);
+    VehicleDto getVehicleDtoById(Long vehicleId);
 
     void updateVehicle(Long userId, VehicleDto vehicleDto, Long vehicleId);
 
-    List<VehicleDto> getVehiclesByUserId(Long userId);
+    List<VehicleDto> getVehiclesByUserIdAndVehicleStatus(Long userId, VehicleStatus status);
 
-    void disapproveVehicle(Long vehicleId);
-
-    void approveVehicle(Long vehicleId);
+    void updateVehicleStatus(Long id, VehicleStatus status);
 
     List<String> getBodyTypeNames();
 
@@ -38,4 +38,8 @@ public interface VehicleService {
     List<String> getVehicleBrandNames();
 
     List<String> getVehicleEngineNames(String vehicleModelName);
+
+    Vehicle getVehicleById(Long vehicleId);
+
+    List<VehicleDto> getVehiclesByUserEmail(String email);
 }

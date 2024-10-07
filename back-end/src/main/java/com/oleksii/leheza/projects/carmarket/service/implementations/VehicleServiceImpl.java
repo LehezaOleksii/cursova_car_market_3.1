@@ -5,12 +5,15 @@ import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.entities.*;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
+import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.*;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +26,9 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleBrandRepository vehicleBrandRepository;
     private final VehicleModelRepository vehicleModelRepository;
     private final EngineRepository engineRepository;
+    private final PhotoRepository photoRepository;
     private final DtoMapper dtoMapper;
+    private final EmailService emailService;
 
     @Override
     public void deleteVehicleById(Long vehicleId) {
@@ -32,7 +37,9 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDto> getVehiclesByStatus(VehicleStatus status) {
-        return vehicleRepository.findAllByStatus(status).stream().map(dtoMapper::vehicleToVehicleDto).toList();
+        return vehicleRepository.findAllByStatus(status).stream()
+                .map(dtoMapper::vehicleToVehicleDto)
+                .toList();
     }
 
     @Override
@@ -71,9 +78,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void saveVehicleWithModerationStatus(VehicleDto vehicleDto, Long userId) {
-        Vehicle vehicle = dtoMapper.vehicleDtoToVehicle(vehicleDto);
+    public void saveVehicleWithModerationStatus(VehicleDto vehicleDto, User user) {
+        List<Photo> photos = getPhotosList(vehicleDto.getPhotos());
+        Vehicle vehicle = dtoMapper.vehicleDtoToVehicle(vehicleDto, photos);
         vehicle.setStatus(VehicleStatus.ON_MODERATION);
+        vehicle.setUser(user);
         vehicleRepository.save(vehicle);
     }
 
@@ -83,8 +92,9 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public VehicleDto getVehicleInfo(Long vehicleId) {
-        return null;
+    public VehicleDto getVehicleDtoById(Long vehicleId) {
+        return dtoMapper.vehicleToVehicleDto(vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found")));
     }
 
     @Override
@@ -93,18 +103,15 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleDto> getVehiclesByUserId(Long userId) {
-        return List.of();
+    public List<VehicleDto> getVehiclesByUserIdAndVehicleStatus(Long userId, VehicleStatus status) {
+        return vehicleRepository.findAllByUserIdAndVehicleStatus(userId, status).stream()
+                .map(dtoMapper::vehicleToVehicleDto)
+                .toList();
     }
 
     @Override
-    public void disapproveVehicle(Long vehicleId) {
-
-    }
-
-    @Override
-    public void approveVehicle(Long vehicleId) {
-
+    public void updateVehicleStatus(Long id, VehicleStatus status) {
+        vehicleRepository.updateVehicleStatus(id, status);
     }
 
     @Override
@@ -133,5 +140,28 @@ public class VehicleServiceImpl implements VehicleService {
         return engineRepository.findByVehicleModelName(vehicleModelName).stream()
                 .map(Engine::getName)
                 .toList();
+    }
+
+    @Override
+    public Vehicle getVehicleById(Long vehicleId) {
+        return vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found"));
+    }
+
+    @Override
+    public List<VehicleDto> getVehiclesByUserEmail(String email) {
+        return vehicleRepository.findAllByUserEmail(email).stream()
+                .map(dtoMapper::vehicleToVehicleDto)
+                .toList();
+    }
+
+    private List<Photo> getPhotosList(List<byte[]> photoBytes) {
+        List<Photo> photos = new ArrayList<>();
+        for (byte[] bytes : photoBytes) {
+            Photo photo = new Photo(bytes);
+            photoRepository.save(photo);
+            photos.add(photo);
+        }
+        return photos;
     }
 }

@@ -6,14 +6,15 @@ import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.Year;
-
+import java.util.List;
 
 @Data
 @Entity
-@Builder (toBuilder = true)
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "vehicles")
@@ -39,5 +40,21 @@ public class Vehicle {
     private UsageStatus usageStatus;
     private String region;
     private String phoneNumber;
-    private byte[] photo;
+    @Size(max = 250)
+    private String description;
+    @ManyToMany
+    private List<Photo> photos;
+    @ManyToOne
+    @JoinColumn(name = "vehicle_model_id")
+    private VehicleModel vehicleModel;
+    @ManyToOne
+    @JoinColumn(name = "engine_id")
+    private Engine engine;
+    @ManyToOne
+    private VehicleBodyType bodyType;
+
+
+    public void addPhoto(Photo photo) {
+        photos.add(photo);
+    }
 }

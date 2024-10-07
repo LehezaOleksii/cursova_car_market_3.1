@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link} from "react-router-dom";
 
 const Header = () => {
   const [client, setClient] = useState("");
@@ -9,7 +9,7 @@ const Header = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/cabinet/`+id;
+      const url = `http://localhost:8080/clients/cabinet`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {

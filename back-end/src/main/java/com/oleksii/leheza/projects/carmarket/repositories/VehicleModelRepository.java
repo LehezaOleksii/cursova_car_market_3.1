@@ -16,4 +16,7 @@ public interface VehicleModelRepository extends JpaRepository<VehicleModel, Long
 
     @Query("SELECT m FROM VehicleModel m JOIN m.vehicleBrand vb WHERE vb.brandName = :brandName")
     List<VehicleModel> findByBrandName(@Param("brandName") String brandName);
+
+    @Query("SELECT vm FROM VehicleModel vm JOIN vm.engines e WHERE vm.modelName = :modelName AND e.name = :engineName")
+    Optional<VehicleModel> findByModelNameAndEngineName(String modelName, String engineName);
 }

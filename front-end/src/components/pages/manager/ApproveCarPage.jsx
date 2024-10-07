@@ -7,23 +7,23 @@ const ApproveCarPage = () => {
   const [cars, setCars] = useState([]);
   const jwtStr = localStorage.getItem('jwtToken');
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = `http://localhost:8080/managers/vehicles/to_approve`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwtStr
-        },
-        credentials: "include",
-      });
-      const data = await response.json();
-      setCars(data);
-    };
+useEffect(() => {
+  const fetchData = async () => {
+    const url = `http://localhost:8080/vehicles/to_approve`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+      },
+      credentials: "include",
+    });
+    const data = await response.json();
+    setCars(data);
+  };
 
-    fetchData();
-  });
+  fetchData();
+}, []); 
   
   
   const removeCarFromList = (carId) => {
