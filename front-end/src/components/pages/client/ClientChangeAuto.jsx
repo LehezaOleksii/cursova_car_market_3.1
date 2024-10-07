@@ -49,13 +49,16 @@ const ClientChangeAuto = () => {
   const [bodyType, setBodyType] = useState("");
   const [engine, setEngine] = useState("");
   const [description, setDescription] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
   const [bodyTypes, setBodyTypes] = useState([]);
   const [engines, setEngines] = useState([]);
   const [gearboxes, setGearboxes] = useState([]);
   const [regions, setRegions] = useState([]);
+  const [status, setStatus] = useState();
+  const [userId, setUserId] = useState("");
+
 
   const handlePriceChange = (e) => {
     const value = e.target.value;
@@ -63,8 +66,11 @@ const ClientChangeAuto = () => {
   };
 
   const formatPrice = (value) => {
-    const onlyNumbers = value.replace(/\D/g, "");
-    return onlyNumbers ? `$${parseInt(onlyNumbers, 10).toLocaleString()}` : "";
+    if (/\D/.test(value)) {
+      const onlyNumbers = value.replace(/\D/g, "");
+      return onlyNumbers ? `$${parseInt(onlyNumbers, 10).toLocaleString()}` : "";
+    }
+    return value;
   };
 
   const formatPhoneNumber = (value) => {
@@ -146,7 +152,7 @@ const ClientChangeAuto = () => {
   }, [jwtStr]);
 
   useEffect(() => {
-    if (brandName) {
+    if (brandName && loading) {
       const fetchModels = async () => {
         try {
           const response = await fetch(
@@ -161,12 +167,18 @@ const ClientChangeAuto = () => {
           );
           const modelsData = await response.json();
           setModels(modelsData.map((model) => ({ value: model, label: model })));
+          setCarModel(null);
+          setEngine(null);
         } catch (error) {
           console.error("Error fetching models:", error);
         }
       };
+
       fetchModels();
+      console.log("tm"+loading);
     } else {
+      console.log("fm"+loading);
+
       setModels([]);
       setCarModel(null);
       setEngine(null);
@@ -174,7 +186,7 @@ const ClientChangeAuto = () => {
   }, [brandName, jwtStr]);
 
   useEffect(() => {
-    if (modelName) {
+    if (modelName && loading) {
       const fetchEngines = async () => {
         try {
           const response = await fetch(
@@ -189,12 +201,16 @@ const ClientChangeAuto = () => {
           );
           const enginesData = await response.json();
           setEngines(enginesData.map((engine) => ({ value: engine, label: engine })));
+          setEngine(null);
         } catch (error) {
           console.error("Error fetching engines:", error);
         }
       };
+
       fetchEngines();
+      console.log("te"+loading);
     } else {
+      console.log("fe"+loading);
       setEngines([]);
       setEngine(null);
     }
@@ -224,23 +240,27 @@ const ClientChangeAuto = () => {
         }
       }
     };
-  
-    fetchCarData();
+      fetchCarData();
   }, [carId, jwtStr]);
   
   useEffect(() => {
+    
+    try{   
     if (car) {
       console.log("Car data:", car);
       setCarBrand({ value: car.brandName, label: car.brandName });
       setCarModel({ value: car.modelName, label: car.modelName });
       setRegion({ value: car.region, label: car.region });
+      setStatus(car.status)
       setYear(car.year);
       setMileage(car.mileage);
       setPrice(car.price);
       setGearbox({ value: car.gearbox, label: car.gearbox });
       setPhoneNumber(car.phoneNumber);
+      setStatus(car.status);
       setBodyType({ value: car.bodyType, label: car.bodyType });
       setEngine({ value: car.engine, label: car.engine });
+      setUserId(car.userId);
       setDescription(car.description);
       setSelectedRadio(car.usageStatus);
   
@@ -268,6 +288,11 @@ const ClientChangeAuto = () => {
         setPhotos(convertedPhotos);
       }
     }
+     } catch (err) {
+      console.error("Error fetching data:", err);
+     } finally {
+      setLoading(true);
+    }
   }, [car]);
 
   const handleSubmit = async () => {
@@ -288,7 +313,7 @@ const ClientChangeAuto = () => {
     return;
     }
 
-    const priceString = price.replace(/\D+/g, '');
+    const priceString = typeof price === 'string' ? price.replace(/\D+/g, '') : '';
 
     if (!priceString) {
       alert("Please enter a valid price.");
@@ -304,6 +329,8 @@ const ClientChangeAuto = () => {
     const base64Photos = await convertImagesToBase64(photos);
 
     const car = {
+      id: carId,
+      userId: userId,
       photos: base64Photos,
       brandName: brandName?.value,
       modelName: modelName?.value,
@@ -313,6 +340,7 @@ const ClientChangeAuto = () => {
       price: priceString.replace(/\D/g, ""),
       gearbox: gearbox?.value,
       phoneNumber: phoneNumber,
+      status: status,
       bodyType: bodyType?.value,
       engine: engine?.value,
       usageStatus: selectedRadio,
@@ -320,8 +348,8 @@ const ClientChangeAuto = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/clients/vehicle`, {
-        method: "POST",
+      const response = await fetch(`http://localhost:8080/vehicles`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + jwtStr,

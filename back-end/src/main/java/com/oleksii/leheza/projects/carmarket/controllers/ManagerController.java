@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,10 +53,8 @@ public class ManagerController {
     }
 
     @DeleteMapping("/vehicles/{vehicleId}/remove")
-    public ResponseEntity<?> removeVehicleByVehicleId(@AuthenticationPrincipal String email,
-                                                      @PathVariable Long vehicleId) {
-        User user = userService.findByEmail(email);
-        vehicleService.removeVehicleById(user.getId(), vehicleId);
+    public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long vehicleId) {
+        vehicleService.deleteVehicleById(vehicleId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

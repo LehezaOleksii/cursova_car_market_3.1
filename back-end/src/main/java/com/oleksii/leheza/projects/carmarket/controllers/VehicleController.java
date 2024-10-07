@@ -6,6 +6,7 @@ import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleApproveStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class VehicleController {
 
     private final VehicleService vehicleService;
     private final EmailService emailService;
+    private final UserService userService;
 
     @GetMapping("/brands/{brandName}/models")
     public ResponseEntity<List<String>> getModelNames(@PathVariable String brandName) {
@@ -56,6 +58,14 @@ public class VehicleController {
         return new ResponseEntity<>(vehicleService.getVehiclesByUserEmail(email), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PutMapping
+    public ResponseEntity<?> updateVehicle(@AuthenticationPrincipal String email,
+                                           @RequestBody VehicleDto vehicleDto) {
+        vehicleService.updateVehicle(userService.getUserIdByEmail(email), vehicleDto, vehicleDto.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/{vehicleId}")
     public ResponseEntity<VehicleDto> getVehicle(@PathVariable Long vehicleId) {
@@ -84,5 +94,12 @@ public class VehicleController {
     @GetMapping("/to_approve")
     public ResponseEntity<List<VehicleDto>> getApproveVehicles() {
         return new ResponseEntity<>(vehicleService.getVehiclesByStatus(VehicleStatus.ON_MODERATION), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @DeleteMapping("{vehicleId}/remove")
+    public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long vehicleId) {
+        vehicleService.deleteVehicleById(vehicleId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

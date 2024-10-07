@@ -10,6 +10,7 @@ import com.oleksii.leheza.projects.carmarket.repositories.*;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class VehicleServiceImpl implements VehicleService {
 
     private final VehicleRepository vehicleRepository;
@@ -87,11 +89,6 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void removeVehicleById(Long userId, Long vehicleId) {
-
-    }
-
-    @Override
     public VehicleDto getVehicleDtoById(Long vehicleId) {
         return dtoMapper.vehicleToVehicleDto(vehicleRepository.findById(vehicleId)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found")));
@@ -99,7 +96,14 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void updateVehicle(Long userId, VehicleDto vehicleDto, Long vehicleId) {
-
+        if (vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
+            vehicleRepository.save(dtoMapper.vehicleDtoToVehicle(vehicleDto, getPhotosList(vehicleDto.getPhotos())));
+            System.out.println("UPPDATE:" + vehicleDto.getId());
+            System.out.println("UPPDATE:" + vehicleRepository.findById(vehicleId).get().getBrand().getBrandName());
+        } else {
+            log.warn("User does not have vehicle: {}, user: {}", vehicleId, userId);
+            throw new SecurityException("User does not have vehicle");
+        }
     }
 
     @Override

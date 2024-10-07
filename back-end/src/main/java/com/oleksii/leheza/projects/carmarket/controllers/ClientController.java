@@ -50,13 +50,6 @@ public class ClientController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("{id}/vehicles/{vehicleId}/remove")
-    public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long id,
-                                                      @PathVariable Long vehicleId) {
-        vehicleService.removeVehicleById(id, vehicleId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
     @GetMapping("/vehicles/{vehicleId}")
     public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
         return new ResponseEntity<>(vehicleService.getVehicleDtoById(vehicleId), HttpStatus.OK);

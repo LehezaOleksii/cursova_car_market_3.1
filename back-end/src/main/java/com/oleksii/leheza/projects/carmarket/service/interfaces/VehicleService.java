@@ -21,8 +21,6 @@ public interface VehicleService {
 
     void saveVehicleWithModerationStatus(VehicleDto vehicleDto, User user);
 
-    void removeVehicleById(Long userId, Long vehicleId);
-
     VehicleDto getVehicleDtoById(Long vehicleId);
 
     void updateVehicle(Long userId, VehicleDto vehicleDto, Long vehicleId);

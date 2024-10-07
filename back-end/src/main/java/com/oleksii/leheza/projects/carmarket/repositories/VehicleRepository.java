@@ -42,4 +42,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 
     @Query("SELECT v FROM Vehicle v WHERE v.user.email = :email")
     List<Vehicle> findAllByUserEmail(String email);
+
+    @Query("SELECT COUNT(v) > 0 FROM Vehicle v WHERE v.id = :vehicleId AND v.user.id = :userId")
+    boolean isUserHasVehicle(Long userId, Long vehicleId);
 }

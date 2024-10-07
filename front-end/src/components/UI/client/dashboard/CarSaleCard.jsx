@@ -2,12 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const CarSaleCard = ({ car, removeCarFromList }) => {
-  const clientId = localStorage.getItem("id");
   const carId = car.id;
   const jwtStr = localStorage.getItem('jwtToken');
 
   const handleRemoveCarSubmit = async (carId) => {
-    const url = `http://localhost:8080/clients/${clientId}/vehicles/${carId}/remove`;
+    const url = `http://localhost:8080/vehicles/${car.id}/remove`;
     await fetch(url, {
       method: 'DELETE',
       headers: {

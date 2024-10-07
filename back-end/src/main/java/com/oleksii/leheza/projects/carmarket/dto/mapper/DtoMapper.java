@@ -11,6 +11,7 @@ import com.oleksii.leheza.projects.carmarket.repositories.EngineRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleBodyTypeRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleBrandRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleModelRepository;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,7 @@ public class DtoMapper {
     private final VehicleModelRepository vehicleModelRepository;
     private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
     private final EngineRepository engineRepository;
+    private final UserService userService;
 
     public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto, List<Photo> photos) {
         VehicleBrand brand = vehicleBrandRepository.findByBrandName(vehicleDto.getBrandName())
@@ -42,6 +44,12 @@ public class DtoMapper {
         }
         VehicleBodyType bodyType = vehicleBodyTypeRepository.findByBodyTypeName(vehicleDto.getBodyType())
                 .orElseThrow(() -> new ResourceNotFoundException("BodyType not found : " + vehicleDto.getBodyType()));
+
+        if (vehicleDto.getUserId() != null) {
+            User user = userService.findById(vehicleDto.getUserId());
+            vehicle.setUser(user);
+        }
+
         return vehicle.toBuilder()
                 .id(vehicleDto.getId())
                 .price(vehicleDto.getPrice())
@@ -65,6 +73,7 @@ public class DtoMapper {
         VehicleBrand brand = model.getVehicleBrand();
         return VehicleDto.builder()
                 .id(vehicle.getId())
+                .userId(vehicle.getUser().getId())
                 .brandName(brand.getBrandName())
                 .modelName(model.getModelName())
                 .price(vehicle.getPrice())

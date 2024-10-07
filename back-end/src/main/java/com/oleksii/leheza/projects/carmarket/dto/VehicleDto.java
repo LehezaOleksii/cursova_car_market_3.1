@@ -16,6 +16,7 @@ import java.util.List;
 public class VehicleDto {
 
     private Long id;
+    private Long userId;
     private int year;
     @Min(0)
     private int price;
