@@ -44,14 +44,14 @@ const App = () => {
 
   const isLoggedIn = localStorage.getItem('jwtToken') ? true : false;
 
-  const wrapPrivateRoute = (element, user, redirect) => {
+  const wrapPrivateRoute = (element, user, redirect, requiredRole) => {
     return (
-      <PrivateRoute user={user} redirect={redirect}>
+      <PrivateRoute user={user} redirect={redirect} requiredRole={requiredRole}>
         {element}
       </PrivateRoute>
     );
   };
-
+  
   return (
     <Routes>
       {/* login */}
@@ -63,32 +63,32 @@ const App = () => {
       <Route path="/signup-success" element={<SignupSuccess />} />
       <Route path="/confirm-email" element={<ConfirmEmail />} />
 
-      {/* client */}
-      <Route path="/client" element={wrapPrivateRoute(<Dashboard />, isLoggedIn, 'client')} />  
-      <Route path="/client/car/:carId" element={wrapPrivateRoute(<SaleCar />, isLoggedIn, 'saleCar')} />  
-      <Route path="/client/cabinet" element={wrapPrivateRoute(<ClientCabinet />, isLoggedIn, 'cabinet')} />  
-      <Route path="/client/add_auto" element={wrapPrivateRoute(<AddAuto />, isLoggedIn, 'addAuto')} />  
-      <Route path="/client/change_auto/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto')} />  
-      <Route path="/client/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars')} /> 
+     {/* client */}
+    <Route path="/client" element={wrapPrivateRoute(<Dashboard />, isLoggedIn, 'client', 'ROLE_CLIENT')} />  
+    <Route path="/client/car/:carId" element={wrapPrivateRoute(<SaleCar />, isLoggedIn, 'saleCar', 'ROLE_CLIENT')} />  
+    <Route path="/client/cabinet" element={wrapPrivateRoute(<ClientCabinet />, isLoggedIn, 'cabinet', 'ROLE_CLIENT')} />  
+    <Route path="/client/add_auto" element={wrapPrivateRoute(<AddAuto />, isLoggedIn, 'addAuto', 'ROLE_CLIENT')} />  
+    <Route path="/client/change_auto/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto', 'ROLE_CLIENT')} />  
+    <Route path="/client/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars', 'ROLE_CLIENT')} /> 
 
-      {/* manager */}
-      <Route path="/manager" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard')} /> 
-      <Route path="/manager/cars" element={wrapPrivateRoute(<Autos />, isLoggedIn, 'Auto')} />   
-      <Route path="/manager/cars/:carId" element={wrapPrivateRoute(<ChangeAuto />, isLoggedIn, 'ChangeAuto')} />   
-      <Route path="/manager/approve/cars" element={wrapPrivateRoute(<ApproveCarPage />, isLoggedIn, 'ApproveCarPage')} />  
-      <Route path="/manager/approve/car/:carId" element={wrapPrivateRoute(<CarDetails />, isLoggedIn, 'CarDetails')} /> 
-      <Route path="/manager/cabinet" element={wrapPrivateRoute(<ManagerCabinet />, isLoggedIn, 'ManagerCabinet')} />  
-      <Route path="/manager/add_auto" element={wrapPrivateRoute(<ManagerAddAuto />, isLoggedIn, 'ManagerAddAuto')} />  
-      <Route path="/manager/my_autos" element={wrapPrivateRoute(<ManagerMyCars />, isLoggedIn, 'ManagerMyCars')} />  
-      <Route path="/manager/change_auto/:carId" element={wrapPrivateRoute(<ManagerChangeAuto />, isLoggedIn, 'managerChangeAuto')} />  
-      <Route path="/manager/view/cars" element={wrapPrivateRoute(<ManagerViewCars />, isLoggedIn, 'ManagerViewCars')} /> 
-      <Route path="/manager/car/:carId" element={wrapPrivateRoute(<ManagerSaleCar />, isLoggedIn, 'ManagerSaleCar')} /> 
+    {/* manager */}
+    <Route path="/manager" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard', 'ROLE_MANAGER')} /> 
+    <Route path="/manager/cars" element={wrapPrivateRoute(<Autos />, isLoggedIn, 'Auto', 'ROLE_MANAGER')} />   
+    <Route path="/manager/cars/:carId" element={wrapPrivateRoute(<ChangeAuto />, isLoggedIn, 'ChangeAuto', 'ROLE_MANAGER')} />   
+    <Route path="/manager/approve/cars" element={wrapPrivateRoute(<ApproveCarPage />, isLoggedIn, 'ApproveCarPage', 'ROLE_MANAGER')} />  
+    <Route path="/manager/approve/car/:carId" element={wrapPrivateRoute(<CarDetails />, isLoggedIn, 'CarDetails', 'ROLE_MANAGER')} /> 
+    <Route path="/manager/cabinet" element={wrapPrivateRoute(<ManagerCabinet />, isLoggedIn, 'ManagerCabinet', 'ROLE_MANAGER')} />  
+    <Route path="/manager/add_auto" element={wrapPrivateRoute(<ManagerAddAuto />, isLoggedIn, 'ManagerAddAuto', 'ROLE_MANAGER')} />  
+    <Route path="/manager/my_autos" element={wrapPrivateRoute(<ManagerMyCars />, isLoggedIn, 'ManagerMyCars', 'ROLE_MANAGER')} />  
+    <Route path="/manager/change_auto/:carId" element={wrapPrivateRoute(<ManagerChangeAuto />, isLoggedIn, 'managerChangeAuto', 'ROLE_MANAGER')} />  
+    <Route path="/manager/view/cars" element={wrapPrivateRoute(<ManagerViewCars />, isLoggedIn, 'ManagerViewCars', 'ROLE_MANAGER')} /> 
+    <Route path="/manager/car/:carId" element={wrapPrivateRoute(<ManagerSaleCar />, isLoggedIn, 'ManagerSaleCar', 'ROLE_MANAGER')} /> 
 
-      {/* admin */}
-      <Route path="/admin" element={wrapPrivateRoute(<AdminDashboard />)} />
-      <Route path="/admin/approve/managers" element={wrapPrivateRoute(<ApproveManagersPage />, isLoggedIn, 'ApproveManagerPage')} />
-      <Route path="/admin/update/managers/:managerId" element={wrapPrivateRoute(<UpdateManager />, isLoggedIn, 'UpdateRoute')} /> 
-      <Route path="/admin/cabinet" element={wrapPrivateRoute(<AdminCabinet />, isLoggedIn, 'AdminCabinet')} />  
+    {/* admin */}
+    <Route path="/admin" element={wrapPrivateRoute(<AdminDashboard />, isLoggedIn, null, 'ROLE_ADMIN')} />
+    <Route path="/admin/approve/managers" element={wrapPrivateRoute(<ApproveManagersPage />, isLoggedIn, 'ApproveManagerPage', 'ROLE_ADMIN')} />
+    <Route path="/admin/update/managers/:managerId" element={wrapPrivateRoute(<UpdateManager />, isLoggedIn, 'UpdateRoute', 'ROLE_ADMIN')} /> 
+    <Route path="/admin/cabinet" element={wrapPrivateRoute(<AdminCabinet />, isLoggedIn, 'AdminCabinet', 'ROLE_ADMIN')} />  
 
       {/* chat */}
       <Route path="/chat" element={wrapPrivateRoute(<Chat />)}/> 
