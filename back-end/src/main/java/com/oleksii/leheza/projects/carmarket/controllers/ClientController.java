@@ -4,8 +4,6 @@ import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.entities.User;
-import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
-import com.oleksii.leheza.projects.carmarket.exceptions.ResourceAlreadyExistsException;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +30,11 @@ public class ClientController {
     }
 
     @PutMapping("/cabinet")
-    public ResponseEntity<UserUpdateDto> saveUserInfo(@AuthenticationPrincipal String email) {
-        try {
-            Long id = userService.getUserIdByEmail(email);
-            UserUpdateDto user = userService.getUserUpdateDtoById(id);
-            return new ResponseEntity<>(userService.update(user), HttpStatus.OK);
-        } catch (ResourceAlreadyExistsException e) {
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        }
+    public ResponseEntity<UserUpdateDto> saveUserInfo(@AuthenticationPrincipal String email,
+                                                      @RequestBody UserUpdateDto userUpdateDto) {
+        Long id = userService.getUserIdByEmail(email);
+        userUpdateDto.setId(id);
+        return new ResponseEntity<>(userService.update(userUpdateDto), HttpStatus.OK);
     }
 
     @PostMapping("/vehicle")

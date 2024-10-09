@@ -13,6 +13,7 @@ const Cabinet = ({ Header, Footer }) => {
   const [lastNameError, setLastNameError] = useState("");
   const jwtStr = localStorage.getItem("jwtToken");
   const id = localStorage.getItem("id");
+  const role = localStorage.getItem("role");
 
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
@@ -84,8 +85,19 @@ const Cabinet = ({ Header, Footer }) => {
         credentials: "include",
         body: JSON.stringify(client),
       });
-      if (response.ok) {
-        navigate(`/client`);
+      switch (role) {
+        case 'ROLE_CLIENT':
+          window.location.href = '/client';
+          break;
+        case 'ROLE_MANAGER':
+          window.location.href = '/manager';
+          break;
+        case 'ROLE_ADMIN':
+          window.location.href = '/admin';
+          break;
+        default:
+          window.location.href = '/login';
+          break;
       }
     }
   };

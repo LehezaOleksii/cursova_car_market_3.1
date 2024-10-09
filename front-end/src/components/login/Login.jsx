@@ -16,6 +16,7 @@ const Login = () => {
   
       const { userId, jwt, role } = response.data;
       localStorage.setItem('jwtToken', jwt);
+      localStorage.setItem('role', role);
       localStorage.setItem('id', userId);
       switch (role) {
         case 'ROLE_CLIENT':
