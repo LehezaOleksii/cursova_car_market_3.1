@@ -42,14 +42,12 @@ const Dashboard = () => {
     setCars(data);
   };
   
-
   return (
     <div className="body">
       <Header />
       <div className="dashboard">
       <CarFilter onFilter={filterCars}/>
       <SaledCars cars={cars}/>
-      {/* <BrandsFilter /> */}
       </div>
       <Footer />
     </div>

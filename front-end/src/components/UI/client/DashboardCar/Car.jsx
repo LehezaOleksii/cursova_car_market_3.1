@@ -1,6 +1,5 @@
-import React from "react"; 
+import React from "react";
 import { Link } from "react-router-dom";
-
 
 const DashboardCar = ({ car }) => {
   const id = localStorage.getItem("id");
@@ -9,25 +8,27 @@ const DashboardCar = ({ car }) => {
     <div className="card mb-4">
       <div className="row g-0">
         <div className="col-md-4">
-        <div>
-<img
-            src={car.photo ? `data:image/png;base64,${car.photo}` : 'default-image-url'}
-            alt="Car"
-            className="card-img"
-            style={{
-              height: "200px",
-              backgroundColor: "#ccc",
-              backgroundImage: `url(${car.photo || 'default-image-url'})`,
-              backgroundSize: "100% 100%",
-              backgroundPosition: "center",
-            }}
-          /> 
-</div>
-          <p>{`${car.brandName} ${car.modelName} ${car.year}`}</p>
+          <div>
+            <img
+              src={
+                car.photos && car.photos.length > 0
+                  ? `data:image/png;base64,${car.photos[0]}`
+                  : "default-image-url"
+              }
+              alt="Car"
+              style={{
+                height: "200px",
+                width: "100%",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+            />
+          </div>
+          <p className="mt-2">{`${car.modelName} ${car.year}`}</p>
         </div>
         <div className="col-md-8">
           <div className="card-body">
-          <h5 className="card-title">Car Information</h5>
+            <h5 className="card-title">Car Information</h5>
             <div className="row">
               <div className="col-md-6">
                 <p className="card-text">{`Car brand: ${car.brandName}`}</p>
@@ -36,17 +37,17 @@ const DashboardCar = ({ car }) => {
                 <p className="card-text">{`Usage status: ${car.usageStatus}`}</p>
               </div>
               <div className="col-md-6">
-                <p className="card-text">{`phone number: ${car.phoneNumber}`}</p>
+                <p className="card-text">{`Phone number: ${car.phoneNumber}`}</p>
                 <p className="card-text">{`Price: ${car.price}`}</p>
                 <p className="card-text">{`Region: ${car.region}`}</p>
                 <p className="card-text">{`Mileage: ${car.mileage}`} km</p>
               </div>
-              <Link to={`/client/${id}/car/${car.id}`} className="dropdown-item" >
-              <button className="btn btn-primary">
-                Details
-              </button>
+            </div>
+            <div className="text-end mt-3">
+              <Link to={`/client/car/${car.id}`} className="dropdown-item">
+                <button className="btn btn-primary">Details</button>
               </Link>
-              </div> 
+            </div>
           </div>
         </div>
       </div>

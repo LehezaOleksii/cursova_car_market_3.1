@@ -91,8 +91,8 @@ const App = () => {
     <Route path="/admin/cabinet" element={wrapPrivateRoute(<AdminCabinet />, isLoggedIn, 'AdminCabinet', 'ROLE_ADMIN')} />  
 
       {/* chat */}
-      <Route path="/chat" element={wrapPrivateRoute(<Chat />)}/> 
-      <Route path="/signout" element={wrapPrivateRoute(<SignOut />)} />
+    <Route path="/chat" element={wrapPrivateRoute(<Chat />)}/> 
+    <Route path="/signout" element={wrapPrivateRoute(<SignOut />)} />
     </Routes>
   );
 };
