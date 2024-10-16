@@ -52,8 +52,8 @@ public class Vehicle {
     private Engine engine;
     @ManyToOne
     private VehicleBodyType bodyType;
-
-
+    @ManyToOne
+    private VehicleStatistic vehicleStatistic;
 
     public void addPhoto(Photo photo) {
         photos.add(photo);
