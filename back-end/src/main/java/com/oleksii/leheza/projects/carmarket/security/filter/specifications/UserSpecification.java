@@ -4,7 +4,7 @@ import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
-import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
+import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,7 +26,7 @@ public class UserSpecification {
 
     private final UserRepository userRepository;
 
-    public Page<User> getUsersWithCriterias(UserSearchCriteria criterias, int page, int size, Sort sort) {
+    public Page<User> getUsersWithCriterias(VehilcleSearchCriteria criterias, int page, int size, Sort sort) {
         log.info("Start creating user specifications");
         List<Specification<User>> specifications = new ArrayList<>();
         if (criterias.getStatus() != null && !criterias.getStatus().startsWith("ALL") && !criterias.getStatus().isEmpty()) {
@@ -41,8 +41,12 @@ public class UserSpecification {
         if (criterias.getRole() != null && !criterias.getRole().startsWith("ALL") && !criterias.getRole().isEmpty()) {
             specifications.add(roleLike(criterias));
         }
+        if (criterias.getRole() != null && !criterias.getRole().startsWith("ALL") && !criterias.getRole().isEmpty()) {
+            specifications.add(roleLike(criterias));
+        }
         Specification<User> specification = Specification.where(Specification.allOf(specifications));
         Pageable pageable = PageRequest.of(page, size, sort);
+        log.info("user specifications was created");
         return userRepository.findAll(specification, pageable);
     }
 
@@ -55,7 +59,7 @@ public class UserSpecification {
         return nameParts[nameParts.length - 1];
     }
 
-    public Specification<User> roleLike(UserSearchCriteria criteria) {
+    public Specification<User> roleLike(VehilcleSearchCriteria criteria) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("userRole"), UserRole.valueOf(criteria.getRole()));
     }
@@ -70,12 +74,12 @@ public class UserSpecification {
                 criteriaBuilder.like(root.get("lastName"), "%" + name + "%");
     }
 
-    public Specification<User> emailLike(UserSearchCriteria criteria) {
+    public Specification<User> emailLike(VehilcleSearchCriteria criteria) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.like(root.get("email"), "%" + criteria.getEmail() + "%");
     }
 
-    public Specification<User> statusLike(UserSearchCriteria criteria) {
+    public Specification<User> statusLike(VehilcleSearchCriteria criteria) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status"), UserStatus.valueOf(criteria.getStatus()));
     }

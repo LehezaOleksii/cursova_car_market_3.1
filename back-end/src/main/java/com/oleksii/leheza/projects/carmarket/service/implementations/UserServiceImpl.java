@@ -8,7 +8,7 @@ import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.EmailConfirmationRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
-import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
+import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.UserSpecification;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getUsersWithFilter(int page, int size, UserSearchCriteria criteria) {
+    public Page<User> getUsersWithFilter(int page, int size, VehilcleSearchCriteria criteria) {
         Sort sort = Sort.by(SORT_PROPERTY_FIRST_NAME);
         return userSpecification.getUsersWithCriterias(criteria, page, size, sort);
     }

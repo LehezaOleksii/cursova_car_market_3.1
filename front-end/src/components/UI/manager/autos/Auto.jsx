@@ -7,7 +7,7 @@ const Auto = ({ car, removeCarFromList }) => {
   const jwtStr = localStorage.getItem('jwtToken');
 
   const handleRemoveCarSubmit = async (carId) => {
-    const url = `http://localhost:8080/managers/${managerId}/vehicles/${carId}/delete`;
+    const url = `http://localhost:8080/vehicles/${carId}/delete`;
     await fetch(url, {
       method: 'DELETE',
       headers: {

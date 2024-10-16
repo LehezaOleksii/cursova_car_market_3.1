@@ -9,7 +9,7 @@ const SaledAutos = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/managers/${managerId}/vehicles`;
+      const url = `http://localhost:8080/vehicles`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {

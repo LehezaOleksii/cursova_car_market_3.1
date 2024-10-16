@@ -11,7 +11,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/clients/vehicles/${carId}`;
+      const url = `http://localhost:8080/vehicles/${carId}`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {
@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   const filterCars = async (filterData) => {
     const queryParams = new URLSearchParams(filterData);
-    const url = `http://localhost:8080/clients/vehicles/filter?${queryParams.toString()}`;
+    const url = `http://localhost:8080/vehicles/filter?${queryParams.toString()}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {

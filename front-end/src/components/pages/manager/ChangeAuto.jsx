@@ -26,7 +26,7 @@ const ManagerChangeAuto = () => {
   
   useEffect(() => {
     const fetchCarData = async () => {
-      const url = `http://localhost:8080/managers/vehicles/${carId}`;
+      const url = `http://localhost:8080/vehicles/${carId}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -43,7 +43,7 @@ const ManagerChangeAuto = () => {
   });
   
   const handleSave = async () => {
-    const url = `http://localhost:8080/managers/vehicles/${carId}`;
+    const url = `http://localhost:8080/vehicles/${carId}`;
     const car = {
       brandName: carData.brandName,
       modelName: carData.modelName,

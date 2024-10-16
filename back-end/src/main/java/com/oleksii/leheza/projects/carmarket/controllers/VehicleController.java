@@ -1,6 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
+import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleApproveStatus;
@@ -101,5 +102,58 @@ public class VehicleController {
     public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long vehicleId) {
         vehicleService.deleteVehicleById(vehicleId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PostMapping
+    public ResponseEntity<?> postVehicle(@AuthenticationPrincipal String email,
+                                         @RequestBody VehicleDto vehicleDto) {
+        User user = userService.findByEmail(email);
+        vehicleService.saveVehicleWithModerationStatus(vehicleDto, user);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/vehicles/{vehicleId}")
+    public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
+        return new ResponseEntity<>(vehicleService.getVehicleDtoById(vehicleId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PutMapping("{vehicleId}")
+    public ResponseEntity<?> changeVehicleById(@AuthenticationPrincipal String email,
+                                               @PathVariable Long vehicleId,
+                                               @RequestBody VehicleDto vehicleDto) {
+        Long userId = userService.getUserIdByEmail(email);
+        vehicleService.updateVehicle(userId, vehicleDto, vehicleId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/vehicles")
+    public ResponseEntity<List<VehicleDto>> getAllPostedVehicles() {
+        return new ResponseEntity<>(vehicleService.findAllPostedVehicles(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @DeleteMapping("/{vehicleId}/delete")
+    public ResponseEntity<?> deleteVehicleById(@PathVariable Long vehicleId) {
+        vehicleService.deleteVehicleById(vehicleId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/filter")
+    public List<VehicleDto> filterVehicles(
+            @RequestParam(required = false) String carBrand,
+            @RequestParam(required = false) String carModel,
+            @RequestParam(required = false) String region,
+            @RequestParam(required = false) String year,
+            @RequestParam(required = false) String price,
+            @RequestParam(required = false) String gearbox,
+            @RequestParam(required = false) String mileage,
+            @RequestParam(required = false) String carState) {
+
+        return vehicleService.filterVehicles(carBrand, carModel, region, year, price, gearbox, mileage, carState);
     }
 }

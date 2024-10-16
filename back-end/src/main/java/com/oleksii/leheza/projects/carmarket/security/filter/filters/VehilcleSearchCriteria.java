@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class UserSearchCriteria {
+public class VehilcleSearchCriteria {
 
     private String fullName;
     private String email;

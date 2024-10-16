@@ -4,7 +4,7 @@ import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
-import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
+import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -38,7 +38,7 @@ public interface UserService extends UserDetailsService {
 
     Long getUserIdByEmail(String username);
 
-    Page<User> getUsersWithFilter(int page, int size, UserSearchCriteria criteria);
+    Page<User> getUsersWithFilter(int page, int size, VehilcleSearchCriteria criteria);
 
     String getUserRoleByEmail(String email);
 }

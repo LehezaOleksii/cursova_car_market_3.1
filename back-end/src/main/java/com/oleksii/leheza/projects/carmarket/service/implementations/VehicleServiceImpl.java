@@ -7,10 +7,14 @@ import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.*;
+import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
+import com.oleksii.leheza.projects.carmarket.security.filter.specifications.VehicleSpecification;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Year;
@@ -23,6 +27,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class VehicleServiceImpl implements VehicleService {
 
+    private static final String SORT_PROPERTY_VIEWED = "viewed";
+
     private final VehicleRepository vehicleRepository;
     private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
     private final VehicleBrandRepository vehicleBrandRepository;
@@ -31,6 +37,7 @@ public class VehicleServiceImpl implements VehicleService {
     private final PhotoRepository photoRepository;
     private final DtoMapper dtoMapper;
     private final EmailService emailService;
+    private final VehicleSpecification vehicleSpecification;
 
     @Override
     public void deleteVehicleById(Long vehicleId) {
@@ -157,6 +164,12 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.findAllByUserEmail(email).stream()
                 .map(dtoMapper::vehicleToVehicleDto)
                 .toList();
+    }
+
+    @Override
+    public Page<Vehicle> getVehiclesWithFilter(int page, int size, VehicleSearchCriteria criterias) {
+        Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
+        return vehicleSpecification.getVehiclesWithCriterias(criterias, page, size, sort);
     }
 
     private List<Photo> getPhotosList(List<byte[]> photoBytes) {

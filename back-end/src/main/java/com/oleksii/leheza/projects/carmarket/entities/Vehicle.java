@@ -54,6 +54,7 @@ public class Vehicle {
     private VehicleBodyType bodyType;
 
 
+
     public void addPhoto(Photo photo) {
         photos.add(photo);
     }
