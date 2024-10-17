@@ -11,7 +11,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/vehicles/${carId}`;
+      const url = `http://localhost:8080/vehicles/${carId}/info`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {

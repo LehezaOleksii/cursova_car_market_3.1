@@ -69,10 +69,16 @@ public class VehicleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/{vehicleId}")
     public ResponseEntity<VehicleDto> getVehicle(@PathVariable Long vehicleId) {
         return new ResponseEntity<>(vehicleService.getVehicleDtoById(vehicleId), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/{vehicleId}/info")
+    public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
+        return new ResponseEntity<>(vehicleService.getVehicleDtoInfoById(vehicleId), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
@@ -113,12 +119,6 @@ public class VehicleController {
         User user = userService.findByEmail(email);
         vehicleService.saveVehicleWithModerationStatus(vehicleDto, user);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @GetMapping("/vehicles/{vehicleId}")
-    public ResponseEntity<VehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
-        return new ResponseEntity<>(vehicleService.getVehicleDtoById(vehicleId), HttpStatus.OK);
     }
 
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")

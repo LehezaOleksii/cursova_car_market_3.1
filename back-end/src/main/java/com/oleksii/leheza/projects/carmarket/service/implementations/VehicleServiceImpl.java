@@ -4,6 +4,7 @@ import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.entities.*;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
+import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.*;
@@ -49,9 +50,18 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<VehicleDto> getVehiclesByStatus(VehicleStatus status) {
-        return vehicleRepository.findAllByStatus(status).stream()
-                .map(dtoMapper::vehicleToVehicleDto)
-                .toList();
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return vehicleRepository.findAllByStatus(status).stream().map(vehicle -> {
+            VehicleDto vehicleDto = dtoMapper.vehicleToVehicleDto(vehicle);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = false;
+            if (userVehicleLike.isPresent()) {
+                isUserLiked = userVehicleLike.get().isLiked();
+            }
+            vehicleDto.setUserLiked(isUserLiked);
+            return vehicleDto;
+        }).toList();
     }
 
     @Override
@@ -62,20 +72,17 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<VehicleDto> findAllPostedVehicles() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userRepository.getUserIdByEmail(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED)
-                .stream()
-                .map(vehicle -> {
-                    VehicleDto vehicleDto = dtoMapper.vehicleToVehicleDto(vehicle);
-                    Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
-                    boolean isUserLiked = false;
-                    if (userVehicleLike.isPresent()) {
-                        isUserLiked = userVehicleLike.get().isLiked();
-                    }
-                    vehicleDto.setUserLiked(isUserLiked);
-                    return vehicleDto;
-                }).toList();
+        Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED).stream().map(vehicle -> {
+            VehicleDto vehicleDto = dtoMapper.vehicleToVehicleDto(vehicle);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = false;
+            if (userVehicleLike.isPresent()) {
+                isUserLiked = userVehicleLike.get().isLiked();
+            }
+            vehicleDto.setUserLiked(isUserLiked);
+            return vehicleDto;
+        }).toList();
     }
 
     @Override
@@ -114,7 +121,24 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public VehicleDto getVehicleDtoById(Long vehicleId) {
-        return dtoMapper.vehicleToVehicleDto(vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found")));
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
+        vehicle.setViews(vehicle.getViews() + 1);
+        vehicleRepository.save(vehicle);
+        return dtoMapper.vehicleToVehicleDto(vehicle);
+    }
+
+    @Override
+    public VehicleDto getVehicleDtoInfoById(Long vehicleId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
+        if (vehicle.getStatus() != VehicleStatus.POSTED) {
+            if (role.getOrder() <= UserRole.ROLE_MANAGER.getOrder()) {
+                log.warn("User has not enough permissions");
+                throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
+            }
+        }
+        return dtoMapper.vehicleToVehicleDto(vehicle);
     }
 
     @Override
@@ -180,18 +204,15 @@ public class VehicleServiceImpl implements VehicleService {
             UserVehicleLike userVehicleLike = createUserVehicleLike(userId, vehicleId);
             userVehicleLikeRepository.save(userVehicleLike);
         }
-        UserVehicleLike userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicleId)
-                .orElseThrow(() -> new ResourceNotFoundException("User vehicle like not found; user id = " + userId + "; vehicle id = " + vehicleId));
+        UserVehicleLike userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicleId).orElseThrow(() -> new ResourceNotFoundException("User vehicle like not found; user id = " + userId + "; vehicle id = " + vehicleId));
         userVehicleLike.setLiked(isLiked);
         userVehicleLikeRepository.save(userVehicleLike);
     }
 
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId)
-                .orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found while creating vehicle use like"));
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found while creating vehicle use like"));
         UserVehicleLike userVehicleLike = new UserVehicleLike();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User with id: " + userId + " not found while creating vehicle use like"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User with id: " + userId + " not found while creating vehicle use like"));
         userVehicleLike.setUser(user);
         userVehicleLike.setVehicle(vehicle);
         return userVehicleLike;

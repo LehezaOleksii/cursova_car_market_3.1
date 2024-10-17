@@ -26,6 +26,8 @@ public interface VehicleService {
 
     VehicleDto getVehicleDtoById(Long vehicleId);
 
+    VehicleDto getVehicleDtoInfoById(Long vehicleId);
+
     void updateVehicle(Long userId, VehicleDto vehicleDto, Long vehicleId);
 
     List<VehicleDto> getVehiclesByUserIdAndVehicleStatus(Long userId, VehicleStatus status);
