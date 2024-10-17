@@ -7,10 +7,7 @@ import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
-import com.oleksii.leheza.projects.carmarket.repositories.EngineRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleBodyTypeRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleBrandRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleModelRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.*;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +27,7 @@ public class DtoMapper {
     private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
     private final EngineRepository engineRepository;
     private final UserService userService;
+    private final UserVehicleLikeRepository userVehicleLikeRepository;
 
     public Vehicle vehicleDtoToVehicle(VehicleDto vehicleDto, List<Photo> photos) {
         VehicleBrand brand = vehicleBrandRepository.findByBrandName(vehicleDto.getBrandName())
@@ -44,12 +42,16 @@ public class DtoMapper {
         }
         VehicleBodyType bodyType = vehicleBodyTypeRepository.findByBodyTypeName(vehicleDto.getBodyType())
                 .orElseThrow(() -> new ResourceNotFoundException("BodyType not found : " + vehicleDto.getBodyType()));
-
         if (vehicleDto.getUserId() != null) {
             User user = userService.findById(vehicleDto.getUserId());
             vehicle.setUser(user);
         }
-
+        if (vehicleDto.getStatus() != null) {
+            vehicle.setStatus(VehicleStatus.valueOf(vehicleDto.getStatus()));
+        }
+        if (vehicleDto.getStatus() != null) {
+            vehicle.setStatus(VehicleStatus.valueOf(vehicleDto.getStatus()));
+        }
         return vehicle.toBuilder()
                 .id(vehicleDto.getId())
                 .price(vehicleDto.getPrice())
@@ -71,6 +73,7 @@ public class DtoMapper {
     public VehicleDto vehicleToVehicleDto(Vehicle vehicle) {
         VehicleModel model = vehicle.getVehicleModel();
         VehicleBrand brand = model.getVehicleBrand();
+        int likes = userVehicleLikeRepository.getLikesByVehicleId(vehicle.getId());
         return VehicleDto.builder()
                 .id(vehicle.getId())
                 .userId(vehicle.getUser().getId())
@@ -88,6 +91,8 @@ public class DtoMapper {
                 .description(vehicle.getDescription())
                 .engine(vehicle.getEngine().getName())
                 .bodyType(vehicle.getBodyType().getBodyTypeName())
+                .likes(String.valueOf(likes))
+                .views(String.valueOf(vehicle.getViews()))
                 .build();
     }
 

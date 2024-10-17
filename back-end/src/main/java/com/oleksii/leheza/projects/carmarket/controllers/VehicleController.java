@@ -6,6 +6,7 @@ import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleApproveStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
+import com.oleksii.leheza.projects.carmarket.repositories.UserVehicleLikeRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
@@ -27,6 +28,7 @@ public class VehicleController {
     private final VehicleService vehicleService;
     private final EmailService emailService;
     private final UserService userService;
+    private final UserVehicleLikeRepository userVehicleLikeRepository;
 
     @GetMapping("/brands/{brandName}/models")
     public ResponseEntity<List<String>> getModelNames(@PathVariable String brandName) {
@@ -130,7 +132,7 @@ public class VehicleController {
     }
 
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @GetMapping("/vehicles")
+    @GetMapping
     public ResponseEntity<List<VehicleDto>> getAllPostedVehicles() {
         return new ResponseEntity<>(vehicleService.findAllPostedVehicles(), HttpStatus.OK);
     }
@@ -155,5 +157,23 @@ public class VehicleController {
             @RequestParam(required = false) String carState) {
 
         return vehicleService.filterVehicles(carBrand, carModel, region, year, price, gearbox, mileage, carState);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PutMapping("/{vehicleId}/like")
+    public ResponseEntity<?> setLikeToVehicle(@AuthenticationPrincipal String email,
+                                              @PathVariable Long vehicleId) {
+        Long userId = userService.getUserIdByEmail(email);
+        vehicleService.setLikeStatus(userId, vehicleId, true);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PutMapping("/{vehicleId}/no_like")
+    public ResponseEntity<?> setNoLikeToVehicle(@AuthenticationPrincipal String email,
+                                                @PathVariable Long vehicleId) {
+        Long userId = userService.getUserIdByEmail(email);
+        vehicleService.setLikeStatus(userId, vehicleId, false);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

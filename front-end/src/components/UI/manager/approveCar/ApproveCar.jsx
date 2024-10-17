@@ -1,9 +1,8 @@
 import React from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate} from "react-router";
 
 const ApproveCar = ({ car, removeCarFromList }) => {
 
-  const { id: managerId } = useParams();
   const jwtStr = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
 

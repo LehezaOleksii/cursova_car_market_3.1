@@ -254,7 +254,7 @@ const AddAuto = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/clients/vehicle`, {
+      const response = await fetch(`http://localhost:8080/vehicles`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

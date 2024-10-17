@@ -35,5 +35,8 @@ public class VehicleDto {
     @Size(max = 250, message = "Description is too long. It must be less than 250 characters")
     private String description;
     private String engine;
+    private String likes;
+    private String views;
+    private boolean isUserLiked;
     private List<byte[]> photos;
 }

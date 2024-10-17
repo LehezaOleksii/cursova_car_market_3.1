@@ -11,7 +11,7 @@ const ManagerSaleCar = () => {
 
   useEffect(() => {
     const fetchCarData = async () => {
-      const url = `http://localhost:8080/${managerId}/vehicles/${carId}`;
+      const url = `http://localhost:8080/vehicles/${carId}`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {

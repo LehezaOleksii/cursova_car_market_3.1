@@ -1,8 +1,10 @@
 package com.oleksii.leheza.projects.carmarket;
 
+import com.oleksii.leheza.projects.carmarket.entities.City;
 import com.oleksii.leheza.projects.carmarket.entities.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
+import com.oleksii.leheza.projects.carmarket.repositories.CityRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import org.springframework.boot.CommandLineRunner;
@@ -19,6 +21,12 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 public class CarMarketApplication {
+
+    private final CityRepository cityRepository;
+
+    public CarMarketApplication(CityRepository cityRepository) {
+        this.cityRepository = cityRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(CarMarketApplication.class, args);
@@ -86,5 +94,7 @@ public class CarMarketApplication {
                 .userRole(UserRole.ROLE_CLIENT)
                 .status(UserStatus.ACTIVE)
                 .build());
+        String cityName = "Test City";
+        cityRepository.save(new City(cityName));
     }
 }

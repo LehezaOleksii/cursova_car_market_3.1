@@ -79,7 +79,7 @@ const ManagerAddAuto = () => {
       usageStatus: selectedRadio,
     };
     
-      const url = `http://localhost:8080/managers/vehicle`;
+      const url = `http://localhost:8080/vehicles`;
     
       await fetch(url, {
         method: "POST",

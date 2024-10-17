@@ -7,23 +7,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @Builder(toBuilder = true)
 @NoArgsConstructor
+@Entity
 @AllArgsConstructor
-@Table(name = "vehicle_statistics")
-public class VehicleStatistic {
+@Table(name = "user_vehicle_likes")
+public class UserVehicleLike {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private int likes;
-    private int views;
 
-    public void incrementLikes() {
-        likes++;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    public void incrementViews() {
-        views++;
-    }
+    @ManyToOne
+    @JoinColumn(name = "vehicle_id", nullable = false)
+    private Vehicle vehicle;
+
+    private boolean isLiked;
 }
