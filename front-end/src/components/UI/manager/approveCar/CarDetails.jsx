@@ -61,7 +61,7 @@ const CarDetails = () => {
   useEffect(() => {
     const fetchCar = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/vehicles/${carId}`, {
+        const response = await fetch(`http://localhost:8080/vehicles/${carId}/info`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
