@@ -36,7 +36,7 @@ const ApproveCar = ({ car, removeCarFromList }) => {
     navigate(`/manager/approve/car/${car.id}`);
   };
 
-  return (
+  return ( //TODO print likes and other info from dto
     <div className="card mb-4">
       <div className="row g-0">
         <div className="col-md-4">

@@ -43,7 +43,7 @@ const ManagerChangeAuto = () => {
   });
   
   const handleSave = async () => {
-    const url = `http://localhost:8080/vehicles/${carId}`;
+    const url = `http://localhost:8080/vehicles`;
     const car = {
       brandName: carData.brandName,
       modelName: carData.modelName,
