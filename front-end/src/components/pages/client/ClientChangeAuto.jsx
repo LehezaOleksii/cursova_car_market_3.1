@@ -220,7 +220,7 @@ const ClientChangeAuto = () => {
     const fetchCarData = async () => {
       if (carId) {
         try {
-          const url = `http://localhost:8080/vehicles/${carId}`;
+          const url = `http://localhost:8080/vehicles/${carId}/info`;
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -340,7 +340,6 @@ const ClientChangeAuto = () => {
       price: priceString.replace(/\D/g, ""),
       gearbox: gearbox?.value,
       phoneNumber: phoneNumber,
-      status: status,
       bodyType: bodyType?.value,
       engine: engine?.value,
       usageStatus: selectedRadio,

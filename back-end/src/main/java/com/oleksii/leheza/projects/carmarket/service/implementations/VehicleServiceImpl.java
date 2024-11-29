@@ -1,9 +1,11 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
-import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
+import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.entities.*;
-import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
@@ -19,11 +21,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +50,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleDto> getVehiclesByStatus(VehicleStatus status) {
+    public List<VehicleGarageDto> getVehiclesByStatus(VehicleStatus status) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         return vehicleRepository.findAllByStatus(status).stream().map(vehicle -> {
-            VehicleDto vehicleDto = dtoMapper.vehicleToVehicleDto(vehicle);
+            VehicleGarageDto vehicleDto = dtoMapper.vehicleToVehicleGarageDto(vehicle);
             Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
             boolean isUserLiked = false;
             if (userVehicleLike.isPresent()) {
@@ -65,70 +66,50 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void postVehicle(Long vehicleId) {
-        vehicleRepository.updateVehicleStatus(vehicleId, VehicleStatus.POSTED);
-    }
-
-    @Override
-    public List<VehicleDto> findAllPostedVehicles() {
+    public List<VehicleDashboardDto> findAllPostedVehicles() {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED).stream().map(vehicle -> {
-            VehicleDto vehicleDto = dtoMapper.vehicleToVehicleDto(vehicle);
+        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED).stream()
+                .map(vehicle -> {
+                    VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+                    Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+                    boolean isUserLiked = false;
+                    if (userVehicleLike.isPresent()) {
+                        isUserLiked = userVehicleLike.get().isLiked();
+                    }
+                    vehicleDto.setUserLiked(isUserLiked);
+                    return vehicleDto;
+                }).toList();
+    }
+
+    @Override
+    public Page<VehicleDashboardDto> filterVehicles(Map<String, String> params, int page, int size) {
+        Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
+        VehicleSearchCriteria criteria = dtoMapper.mapToVehicleSearchCriteria(params);
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userRepository.getUserIdByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
+        return vehiclesPage.map(vehicle -> {
+            VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
             Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
-            boolean isUserLiked = false;
-            if (userVehicleLike.isPresent()) {
-                isUserLiked = userVehicleLike.get().isLiked();
-            }
+            boolean isUserLiked = userVehicleLike.isPresent() && userVehicleLike.get().isLiked();
             vehicleDto.setUserLiked(isUserLiked);
             return vehicleDto;
-        }).toList();
+        });
     }
 
     @Override
-    public List<VehicleDto> filterVehicles(String carBrand, String carModel, String region, String stringYear, String stringPrice, String gearbox, String stringMileage, String stringUsageStatus) {
-        Year year = (stringYear != null && !stringYear.isEmpty()) ? Year.parse(stringYear) : null;
-        Integer price = (stringPrice != null && !stringPrice.isEmpty()) ? Integer.parseInt(stringPrice) : null;
-        Integer mileage = (stringMileage != null && !stringMileage.isEmpty()) ? Integer.parseInt(stringMileage) : null;
-        List<VehicleDto> vehicles = null; //TODO
-        //        List<VehicleDto> vehicles = vehicleRepository.findByClientFilter(
-//                        carBrand, carModel, region, year, price, gearbox, mileage).stream()
-//                .map(dtoMapper::vehicleToVehicleDto)
-//                .collect(Collectors.toList());
-        String defaultUsageStatus = "ALL";
-        UsageStatus usageStatus;
-        if (stringUsageStatus.equals(defaultUsageStatus)) {
-            usageStatus = null;
-        } else {
-            usageStatus = UsageStatus.valueOf(stringUsageStatus);
-        }
-        if (usageStatus == UsageStatus.NEW) {
-            vehicles = vehicles.stream().filter(vehicle -> UsageStatus.valueOf(vehicle.getUsageStatus()) == UsageStatus.NEW).collect(Collectors.toList());
-        } else if (usageStatus == UsageStatus.USED) {
-            vehicles = vehicles.stream().filter(vehicle -> UsageStatus.valueOf(vehicle.getUsageStatus()) == UsageStatus.USED).collect(Collectors.toList());
-        }
-        return vehicles;
-    }
-
-    @Override
-    public void saveVehicleWithModerationStatus(VehicleDto vehicleDto, User user) {
+    public void saveVehicleWithModerationStatus(CreateVehicleDto vehicleDto, User user) {
         List<Photo> photos = getPhotosList(vehicleDto.getPhotos());
-        Vehicle vehicle = dtoMapper.vehicleDtoToVehicle(vehicleDto, photos);
+        Vehicle vehicle = dtoMapper.createVehicleDtoToVehicle(vehicleDto, photos);
         vehicle.setStatus(VehicleStatus.ON_MODERATION);
         vehicle.setUser(user);
         vehicleRepository.save(vehicle);
     }
 
     @Override
-    public VehicleDto getVehicleDtoById(Long vehicleId) {
-        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
-        vehicle.setViews(vehicle.getViews() + 1);
-        vehicleRepository.save(vehicle);
-        return dtoMapper.vehicleToVehicleDto(vehicle);
-    }
-
-    @Override
-    public VehicleDto getVehicleDtoInfoById(Long vehicleId) {
+    public UpdateVehicleDto getVehicleDtoInfoById(Long vehicleId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
@@ -138,22 +119,17 @@ public class VehicleServiceImpl implements VehicleService {
                 throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
             }
         }
-        return dtoMapper.vehicleToVehicleDto(vehicle);
+        return dtoMapper.vehicleToUpdateVehicleDto(vehicle);
     }
 
     @Override
-    public void updateVehicle(Long userId, VehicleDto vehicleDto, Long vehicleId) {
+    public void updateVehicle(Long userId, UpdateVehicleDto vehicleDto, Long vehicleId) {
         if (vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
-            vehicleRepository.save(dtoMapper.vehicleDtoToVehicle(vehicleDto, getPhotosList(vehicleDto.getPhotos())));
+            vehicleRepository.save(dtoMapper.updateVehicleDtoToVehicle(vehicleDto, getPhotosList(vehicleDto.getPhotos())));
         } else {
             log.warn("User does not have vehicle: {}, user: {}", vehicleId, userId);
             throw new SecurityException("User does not have vehicle");
         }
-    }
-
-    @Override
-    public List<VehicleDto> getVehiclesByUserIdAndVehicleStatus(Long userId, VehicleStatus status) {
-        return vehicleRepository.findAllByUserIdAndVehicleStatus(userId, status).stream().map(dtoMapper::vehicleToVehicleDto).toList();
     }
 
     @Override
@@ -163,38 +139,55 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public List<String> getBodyTypeNames() {
-        return vehicleBodyTypeRepository.findAll().stream().map(VehicleBodyType::getBodyTypeName).toList();
+        return vehicleBodyTypeRepository.findAll().stream()
+                .map(VehicleBodyType::getBodyTypeName)
+                .toList();
     }
 
     @Override
     public List<String> getModelsByBrandName(String brandName) {
-        return vehicleModelRepository.findByBrandName(brandName).stream().map(VehicleModel::getModelName).toList();
+        return vehicleModelRepository.findByBrandName(brandName).stream()
+                .map(VehicleModel::getModelName)
+                .toList();
     }
 
     @Override
     public List<String> getVehicleBrandNames() {
-        return vehicleBrandRepository.findAll().stream().map(VehicleBrand::getBrandName).toList();
+        return vehicleBrandRepository.findAll().stream()
+                .map(VehicleBrand::getBrandName)
+                .toList();
     }
 
     @Override
     public List<String> getVehicleEngineNames(String vehicleModelName) {
-        return engineRepository.findByVehicleModelName(vehicleModelName).stream().map(Engine::getName).toList();
+        return engineRepository.findByVehicleModelName(vehicleModelName)
+                .stream()
+                .map(Engine::getName)
+                .toList();
     }
 
     @Override
     public Vehicle getVehicleById(Long vehicleId) {
-        return vehicleRepository.findById(vehicleId).orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found"));
+        return vehicleRepository.findById(vehicleId)
+                .orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found"));
     }
 
     @Override
-    public List<VehicleDto> getVehiclesByUserEmail(String email) {
-        return vehicleRepository.findAllByUserEmail(email).stream().map(dtoMapper::vehicleToVehicleDto).toList();
-    }
-
-    @Override
-    public Page<Vehicle> getVehiclesWithFilter(int page, int size, VehicleSearchCriteria criterias) {
-        Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
-        return vehicleSpecification.getVehiclesWithCriterias(criterias, page, size, sort);
+    public List<VehicleGarageDto> getVehiclesByUserEmail(String email) {
+        Long userId = userRepository.getUserIdByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return vehicleRepository.findAllByUserEmail(email)
+                .stream()
+                .map(vehicle -> {
+                    VehicleGarageDto vehicleDto = dtoMapper.vehicleToVehicleGarageDto(vehicle);
+                    Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+                    boolean isUserLiked = false;
+                    if (userVehicleLike.isPresent()) {
+                        isUserLiked = userVehicleLike.get().isLiked();
+                    }
+                    vehicleDto.setUserLiked(isUserLiked);
+                    return vehicleDto;
+                })
+                .toList();
     }
 
     @Override

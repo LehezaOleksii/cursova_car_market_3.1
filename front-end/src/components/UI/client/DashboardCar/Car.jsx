@@ -46,7 +46,6 @@ const DashboardCar = ({ car }) => {
             />
           </div>
           <p className="mt-2">{`${car.modelName} ${car.year}`}</p>
-
           <div className="mt-3">
             <p className="card-text">
               {`Views: ${car.views}; `}

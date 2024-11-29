@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from "react";
-import { useParams } from "react-router";
 import CarFilter from "../../UI/client/dashboard/CarFilter";
 import Header from "../../UI/manager/Header";
 import Footer from "../../UI/manager/Footer";
@@ -14,7 +13,7 @@ const ManagerViewCars = () => {
   useEffect(() => {
     const fetchData = async () => {
 
-      const url = `http://localhost:8080/vehicles/all`;
+      const url = `http://localhost:8080/vehicles`;
       const response = await fetch(url, {
         method: "GET",
         headers: {

@@ -1,12 +1,12 @@
 package com.oleksii.leheza.projects.carmarket.security.filter.filters;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
 public class VehicleSearchCriteria {
 
     private String usageStatus;

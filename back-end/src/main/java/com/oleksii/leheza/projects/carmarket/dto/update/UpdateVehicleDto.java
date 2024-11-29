@@ -1,19 +1,19 @@
-package com.oleksii.leheza.projects.carmarket.dto;
+package com.oleksii.leheza.projects.carmarket.dto.update;
 
+import com.oleksii.leheza.projects.carmarket.enums.GearBox;
+import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import java.util.List;
 
 @Getter
 @Setter
 @Builder(toBuilder = true)
-@ToString
-public class VehicleDto {
+public class UpdateVehicleDto {
 
     private Long id;
     private Long userId;
@@ -26,17 +26,13 @@ public class VehicleDto {
     private String brandName;
     @Size(min = 1, max = 50, message = "Vehicle model must be from 1 to 50 characters")
     private String modelName;
-    private String gearbox;
-    private String status;
+    private GearBox gearbox;
     private String region;
     private String phoneNumber;
     private String bodyType;
-    private String usageStatus;
+    private UsageStatus usageStatus;
     @Size(max = 250, message = "Description is too long. It must be less than 250 characters")
     private String description;
     private String engine;
-    private String likes;
-    private String views;
-    private boolean isUserLiked;
     private List<byte[]> photos;
 }

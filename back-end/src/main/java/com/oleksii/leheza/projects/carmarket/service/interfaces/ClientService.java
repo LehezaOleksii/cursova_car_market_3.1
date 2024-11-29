@@ -1,6 +1,6 @@
 //package com.oleksii.leheza.projects.carmarket.service.interfaces;
 //
-//import com.oleksii.leheza.projects.carmarket.dto.VehicleDto;
+//import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDto;
 //import com.oleksii.leheza.projects.carmarket.dto.create.CreateUserDto;
 //import com.oleksii.leheza.projects.carmarket.entities.Client;
 //
