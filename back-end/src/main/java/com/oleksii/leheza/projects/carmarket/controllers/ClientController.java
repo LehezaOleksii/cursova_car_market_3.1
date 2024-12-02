@@ -35,8 +35,7 @@ public class ClientController {
     @GetMapping("/cabinet")
     public ResponseEntity<UserUpdateDto> getUserDataByEmail(@AuthenticationPrincipal String email) {
         Long id = userService.getUserIdByEmail(email);
-        userService.getUserUpdateDtoById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(userService.getUserUpdateDtoById(id), HttpStatus.OK);
     }
 
     @Operation(summary = "Update an existing client", description = "Update an existing client.")

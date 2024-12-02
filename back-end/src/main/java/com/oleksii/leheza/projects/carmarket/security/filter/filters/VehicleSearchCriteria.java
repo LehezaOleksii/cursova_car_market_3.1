@@ -12,9 +12,8 @@ public class VehicleSearchCriteria {
     private String usageStatus;
     private String brandName;
     private String modelName;
-    private String gearbox;
+    private String gearBox;
     private String region;
-    private String phoneNumber;
     private String bodyType;
     private String engine;
     private String fromYear;

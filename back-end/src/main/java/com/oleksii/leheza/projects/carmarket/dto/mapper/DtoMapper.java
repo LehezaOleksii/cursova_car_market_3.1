@@ -125,14 +125,13 @@ public class DtoMapper {
                 .toYear(params.get("toYear"))
                 .fromPrice(params.get("fromPrice"))
                 .toPrice(params.get("toPrice"))
-                .gearbox(params.get("gearbox"))
+                .gearBox(params.get("gearBox"))
                 .modelName(params.get("modelName"))
                 .usageStatus(params.get("usageStatus"))
                 .engine(params.get("engine"))
                 .brandName(params.get("brandName"))
                 .bodyType(params.get("bodyType"))
                 .region(params.get("region"))
-                .phoneNumber(params.get("phoneNumber"))
                 .build();
     }
 

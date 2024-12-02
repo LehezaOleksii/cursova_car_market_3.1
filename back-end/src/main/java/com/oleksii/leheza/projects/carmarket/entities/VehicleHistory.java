@@ -8,18 +8,19 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
-@Builder(toBuilder = true)
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "vehicles")
-public class Vehicle {
+@SuperBuilder(toBuilder = true)
+@Table(name = "vehicle_histories")
+public class VehicleHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,6 +55,4 @@ public class Vehicle {
     @ManyToOne
     private VehicleBodyType bodyType;
     private int views;
-    @OneToMany
-    private List<VehicleHistory> vehicleHistories = new ArrayList<>();
 }

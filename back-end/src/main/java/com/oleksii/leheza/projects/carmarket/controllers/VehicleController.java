@@ -327,8 +327,8 @@ public class VehicleController {
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/filter")
     public ResponseEntity<Page<VehicleDashboardDto>> filterVehicles(@RequestParam Map<String, String> params,
-                                                           @RequestParam(defaultValue = "0") int page,
-                                                           @RequestParam(defaultValue = "10") int size) {
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size) {
         return new ResponseEntity<>(vehicleService.filterVehicles(params, page, size), HttpStatus.OK);
     }
 

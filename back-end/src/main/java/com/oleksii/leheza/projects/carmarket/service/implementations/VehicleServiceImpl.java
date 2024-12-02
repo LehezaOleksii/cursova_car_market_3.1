@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ import java.util.Optional;
 @Slf4j
 public class VehicleServiceImpl implements VehicleService {
 
-    private static final String SORT_PROPERTY_VIEWED = "viewed";
+    private static final String SORT_PROPERTY_VIEWED = "views";
 
     private final VehicleRepository vehicleRepository;
     private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
@@ -90,7 +91,11 @@ public class VehicleServiceImpl implements VehicleService {
         Long userId = userRepository.getUserIdByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
-        return vehiclesPage.map(vehicle -> {
+        List<Vehicle> filteredVehicles = vehiclesPage.stream()
+                .filter(vehicle -> VehicleStatus.POSTED.equals(vehicle.getStatus()))
+                .toList();
+        Page<Vehicle> filteredPage = new PageImpl<>(filteredVehicles, vehiclesPage.getPageable(), filteredVehicles.size());
+        return filteredPage.map(vehicle -> {
             VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
             Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
             boolean isUserLiked = userVehicleLike.isPresent() && userVehicleLike.get().isLiked();

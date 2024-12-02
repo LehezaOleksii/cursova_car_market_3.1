@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class VehicleSpecification {
         log.info("Start creating vehicle specifications");
         List<Specification<Vehicle>> specifications = new ArrayList<>();
 
-        if (criterias.getUsageStatus() != null && !criterias.getUsageStatus().isEmpty()) {
+        if (criterias.getUsageStatus() != null && !criterias.getUsageStatus().isEmpty() && !criterias.getUsageStatus().equals("ALL")) {
             specifications.add(usageStatusLike(criterias));
         }
 
@@ -40,16 +41,12 @@ public class VehicleSpecification {
             specifications.add(modelNameLike(criterias));
         }
 
-        if (criterias.getGearbox() != null && !criterias.getGearbox().isEmpty()) {
+        if (criterias.getGearBox() != null && !criterias.getGearBox().isEmpty()) {
             specifications.add(gearboxLike(criterias));
         }
 
         if (criterias.getRegion() != null && !criterias.getRegion().isEmpty()) {
             specifications.add(regionLike(criterias));
-        }
-
-        if (criterias.getPhoneNumber() != null && !criterias.getPhoneNumber().isEmpty()) {
-            specifications.add(phoneNumberLike(criterias));
         }
 
         if (criterias.getBodyType() != null && !criterias.getBodyType().isEmpty()) {
@@ -110,18 +107,32 @@ public class VehicleSpecification {
     }
 
     public Specification<Vehicle> toYear(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.lessThanOrEqualTo(root.get("year"), criterias.getToYear());
+        return (root, query, criteriaBuilder) -> {
+            if (criterias.getToYear() != null && !criterias.getToYear().isEmpty()) {
+                Year toYear = Year.parse(criterias.getToYear());
+                return criteriaBuilder.lessThanOrEqualTo(root.get("year"), toYear);
+            }
+            return criteriaBuilder.conjunction();
+        };
     }
 
     public Specification<Vehicle> fromYear(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.greaterThanOrEqualTo(root.get("year"), criterias.getFromYear());
+        return (root, query, criteriaBuilder) -> {
+            if (criterias.getFromYear() != null && !criterias.getFromYear().isEmpty()) {
+                Year fromYear = Year.parse(criterias.getFromYear());
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("year"), fromYear);
+            }
+            return criteriaBuilder.conjunction();
+        };
     }
 
     public Specification<Vehicle> engineLike(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("engine").get("name"), "%" + criterias.getEngine() + "%");
+        return (root, query, criteriaBuilder) -> {
+            if (criterias.getEngine() != null) {
+                return criteriaBuilder.like(root.get("engine").get("name"), "%" + criterias.getEngine() + "%");
+            }
+            return criteriaBuilder.conjunction();
+        };
     }
 
     public Specification<Vehicle> bodyTypeLike(VehicleSearchCriteria criterias) {
@@ -129,19 +140,14 @@ public class VehicleSpecification {
                 criteriaBuilder.like(root.get("bodyType").get("bodyTypeName"), "%" + criterias.getBodyType() + "%");
     }
 
-    public Specification<Vehicle> phoneNumberLike(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("phoneNumber"), "%" + criterias.getPhoneNumber() + "%");
-    }
-
     public Specification<Vehicle> regionLike(VehicleSearchCriteria criterias) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("region").get("name"), "%" + criterias.getRegion() + "%");
+                criteriaBuilder.like(root.get("region"), "%" + criterias.getRegion() + "%");
     }
 
     public Specification<Vehicle> gearboxLike(VehicleSearchCriteria criterias) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("gearBox"), GearBox.valueOf(criterias.getGearbox()));
+                criteriaBuilder.equal(root.get("gearBox"), GearBox.valueOf(criterias.getGearBox()));
     }
 
     public Specification<Vehicle> modelNameLike(VehicleSearchCriteria criterias) {
@@ -157,5 +163,6 @@ public class VehicleSpecification {
     public Specification<Vehicle> usageStatusLike(VehicleSearchCriteria criterias) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("usageStatus"), UsageStatus.valueOf(criterias.getUsageStatus()));
+
     }
 }
