@@ -56,6 +56,11 @@ const Header = () => {
                     My cars
                   </Link> 
                 </li> 
+                <li className="nav-item">
+                  <Link to={`/client/advanced_filter`} className="nav-link" >
+                    Filter
+                  </Link> 
+                </li> 
               </ul>
             </div>
           </div>

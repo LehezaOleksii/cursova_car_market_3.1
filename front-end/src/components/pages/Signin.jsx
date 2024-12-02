@@ -15,12 +15,6 @@ const SignIn = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); 
-    console.log('Email:', email);
-    console.log('Password:', password);
-  };
-
   const signIn = async () => {
     const user = {
       email,

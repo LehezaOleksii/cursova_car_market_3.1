@@ -9,10 +9,7 @@ const roleHierarchy = {
 
 const PrivateRoute = ({ children, redirect, requiredRole }) => {
   const authenticate = localStorage.getItem('jwtToken') ? true : false;
-  const userRole = localStorage.getItem('role'); // Assume userRole is stored in localStorage
-  console.log(userRole);
-  console.log(requiredRole);
-
+  const userRole = localStorage.getItem('role');
   const location = useLocation();
 
   const hasAccess = requiredRole

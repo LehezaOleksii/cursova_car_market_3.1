@@ -9,7 +9,7 @@ import ClientCabinet from "./components/pages/client/ClientCabinet";
 import AddAuto from "./components/pages/client/AddAuto";
 import MyCars from "./components/pages/client/MyCars";
 import ClientChangeAuto from "./components/pages/client/ClientChangeAuto";
-
+import AdvancedFilter from "./components/UI/client/dashboard/AdvancedFilter";
 
 import ChangeAuto from "./components/pages/manager/ChangeAuto";
 import ManagerDashboard from "./components/pages/manager/ManagerDashboard";
@@ -70,6 +70,7 @@ const App = () => {
     <Route path="/client/add_auto" element={wrapPrivateRoute(<AddAuto />, isLoggedIn, 'addAuto', 'ROLE_CLIENT')} />  
     <Route path="/client/change_auto/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto', 'ROLE_CLIENT')} />  
     <Route path="/client/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars', 'ROLE_CLIENT')} /> 
+    <Route path="/client/advanced_filter" element={wrapPrivateRoute(<AdvancedFilter />, isLoggedIn, 'advanced_filter', 'ROLE_CLIENT')} /> 
 
     {/* manager */}
     <Route path="/manager" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard', 'ROLE_MANAGER')} /> 

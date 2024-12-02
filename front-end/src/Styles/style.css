@@ -25,3 +25,16 @@
 .footer {
   margin-top: auto;
 }
+
+.filter-card {
+  border-radius: 20px; 
+  padding: 20px;
+}
+
+.search-button-container {
+  margin-top: 20px;
+}
+
+.search-button {
+  border-radius: 50px;
+}

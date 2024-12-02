@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CarStateFilter from "../fields/CarStateFilter";
 import CarFilterField from "../fields/CarFilterField";
+import { Link} from "react-router-dom";
 
 const CarFilter = ({ onFilter }) => {
   const [carBrand, setCarBrand] = useState("");
@@ -211,29 +212,26 @@ const CarFilter = ({ onFilter }) => {
     </button>
   </div>
 
-  {/* Spacer */}
   <div className="flex-grow-1"></div>
 
-  {/* Advanced Search and Clear Buttons - Right side */}
   <div className="d-flex">
-    <button
-      className="btn btn-primary ms-2"
-      onClick={handleClearFilter}
-    >
-      Advanced Search
-    </button>
-    <button
-      className="btn btn-secondary ms-2"
-      onClick={handleClearFilter}
-    >
-      Clear
-    </button>
-  </div>
+  <Link
+    to={`/client/advanced_filter`}
+    className="btn btn-primary ms-2"
+    style={{ whiteSpace: 'nowrap' }}
+  >
+    Advanced Search
+  </Link>
+  <button
+    className="btn btn-secondary ms-2"
+    onClick={handleClearFilter}
+  >
+    Clear
+  </button>
 </div>
 
 </div>
-
-
+</div>
     </div>
   );
 };

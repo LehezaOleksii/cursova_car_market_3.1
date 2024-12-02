@@ -175,10 +175,7 @@ const ClientChangeAuto = () => {
       };
 
       fetchModels();
-      console.log("tm"+loading);
     } else {
-      console.log("fm"+loading);
-
       setModels([]);
       setCarModel(null);
       setEngine(null);
@@ -208,9 +205,7 @@ const ClientChangeAuto = () => {
       };
 
       fetchEngines();
-      console.log("te"+loading);
     } else {
-      console.log("fe"+loading);
       setEngines([]);
       setEngine(null);
     }
@@ -247,7 +242,6 @@ const ClientChangeAuto = () => {
     
     try{   
     if (car) {
-      console.log("Car data:", car);
       setCarBrand({ value: car.brandName, label: car.brandName });
       setCarModel({ value: car.modelName, label: car.modelName });
       setRegion({ value: car.region, label: car.region });

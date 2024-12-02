@@ -15,13 +15,17 @@ const Dashboard = () => {
         const response = await fetch(url, {
           method: 'GET',
           headers: {
+          credentials: 'include',
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + jwtStr
-          },
-          credentials: 'include',
+          }
         });
-        const data = await response.json();
-        setCars(data);
+        if (response.ok) {
+          const data = await response.json();
+          setCars(data);
+        } else {
+          console.error("Failed to fetch cars:", response.status);
+        }        
     };
     fetchData();
   }, [jwtStr]); 

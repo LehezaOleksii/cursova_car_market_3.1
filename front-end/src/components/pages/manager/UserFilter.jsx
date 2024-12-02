@@ -17,7 +17,7 @@ const UserFilter = ({ onFilterChange }) => {
     name: "",
     email: "",
     status: "ALL",
-    role: "ALL", // Initialize the role field
+    role: "ALL",
   });
 
   const handleChange = (e) => {
