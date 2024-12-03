@@ -5,6 +5,7 @@ import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
+import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -136,8 +137,10 @@ public class VehicleSpecification {
     }
 
     public Specification<Vehicle> bodyTypeLike(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("bodyType").get("bodyTypeName"), "%" + criterias.getBodyType() + "%");
+        return (root, query, criteriaBuilder) -> {
+            Join<Object, Object> brandJoin = root.join("bodyType");
+            return criteriaBuilder.like(brandJoin.get("bodyTypeName"), criterias.getBodyType());
+        };
     }
 
     public Specification<Vehicle> regionLike(VehicleSearchCriteria criterias) {
@@ -151,14 +154,19 @@ public class VehicleSpecification {
     }
 
     public Specification<Vehicle> modelNameLike(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("model").get("name"), "%" + criterias.getModelName() + "%");
+        return (root, query, criteriaBuilder) -> {
+            Join<Object, Object> modelJoin = root.join("vehicleModel");
+            return criteriaBuilder.like(modelJoin.get("modelName"), criterias.getModelName());
+        };
     }
 
     public Specification<Vehicle> brandNameLike(VehicleSearchCriteria criterias) {
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(root.get("brandName").get("name"), "%" + criterias.getBrandName() + "%");
+        return (root, query, criteriaBuilder) -> {
+            Join<Object, Object> brandJoin = root.join("brand");
+            return criteriaBuilder.like(brandJoin.get("brandName"), criterias.getBrandName());
+        };
     }
+
 
     public Specification<Vehicle> usageStatusLike(VehicleSearchCriteria criterias) {
         return (root, query, criteriaBuilder) ->

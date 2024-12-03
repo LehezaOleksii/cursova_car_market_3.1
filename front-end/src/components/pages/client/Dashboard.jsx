@@ -49,9 +49,9 @@ const Dashboard = () => {
     <div className="body">
       <Header />
       <div className="dashboard">
-      <CarFilter onFilter={filterCars}/>
-      <SaledCars cars={cars}/>
-      </div>
+      <CarFilter setCars={setCars} /> 
+           <SaledCars cars={cars} />
+</div>
       <Footer />
     </div>
   )
