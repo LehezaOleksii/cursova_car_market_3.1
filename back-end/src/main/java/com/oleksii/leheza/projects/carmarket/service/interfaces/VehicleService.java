@@ -4,8 +4,9 @@ import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
-import com.oleksii.leheza.projects.carmarket.entities.User;
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
+import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
+import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -17,7 +18,7 @@ public interface VehicleService {
 
     void deleteVehicleById(Long vehicleId);
 
-    List<VehicleGarageDto> getVehiclesByStatus(VehicleStatus status);
+    List<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status);
 
     List<VehicleDashboardDto> findAllPostedVehicles();
 

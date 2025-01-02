@@ -1,12 +1,14 @@
 package com.oleksii.leheza.projects.carmarket.repositories;
 
-import com.oleksii.leheza.projects.carmarket.entities.chat.Chat;
-import com.oleksii.leheza.projects.carmarket.entities.chat.ChatMessage;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage;
+import com.oleksii.leheza.projects.carmarket.enums.MessageStatus;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
+public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
 
-    List<ChatMessage> findByChat(Chat chat);
+    long countBySenderIdAndRecipientIdAndStatus(String senderId, String recipientId, MessageStatus status);
+
+    List<ChatMessage> findByChatId(String chatId);
 }

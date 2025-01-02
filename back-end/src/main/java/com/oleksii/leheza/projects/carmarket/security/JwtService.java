@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.security;
 
-import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;

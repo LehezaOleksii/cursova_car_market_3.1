@@ -4,8 +4,9 @@ import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
-import com.oleksii.leheza.projects.carmarket.entities.User;
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
+import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
+import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleApproveStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
@@ -205,7 +206,7 @@ public class VehicleController {
     @Operation(summary = "Get vehicles with moderation status", description = "Get a list of vehicles with moderation status.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User vehicle retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = VehicleGarageDto.class))),
+                    content = @Content(schema = @Schema(implementation = VehicleModerationDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "User vehicle are not found",
@@ -215,8 +216,8 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/to_approve")
-    public ResponseEntity<List<VehicleGarageDto>> getApproveVehicles() {
-        List<VehicleGarageDto> vehicleDtos = vehicleService.getVehiclesByStatus(VehicleStatus.ON_MODERATION);
+    public ResponseEntity<List<VehicleModerationDto>> getVehicleModerationDtosByStatus() {
+        List<VehicleModerationDto> vehicleDtos = vehicleService.getVehicleModerationDtosByStatus(VehicleStatus.ON_MODERATION);
         return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 

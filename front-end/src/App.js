@@ -32,13 +32,13 @@ import ManagerAddAuto from "./components/pages/manager/ManagerAddAuto";
 import ManagerChangeAuto from "./components/pages/manager/ChangeAuto";
 import ManagerViewCars from "./components/pages/manager/ManagerViewCars";
 import ManagerSaleCar from "./components/pages/manager/ManagerSaleCar";
-import Chat from "./components/pages/Chat";
 import SignOut from './components/login/SignOut';
 import ForgotPassword from "./components/login/ForgotPassword";
 import OtpVerification from "./components/login/OtpVerification";
 import ChangePassword from "./components/login/ChangePassword";
 import SignupSuccess from "./components/login/SignupSuccess";
 import ConfirmEmail from "./components/login/ConfirmEmail";
+import Chat from "./components/chat/Chat";
 
 const App = () => {
 
@@ -92,7 +92,7 @@ const App = () => {
     <Route path="/admin/cabinet" element={wrapPrivateRoute(<AdminCabinet />, isLoggedIn, 'AdminCabinet', 'ROLE_ADMIN')} />  
 
       {/* chat */}
-    <Route path="/chat" element={wrapPrivateRoute(<Chat />)}/> 
+    <Route path="/chat" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'client', 'ROLE_CLIENT')}/> 
     <Route path="/signout" element={wrapPrivateRoute(<SignOut />)} />
     </Routes>
   );

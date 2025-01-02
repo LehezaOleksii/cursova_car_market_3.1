@@ -1,7 +1,7 @@
 package com.oleksii.leheza.projects.carmarket;
 
-import com.oleksii.leheza.projects.carmarket.entities.City;
-import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.entities.psql.City;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.repositories.CityRepository;

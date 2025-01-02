@@ -6,9 +6,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder(toBuilder = true)
-@NoArgsConstructor
 @AllArgsConstructor
-public class VehicleDashboardDto {
+@NoArgsConstructor
+public class VehicleModerationDto {
 
     private Long id;
     private int year;
@@ -19,8 +19,5 @@ public class VehicleDashboardDto {
     private String region;
     private String phoneNumber;
     private UsageStatus usageStatus;
-    private int likes;
-    private String views;
-    private boolean isUserLiked;
     private byte[] photo;
 }

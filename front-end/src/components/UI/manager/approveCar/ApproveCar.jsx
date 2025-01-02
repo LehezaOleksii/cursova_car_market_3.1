@@ -36,13 +36,13 @@ const ApproveCar = ({ car, removeCarFromList }) => {
     navigate(`/manager/approve/car/${car.id}`);
   };
 
-  return ( //TODO print likes and other info from dto
+  return (
     <div className="card mb-4">
       <div className="row g-0">
         <div className="col-md-4">
           <img
-            src={car.photos && car.photos.length > 0
-              ? `data:image/png;base64,${car.photos[0]}`
+            src={car.photo
+              ? `data:image/png;base64,${car.photo}`
               : 'default-image-url'}
             alt="Car"
             style={{

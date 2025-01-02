@@ -1,11 +1,11 @@
 package com.oleksii.leheza.projects.carmarket.dto.mapper;
 
-import com.oleksii.leheza.projects.carmarket.dto.create.CreateUserDto;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
-import com.oleksii.leheza.projects.carmarket.entities.*;
+import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
@@ -99,15 +99,6 @@ public class DtoMapper {
                 .build();
     }
 
-    public User createUserDtoToUser(CreateUserDto createUserDto) {
-        return User.builder()
-                .email(createUserDto.getEmail())
-                .password(createUserDto.getPassword())
-                .firstName(createUserDto.getFirstName())
-                .lastName(createUserDto.getLastName())
-                .build();
-    }
-
     private List<byte[]> getBytePhotos(List<Photo> photos) {
         List<byte[]> bytePhotoList = new ArrayList<>();
         photos.forEach(photo -> {
@@ -177,7 +168,12 @@ public class DtoMapper {
         VehicleModel model = vehicle.getVehicleModel();
         VehicleBrand brand = model.getVehicleBrand();
         int likes = userVehicleLikeRepository.getLikesByVehicleId(vehicle.getId());
-        return VehicleDashboardDto.builder()
+        VehicleDashboardDto vehicleDashboardDto = new VehicleDashboardDto();
+        List<byte[]> photos = getBytePhotos(vehicle.getPhotos());
+        if (!photos.isEmpty()) {
+            vehicleDashboardDto.setPhoto(photos.get(0));
+        }
+        return vehicleDashboardDto.toBuilder()
                 .id(vehicle.getId())
                 .brandName(brand.getBrandName())
                 .modelName(model.getModelName())
@@ -187,9 +183,27 @@ public class DtoMapper {
                 .region(vehicle.getRegion())
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus())
-                .photos(getBytePhotos(vehicle.getPhotos()))
                 .likes(likes)
                 .views(String.valueOf(vehicle.getViews()))
+                .build();
+    }
+
+    public VehicleModerationDto vehicleToVehicleModerationDto(Vehicle vehicle) {
+        VehicleModerationDto vehicleModerationDto = new VehicleModerationDto();
+        List<byte[]> photos = getBytePhotos(vehicle.getPhotos());
+        if (!photos.isEmpty()) {
+            vehicleModerationDto.setPhoto(photos.get(0));
+        }
+        return vehicleModerationDto.toBuilder()
+                .id(vehicle.getId())
+                .year(vehicle.getYear().getValue())
+                .price(vehicle.getPrice())
+                .brandName(vehicle.getBrand().getBrandName())
+                .modelName(vehicle.getVehicleModel().getModelName())
+                .mileage(vehicle.getMileage())
+                .region(vehicle.getRegion())
+                .phoneNumber(vehicle.getPhoneNumber())
+                .usageStatus(vehicle.getUsageStatus())
                 .build();
     }
 }

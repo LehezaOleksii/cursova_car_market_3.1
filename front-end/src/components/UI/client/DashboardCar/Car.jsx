@@ -32,8 +32,8 @@ const DashboardCar = ({ car }) => {
           <div>
             <img
               src={
-                car.photos && car.photos.length > 0
-                  ? `data:image/png;base64,${car.photos[0]}`
+                car.photo
+                  ? `data:image/png;base64,${car.photo}`
                   : "default-image-url"
               }
               alt="Car"

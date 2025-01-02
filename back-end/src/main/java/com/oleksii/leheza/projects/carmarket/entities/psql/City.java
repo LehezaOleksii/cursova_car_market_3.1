@@ -1,4 +1,4 @@
-package com.oleksii.leheza.projects.carmarket.entities;
+package com.oleksii.leheza.projects.carmarket.entities.psql;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

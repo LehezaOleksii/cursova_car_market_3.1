@@ -1,8 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
-import com.oleksii.leheza.projects.carmarket.entities.EmailConfirmation;
-import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.entities.psql.EmailConfirmation;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;

@@ -3,13 +3,13 @@ import Select from "react-select";
 import Header from "../../client/Header";
 import Footer from "../../client/Footer";
 import CarFilterField from "../../client/fields/CarFilterField";
-import CarStateFilter from "../../client/fields/CarStateFilter"; 
+import CarStateFilter from "../../client/fields/CarStateFilter";
 import SaledCars from "./SaledCars";
 
 const AdvancedFilter = () => {
 
   const [selectedRadio, setSelectedRadio] = useState("ALL");
-  
+
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
   const [bodyTypes, setBodyTypes] = useState([]);
@@ -191,7 +191,7 @@ const AdvancedFilter = () => {
     if (maxMileage) queryParams.append("toMileage", maxMileage);
     if (selectedRadio) queryParams.append("usageStatus", selectedRadio);
 
-    setLoading(true); 
+    setLoading(true);
 
     try {
       setCars([]);
@@ -211,15 +211,46 @@ const AdvancedFilter = () => {
     }
   };
 
+  const handleClearFilter = () => {
+    setSelectedBrand("");
+    setSelectedModel("");
+    setSelectedRegion("");
+    setSelectedBodyType("");
+    handleRadioChange("ALL");
+    setMinYear("");
+    setMaxYear("");
+    setMinPrice("");
+    setMaxPrice("");
+    setPostedCars()
+  };
+
+  const setPostedCars = async () => {
+    const url = `http://localhost:8080/vehicles`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        credentials: 'include',
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+      }
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setCars(data);
+    } else {
+      console.error("Failed to fetch cars:", response.status);
+    }
+  };
+
   return (
     <div className="body">
       <Header />
       <div className="container mt-5 card w-50 mx-auto">
-      <h4 className="text-center">Advanced Search</h4>
+        <h4 className="text-center mt-4">Advanced Filter</h4>
         <div className="row">
-        <CarStateFilter onRadioChange={handleRadioChange} />
+          <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
           <div className="col-md-6">
-          <div className="h6">Brand</div>
+            <div className="h6">Brand</div>
             <Select
               value={selectedBrand}
               onChange={setSelectedBrand}
@@ -228,7 +259,7 @@ const AdvancedFilter = () => {
             />
           </div>
           <div className="col-md-6">
-          <div className="h6">Model</div>
+            <div className="h6">Model</div>
             <Select
               value={selectedModel}
               onChange={setSelectedModel}
@@ -239,7 +270,7 @@ const AdvancedFilter = () => {
         </div>
         <div className="row mt-3">
           <div className="col-md-6">
-          <div className="h6">Body Type</div>
+            <div className="h6">Body Type</div>
             <Select
               value={selectedBodyType}
               onChange={setSelectedBodyType}
@@ -248,27 +279,7 @@ const AdvancedFilter = () => {
             />
           </div>
           <div className="col-md-6">
-          <div className="h6"> Gearbox</div>
-            <Select
-              value={selectedGearbox}
-              onChange={setSelectedGearbox}
-              options={gearboxes}
-              placeholder="Select Gearbox"
-            />
-          </div>
-        </div>
-        <div className="row mt-3">
-          <div className="col-md-6">
-          <div className="h6"> Region</div>
-            <Select
-              value={selectedRegion}
-              onChange={setSelectedRegion}
-              options={regions}
-              placeholder="Select Region"
-            />
-          </div>
-          <div className="col-md-6">
-          <div className="h6"> Engine</div>
+            <div className="h6">Engine</div>
             <Select
               value={selectedEngine}
               onChange={setSelectedEngine}
@@ -279,7 +290,27 @@ const AdvancedFilter = () => {
         </div>
         <div className="row mt-3">
           <div className="col-md-6">
-          <div className="h6"> Min price</div>
+            <div className="h6">Gearbox</div>
+            <Select
+              value={selectedGearbox}
+              onChange={setSelectedGearbox}
+              options={gearboxes}
+              placeholder="Select Gearbox"
+            />
+          </div>
+          <div className="col-md-6">
+            <div className="h6">Region</div>
+            <Select
+              value={selectedRegion}
+              onChange={setSelectedRegion}
+              options={regions}
+              placeholder="Select Region"
+            />
+          </div>
+        </div>
+        <div className="row mt-3">
+          <div className="col-md-6">
+            <div className="h6"> Min Price</div>
             <CarFilterField
               type="number"
               value={minPrice}
@@ -288,7 +319,7 @@ const AdvancedFilter = () => {
             />
           </div>
           <div className="col-md-6">
-          <div className="h6"> Max price</div>
+            <div className="h6"> Max Price</div>
             <CarFilterField
               type="number"
               value={maxPrice}
@@ -297,9 +328,9 @@ const AdvancedFilter = () => {
             />
           </div>
         </div>
-        <div className="row mt-3">
+        <div className="row">
           <div className="col-md-6">
-          <div className="h6"> Min year</div>
+            <div className="h6"> Min Year</div>
             <CarFilterField
               type="number"
               value={minYear}
@@ -308,7 +339,7 @@ const AdvancedFilter = () => {
             />
           </div>
           <div className="col-md-6">
-          <div className="h6"> Max year</div>
+            <div className="h6"> Max Year</div>
             <CarFilterField
               type="number"
               value={maxYear}
@@ -317,18 +348,18 @@ const AdvancedFilter = () => {
             />
           </div>
         </div>
-        <div className="row mt-3">
+        <div className="row">
           <div className="col-md-6">
-          <div className="h6"> Min mileage</div>
-            <CarFilterField               
-            type="number"
+            <div className="h6"> Min Mileage</div>
+            <CarFilterField
+              type="number"
               value={minMileage}
               onChange={(e) => setMinMileage(e.target.value)}
               placeholder="Min Mileage"
             />
           </div>
           <div className="col-md-6">
-          <div className="h6"> Max mileage</div>
+            <div className="h6"> Max Mileage</div>
             <CarFilterField
               type="number"
               value={maxMileage}
@@ -337,24 +368,32 @@ const AdvancedFilter = () => {
             />
           </div>
         </div>
-        <div className="row mt-4">
-  <div className="col-md-6 offset-md-3 text-center">
-    <button
-      className="btn btn-primary btn-lg w-100 mb-3"
-      onClick={handleSearch}
-    >
-      Search
-    </button>
-  </div>
-</div>
-</div>
-{cars.length > 0 ? (
-      <div className="dashboard mt-5">
-        <SaledCars cars={cars} />
+        <div className="row mt-3">
+          <div className="col-md-6 text-start mb-3">
+            <button
+              className="btn btn-primary btn-md w-100"
+              onClick={handleSearch}
+            >
+              Search
+            </button>
+          </div>
+          <div className="col-md-5 text-end">
+            <button
+              className="btn btn-secondary btn-md w-75 ms-3"
+              onClick={handleClearFilter}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </div>
-) : (
-  <div className="text-center mt-4">No cars found.</div>
-)}
+      {cars.length > 0 ? (
+        <div className="dashboard mt-5">
+          <SaledCars cars={cars} />
+        </div>
+      ) : (
+        <div className="text-center mt-4">No cars found.</div>
+      )}
 
       <Footer />
     </div>

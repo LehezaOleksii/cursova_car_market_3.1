@@ -1,28 +1,36 @@
-package com.oleksii.leheza.projects.carmarket.entities;
+package com.oleksii.leheza.projects.carmarket.entities.mongo;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.oleksii.leheza.projects.carmarket.entities.psql.Photo;
+import com.oleksii.leheza.projects.carmarket.entities.psql.VehicleBodyType;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Year;
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Entity
-@Builder(toBuilder = true)
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
-@Table(name = "vehicles")
-public class Vehicle {
+@SuperBuilder(toBuilder = true)
+@Document(collection = "vehicle_histories")
+public class VehicleHistory {
+
+    public static Long globalVehicleHistoryId = 1L;
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
+    private Long historyId;
     private Year year;
     @Min(0)
     private int price;
@@ -32,9 +40,9 @@ public class Vehicle {
     @ManyToOne
     @JsonBackReference
     @ToString.Exclude
-    private User user;
+    private Long userId;
     @ManyToOne(cascade = CascadeType.PERSIST)
-    private VehicleBrand brand;
+    private VehicleBrandMongo brand;
     @Enumerated(EnumType.ORDINAL)
     private VehicleStatus status;
     @Enumerated(EnumType.ORDINAL)
@@ -47,13 +55,15 @@ public class Vehicle {
     private List<Photo> photos;
     @ManyToOne
     @JoinColumn(name = "vehicle_model_id")
-    private VehicleModel vehicleModel;
+    private VehicleModelMongo vehicleModel;
     @ManyToOne
     @JoinColumn(name = "engine_id")
-    private Engine engine;
+    private VehicleEngineMongo engine;
     @ManyToOne
     private VehicleBodyType bodyType;
     private int views;
-    @OneToMany
-    private List<VehicleHistory> vehicleHistories = new ArrayList<>();
+
+    public VehicleHistory() {
+        historyId = globalVehicleHistoryId++;
+    }
 }

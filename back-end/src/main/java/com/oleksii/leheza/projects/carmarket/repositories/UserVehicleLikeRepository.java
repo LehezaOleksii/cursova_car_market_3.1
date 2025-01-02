@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.repositories;
 
-import com.oleksii.leheza.projects.carmarket.entities.UserVehicleLike;
+import com.oleksii.leheza.projects.carmarket.entities.psql.UserVehicleLike;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

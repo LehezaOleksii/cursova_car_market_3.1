@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.security.filter.specifications;
 
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
+import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleRepository;

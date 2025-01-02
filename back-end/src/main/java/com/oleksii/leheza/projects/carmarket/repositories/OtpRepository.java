@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.repositories;
 
-import com.oleksii.leheza.projects.carmarket.entities.OtpToken;
+import com.oleksii.leheza.projects.carmarket.entities.psql.OtpToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

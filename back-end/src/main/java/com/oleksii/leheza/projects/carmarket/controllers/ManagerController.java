@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
-import com.oleksii.leheza.projects.carmarket.entities.User;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;

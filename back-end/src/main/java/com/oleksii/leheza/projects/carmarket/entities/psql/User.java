@@ -1,4 +1,4 @@
-package com.oleksii.leheza.projects.carmarket.entities;
+package com.oleksii.leheza.projects.carmarket.entities.psql;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;

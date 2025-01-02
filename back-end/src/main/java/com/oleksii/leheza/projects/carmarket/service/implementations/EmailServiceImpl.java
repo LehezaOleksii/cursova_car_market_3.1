@@ -1,8 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 
-import com.oleksii.leheza.projects.carmarket.entities.OtpToken;
-import com.oleksii.leheza.projects.carmarket.entities.Vehicle;
+import com.oleksii.leheza.projects.carmarket.entities.psql.OtpToken;
+import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleApproveStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.exceptions.SmtpException;

@@ -1,4 +1,4 @@
-package com.oleksii.leheza.projects.carmarket.entities;
+package com.oleksii.leheza.projects.carmarket.entities.psql;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
@@ -8,19 +8,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 
 import java.time.Year;
 import java.util.List;
 
+@Data
 @Entity
-@Getter
-@Setter
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder(toBuilder = true)
-@Table(name = "vehicle_histories")
-public class VehicleHistory {
+@Table(name = "vehicles")
+public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,4 +53,6 @@ public class VehicleHistory {
     @ManyToOne
     private VehicleBodyType bodyType;
     private int views;
+//    @Column(nullable = false) TODO
+    private Long historyId;
 }

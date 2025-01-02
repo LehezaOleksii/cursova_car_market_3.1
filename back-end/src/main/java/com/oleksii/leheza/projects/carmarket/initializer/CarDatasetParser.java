@@ -1,9 +1,9 @@
 package com.oleksii.leheza.projects.carmarket.initializer;
 
-import com.oleksii.leheza.projects.carmarket.entities.Engine;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBodyType;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBrand;
-import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
+import com.oleksii.leheza.projects.carmarket.entities.psql.Engine;
+import com.oleksii.leheza.projects.carmarket.entities.psql.VehicleBodyType;
+import com.oleksii.leheza.projects.carmarket.entities.psql.VehicleBrand;
+import com.oleksii.leheza.projects.carmarket.entities.psql.VehicleModel;
 import com.oleksii.leheza.projects.carmarket.exceptions.DataSetReadingException;
 import com.oleksii.leheza.projects.carmarket.repositories.EngineRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleBodyTypeRepository;

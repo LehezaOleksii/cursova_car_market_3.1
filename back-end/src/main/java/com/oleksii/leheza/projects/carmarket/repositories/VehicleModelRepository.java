@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.repositories;
 
-import com.oleksii.leheza.projects.carmarket.entities.VehicleModel;
+import com.oleksii.leheza.projects.carmarket.entities.psql.VehicleModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

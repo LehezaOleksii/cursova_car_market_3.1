@@ -5,7 +5,8 @@ import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
-import com.oleksii.leheza.projects.carmarket.entities.*;
+import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
@@ -51,19 +52,9 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleGarageDto> getVehiclesByStatus(VehicleStatus status) {
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return vehicleRepository.findAllByStatus(status).stream().map(vehicle -> {
-            VehicleGarageDto vehicleDto = dtoMapper.vehicleToVehicleGarageDto(vehicle);
-            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
-            boolean isUserLiked = false;
-            if (userVehicleLike.isPresent()) {
-                isUserLiked = userVehicleLike.get().isLiked();
-            }
-            vehicleDto.setUserLiked(isUserLiked);
-            return vehicleDto;
-        }).toList();
+    public List<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status) {
+        return vehicleRepository.findAllByStatus(status).stream()
+                .map(dtoMapper::vehicleToVehicleModerationDto).toList();
     }
 
     @Override

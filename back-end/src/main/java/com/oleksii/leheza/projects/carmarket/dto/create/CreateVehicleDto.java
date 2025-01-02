@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.dto.create;
 
-import com.oleksii.leheza.projects.carmarket.entities.VehicleBodyType;
+import com.oleksii.leheza.projects.carmarket.entities.psql.VehicleBodyType;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import jakarta.validation.constraints.Min;

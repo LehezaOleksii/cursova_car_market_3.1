@@ -1,5 +1,5 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
-import com.oleksii.leheza.projects.carmarket.entities.City;
+import com.oleksii.leheza.projects.carmarket.entities.psql.City;
 import com.oleksii.leheza.projects.carmarket.repositories.CityRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.CitiesService;
 import lombok.RequiredArgsConstructor;
@@ -31,14 +31,11 @@ public class CitiesServiceImpl implements CitiesService {
 
             if (response != null && !response.getStatusCode().isError() && response.getBody() != null && !response.getBody().isEmpty()) {
                 log.info("Cities successfully retrieved: {}", response.getBody());
-
-                // Parse the response body as JSON
                 JSONObject jsonResponse = new JSONObject(response.getBody());
                 if (!jsonResponse.getBoolean("error")) {
                     JSONArray citiesArray = jsonResponse.getJSONArray("data");
-                    // Map the JSONArray to a List<String>
                     return citiesArray.toList().stream()
-                            .map(Object::toString) // Convert to String
+                            .map(Object::toString)
                             .collect(Collectors.toList());
                 } else {
                     log.error("Error in API response: {}", jsonResponse.getString("msg"));

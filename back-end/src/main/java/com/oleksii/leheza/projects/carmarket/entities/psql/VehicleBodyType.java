@@ -1,4 +1,4 @@
-package com.oleksii.leheza.projects.carmarket.entities;
+package com.oleksii.leheza.projects.carmarket.entities.psql;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "photos")
-public class Photo {
-
+@Table(name = "vehicle_body_types")
+public class VehicleBodyType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private byte[] photo;
 
-    public Photo(byte[] photo) {
-        this.photo = photo;
+    private String bodyTypeName;
+
+    public VehicleBodyType(String bodyTypeName) {
+        this.bodyTypeName = bodyTypeName;
     }
 }
