@@ -216,8 +216,9 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/to_approve")
-    public ResponseEntity<List<VehicleModerationDto>> getVehicleModerationDtosByStatus() {
-        List<VehicleModerationDto> vehicleDtos = vehicleService.getVehicleModerationDtosByStatus(VehicleStatus.ON_MODERATION);
+    public ResponseEntity<Page<VehicleModerationDto>> getVehicleModerationDtosByStatus(@RequestParam(defaultValue = "0") int page,
+                                                                                       @RequestParam(defaultValue = "10") int size) {
+        Page<VehicleModerationDto> vehicleDtos = vehicleService.getVehicleModerationDtosByStatus(VehicleStatus.ON_MODERATION, page, size);
         return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
@@ -292,8 +293,9 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping
-    public ResponseEntity<List<VehicleDashboardDto>> getAllPostedVehicles() {
-        List<VehicleDashboardDto> vehicleDtos = vehicleService.findAllPostedVehicles();
+    public ResponseEntity<Page<VehicleDashboardDto>> getAllPostedVehicles(@RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "10") int size) {
+        Page<VehicleDashboardDto> vehicleDtos = vehicleService.findAllPostedVehicles(page, size);
         return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
@@ -330,7 +332,8 @@ public class VehicleController {
     public ResponseEntity<Page<VehicleDashboardDto>> filterVehicles(@RequestParam Map<String, String> params,
                                                                     @RequestParam(defaultValue = "0") int page,
                                                                     @RequestParam(defaultValue = "10") int size) {
-        return new ResponseEntity<>(vehicleService.filterVehicles(params, page, size), HttpStatus.OK);
+        VehicleStatus vehicleStatus = VehicleStatus.valueOf(params.get("vehicleStatus"));
+        return new ResponseEntity<>(vehicleService.filterVehicles(params, vehicleStatus, page, size), HttpStatus.OK);
     }
 
     @Operation(summary = "Update an existing vehicle likes", description = "Update an existing vehicle likes.")

@@ -22,9 +22,11 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class CarMarketApplication {
 
+    private final UserRepository userRepository;
     private final CityRepository cityRepository;
 
-    public CarMarketApplication(CityRepository cityRepository) {
+    public CarMarketApplication(CityRepository cityRepository, UserRepository userRepository) {
+        this.userRepository = userRepository;
         this.cityRepository = cityRepository;
     }
 
@@ -33,9 +35,9 @@ public class CarMarketApplication {
     }
 
     @Bean
-    CommandLineRunner runner(UserRepository userRepository) {
+    CommandLineRunner runner() {
         return args -> {
-            generateMainUsers(userRepository);
+//            generateMainUsers(); TODO
         };
     }
 
@@ -62,7 +64,7 @@ public class CarMarketApplication {
         return new RestTemplate();
     }
 
-    private void generateMainUsers(UserRepository userRepository) {
+    private void generateMainUsers() {
         String adminEmail = "admin@gmail.com";
         String password = "password";
         userRepository.save(User.builder()

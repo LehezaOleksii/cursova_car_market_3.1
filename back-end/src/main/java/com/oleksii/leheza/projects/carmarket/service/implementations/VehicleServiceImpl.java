@@ -18,7 +18,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -52,47 +53,46 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status) {
-        return vehicleRepository.findAllByStatus(status).stream()
-                .map(dtoMapper::vehicleToVehicleModerationDto).toList();
+    public Page<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return vehicleRepository.findAllByStatus(status, pageable)
+                .map(dtoMapper::vehicleToVehicleModerationDto);
     }
 
     @Override
-    public List<VehicleDashboardDto> findAllPostedVehicles() {
+    public Page<VehicleDashboardDto> findAllPostedVehicles(int page, int size) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        return vehicleRepository.findAllByStatus(VehicleStatus.POSTED).stream()
-                .map(vehicle -> {
-                    VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
-                    Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
-                    boolean isUserLiked = false;
-                    if (userVehicleLike.isPresent()) {
-                        isUserLiked = userVehicleLike.get().isLiked();
-                    }
-                    vehicleDto.setUserLiked(isUserLiked);
-                    return vehicleDto;
-                }).toList();
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Vehicle> vehiclesPage = vehicleRepository.findAllByStatus(VehicleStatus.POSTED, pageable);
+
+        return vehiclesPage.map(vehicle -> {
+            VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = userVehicleLike.map(UserVehicleLike::isLiked).orElse(false);
+            vehicleDto.setUserLiked(isUserLiked);
+            return vehicleDto;
+        });
     }
 
+
     @Override
-    public Page<VehicleDashboardDto> filterVehicles(Map<String, String> params, int page, int size) {
+    public Page<VehicleDashboardDto> filterVehicles(Map<String, String> params, VehicleStatus vehicleStatus, int page, int size) {
         Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
         VehicleSearchCriteria criteria = dtoMapper.mapToVehicleSearchCriteria(params);
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
-        List<Vehicle> filteredVehicles = vehiclesPage.stream()
-                .filter(vehicle -> VehicleStatus.POSTED.equals(vehicle.getStatus()))
-                .toList();
-        Page<Vehicle> filteredPage = new PageImpl<>(filteredVehicles, vehiclesPage.getPageable(), filteredVehicles.size());
-        return filteredPage.map(vehicle -> {
-            VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
-            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
-            boolean isUserLiked = userVehicleLike.isPresent() && userVehicleLike.get().isLiked();
-            vehicleDto.setUserLiked(isUserLiked);
-            return vehicleDto;
-        });
+        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, vehicleStatus, page, size, sort);
+        return vehiclesPage
+                .map(vehicle -> {
+                    VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+                    Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+                    boolean isUserLiked = userVehicleLike.isPresent() && userVehicleLike.get().isLiked();
+                    vehicleDto.setUserLiked(isUserLiked);
+                    return vehicleDto;
+                });
     }
 
     @Override

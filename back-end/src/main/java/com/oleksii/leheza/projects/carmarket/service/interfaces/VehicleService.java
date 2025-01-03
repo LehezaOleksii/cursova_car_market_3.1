@@ -18,11 +18,11 @@ public interface VehicleService {
 
     void deleteVehicleById(Long vehicleId);
 
-    List<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status);
+    Page<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status, int page, int size);
 
-    List<VehicleDashboardDto> findAllPostedVehicles();
+    Page<VehicleDashboardDto> findAllPostedVehicles(int page, int size);
 
-    Page<VehicleDashboardDto> filterVehicles(Map<String, String> params, int page, int size);
+    Page<VehicleDashboardDto> filterVehicles(Map<String, String> params, VehicleStatus vehicleStatus, int page, int size);
 
     void saveVehicleWithModerationStatus(CreateVehicleDto vehicleDto, User user);
 

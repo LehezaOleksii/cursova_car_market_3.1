@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
 import Header from "../../client/Header";
 import Footer from "../../client/Footer";
@@ -9,6 +10,10 @@ import SaledCars from "./SaledCars";
 const AdvancedFilter = () => {
 
   const [selectedRadio, setSelectedRadio] = useState("ALL");
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [pageSize, setPageSize] = useState(5);
 
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
@@ -34,10 +39,73 @@ const AdvancedFilter = () => {
 
   const jwtStr = localStorage.getItem("jwtToken");
 
+  const isPreviousDisabled = currentPage <= 0;
+  const isNextDisabled = currentPage >= totalPages - 1;
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const handleRadioChange = (value) => {
     setSelectedRadio(value);
   };
+  
+  const getPageAndSizeFromUrl = () => {
+    const params = new URLSearchParams(location.search);
+    const page = parseInt(params.get("page")) || 0;
+    const size = parseInt(params.get("size")) || 5;
+    return { page, size };
+  };
 
+  const handlePageChange = (page) => {
+    const { size } = getPageAndSizeFromUrl();
+    if (page < 0 || page >= totalPages) return;
+  
+    setCurrentPage(page);
+    navigate(`?page=${page}&size=${size}`);
+    fetchData(page, size);
+  };
+
+  const fetchData = async (page = 0, size = 5) => {
+    const queryParams = new URLSearchParams();
+  
+    if (selectedBrand) queryParams.append("brandName", selectedBrand.value);
+    if (selectedModel) queryParams.append("modelName", selectedModel.value);
+    if (selectedBodyType) queryParams.append("bodyType", selectedBodyType.value);
+    if (selectedEngine) queryParams.append("engine", selectedEngine.value);
+    if (selectedGearbox) queryParams.append("gearBox", selectedGearbox.value);
+    if (selectedRegion) queryParams.append("region", selectedRegion.value);
+    if (minPrice) queryParams.append("fromPrice", minPrice);
+    if (maxPrice) queryParams.append("toPrice", maxPrice);
+    if (minYear) queryParams.append("fromYear", minYear);
+    if (maxYear) queryParams.append("toYear", maxYear);
+    if (minMileage) queryParams.append("fromMileage", minMileage);
+    if (maxMileage) queryParams.append("toMileage", maxMileage);
+    if (selectedRadio) queryParams.append("usageStatus", selectedRadio);
+  
+    queryParams.append("vehicleStatus", "POSTED");
+    queryParams.append("page", page);
+    queryParams.append("size", size);
+  
+    setLoading(true);
+  
+    try {
+      const response = await fetch(`http://localhost:8080/vehicles/filter?${queryParams.toString()}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + jwtStr,
+        },
+      });
+      const data = await response.json();
+      setCars(data.content || []);
+      setTotalPages(data.totalPages || 0);
+    } catch (error) {
+      console.error("Error fetching cars:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -149,34 +217,34 @@ const AdvancedFilter = () => {
       alert("Price values must be positive.");
       return;
     }
-
+  
     if (parseFloat(minPrice) > parseFloat(maxPrice)) {
       alert("Min price cannot be greater than max price.");
       return;
     }
-
+  
     if (parseFloat(minYear) < 0 || parseFloat(maxYear) < 0) {
       alert("Year values must be positive.");
       return;
     }
-
+  
     if (parseFloat(minYear) > parseFloat(maxYear)) {
       alert("Min year cannot be greater than max year.");
       return;
     }
-
+  
     if (parseFloat(minMileage) < 0 || parseFloat(maxMileage) < 0) {
       alert("Mileage values must be positive.");
       return;
     }
-
+  
     if (parseFloat(minMileage) > parseFloat(maxMileage)) {
       alert("Min mileage cannot be greater than max mileage.");
       return;
     }
-
+  
     const queryParams = new URLSearchParams();
-
+  
     if (selectedBrand) queryParams.append("brandName", selectedBrand.value);
     if (selectedModel) queryParams.append("modelName", selectedModel.value);
     if (selectedBodyType) queryParams.append("bodyType", selectedBodyType.value);
@@ -190,9 +258,13 @@ const AdvancedFilter = () => {
     if (minMileage) queryParams.append("fromMileage", minMileage);
     if (maxMileage) queryParams.append("toMileage", maxMileage);
     if (selectedRadio) queryParams.append("usageStatus", selectedRadio);
-
+    
+    queryParams.append("vehicleStatus", "POSTED");
+    queryParams.append("page", currentPage);
+    queryParams.append("size", pageSize);
+  
     setLoading(true);
-
+  
     try {
       setCars([]);
       const response = await fetch(`http://localhost:8080/vehicles/filter?${queryParams.toString()}`, {
@@ -204,6 +276,7 @@ const AdvancedFilter = () => {
       });
       const data = await response.json();
       setCars(data.content || []);
+      setTotalPages(data.totalPages || 0);
     } catch (error) {
       console.error("Error fetching cars:", error);
     } finally {
@@ -388,13 +461,41 @@ const AdvancedFilter = () => {
         </div>
       </div>
       {cars.length > 0 ? (
-        <div className="dashboard mt-5">
-          <SaledCars cars={cars} />
-        </div>
+        <>
+          <div className="dashboard mt-5">
+            <SaledCars cars={cars} />
+          </div>
+          <div className="d-flex justify-content-center mt-4">
+        <button
+          className="btn btn-outline-primary mx-1"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={isPreviousDisabled}
+        >
+          &lt; Previous
+        </button>
+
+        {[...Array(totalPages).keys()].map((page) => (
+          <button
+            key={page}
+            className={`btn ${page === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+            onClick={() => handlePageChange(page)}
+          >
+            {page + 1}
+          </button>
+        ))}
+
+        <button
+          className="btn btn-outline-primary mx-1"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={isNextDisabled}
+        >
+          Next &gt;
+        </button>
+      </div>
+        </>
       ) : (
         <div className="text-center mt-4">No cars found.</div>
       )}
-
       <Footer />
     </div>
   );

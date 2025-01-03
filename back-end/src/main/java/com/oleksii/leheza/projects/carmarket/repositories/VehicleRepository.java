@@ -3,6 +3,8 @@ package com.oleksii.leheza.projects.carmarket.repositories;
 import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -35,7 +37,7 @@ public interface VehicleRepository extends
 //                               @Param("gearbox") String gearbox,
 //                                @Param("mileage") Integer mileage);
 
-    List<Vehicle> findAllByStatus(VehicleStatus status);
+    Page<Vehicle> findAllByStatus(VehicleStatus status, Pageable pageable);
 
     @Modifying
     @Transactional

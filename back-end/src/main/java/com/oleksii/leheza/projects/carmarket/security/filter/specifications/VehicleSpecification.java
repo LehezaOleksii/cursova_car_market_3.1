@@ -3,6 +3,7 @@ package com.oleksii.leheza.projects.carmarket.security.filter.specifications;
 import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
+import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.repositories.VehicleRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
 import jakarta.persistence.criteria.Join;
@@ -26,7 +27,7 @@ public class VehicleSpecification {
 
     private final VehicleRepository vehicleRepository;
 
-    public Page<Vehicle> getVehiclesWithCriterias(VehicleSearchCriteria criterias, int page, int size, Sort sort) {
+    public Page<Vehicle> getVehiclesWithCriterias(VehicleSearchCriteria criterias, VehicleStatus vehicleStatus, int page, int size, Sort sort) {
         log.info("Start creating vehicle specifications");
         List<Specification<Vehicle>> specifications = new ArrayList<>();
 
@@ -81,6 +82,11 @@ public class VehicleSpecification {
         if (criterias.getToMileage() != null && !criterias.getToMileage().isEmpty()) {
             specifications.add(toMileage(criterias));
         }
+
+        if (vehicleStatus != null) {
+            specifications.add(vehicleStatusLike(vehicleStatus));
+        }
+
         Specification<Vehicle> specification = Specification.where(Specification.allOf(specifications));
         Pageable pageable = PageRequest.of(page, size, sort);
         log.info("vehicle specifications was created");
@@ -167,10 +173,14 @@ public class VehicleSpecification {
         };
     }
 
-
     public Specification<Vehicle> usageStatusLike(VehicleSearchCriteria criterias) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("usageStatus"), UsageStatus.valueOf(criterias.getUsageStatus()));
 
+    }
+
+    public Specification<Vehicle> vehicleStatusLike(VehicleStatus vehicleStatus) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("status"), vehicleStatus);
     }
 }
