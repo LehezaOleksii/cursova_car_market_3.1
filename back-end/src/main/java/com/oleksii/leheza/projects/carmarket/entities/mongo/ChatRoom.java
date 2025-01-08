@@ -1,0 +1,37 @@
+package com.oleksii.leheza.projects.carmarket.entities.mongo;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+@Document(collection = "chat_rooms")
+public class ChatRoom {
+    @Id
+    private String id;
+    private String firstUserId;
+    private String secondUserId;
+    private List<ChatMessage> firstUserMessages = new ArrayList<>();
+    private List<ChatMessage> secondUserMessages = new ArrayList<>();
+
+    public void sortMessagesById(String firstUserId) {
+        if (!firstUserId.equals(this.firstUserId)) {
+            String tempFirstUserId = firstUserId;
+            this.firstUserId = secondUserId;
+            this.secondUserId = tempFirstUserId;
+
+            List<ChatMessage> tempFirstUserMessages = firstUserMessages;
+            this.firstUserMessages = secondUserMessages;
+            this.secondUserMessages = tempFirstUserMessages;
+        }
+    }
+}

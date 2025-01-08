@@ -6,8 +6,8 @@ import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
-import com.oleksii.leheza.projects.carmarket.repositories.EmailConfirmationRepository;
-import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.EmailConfirmationRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.UserSpecification;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
@@ -127,6 +127,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getUserRoleByEmail(String email) {
         return userRepository.findRoleByEmail(email);
+    }
+
+    @Override
+    public String getFullUserNameById(String userId) {
+        return userRepository.findFirstNameAndLastNameById(userId);
+    }
+
+    @Override
+    public String getUserIdByVehicleId(Long vehicleId) {
+        return userRepository.findUserIdByVehicleId(vehicleId);
+    }
+
+    @Override
+    public String getUserEmailById(String id) {
+        return userRepository.findEmailById(id);
     }
 
     @Override

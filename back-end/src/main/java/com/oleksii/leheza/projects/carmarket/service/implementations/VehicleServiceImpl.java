@@ -10,7 +10,7 @@ import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
-import com.oleksii.leheza.projects.carmarket.repositories.*;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.VehicleSpecification;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;

@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 import com.oleksii.leheza.projects.carmarket.entities.psql.City;
-import com.oleksii.leheza.projects.carmarket.repositories.CityRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.CityRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.CitiesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

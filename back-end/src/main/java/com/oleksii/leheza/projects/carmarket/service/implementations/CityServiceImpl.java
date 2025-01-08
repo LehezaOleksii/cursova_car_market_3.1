@@ -1,7 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.entities.psql.City;
-import com.oleksii.leheza.projects.carmarket.repositories.CityRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.CityRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.CityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

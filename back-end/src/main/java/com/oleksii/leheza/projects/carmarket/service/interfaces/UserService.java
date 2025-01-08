@@ -41,4 +41,10 @@ public interface UserService extends UserDetailsService {
     Page<User> getUsersWithFilter(int page, int size, VehilcleSearchCriteria criteria);
 
     String getUserRoleByEmail(String email);
+
+    String getFullUserNameById(String userId);
+
+    String getUserIdByVehicleId(Long vehicleId);
+
+    String getUserEmailById(String id);
 }

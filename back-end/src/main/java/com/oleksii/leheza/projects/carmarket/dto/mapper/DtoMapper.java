@@ -1,13 +1,16 @@
 package com.oleksii.leheza.projects.carmarket.dto.mapper;
 
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
 import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
-import com.oleksii.leheza.projects.carmarket.repositories.*;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
@@ -204,6 +207,26 @@ public class DtoMapper {
                 .region(vehicle.getRegion())
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus())
+                .build();
+    }
+
+    public ChatHistory chatRoomToChatHistory(ChatRoom chatRoom) {
+        return ChatHistory.builder()
+                .firstMessages(chatRoom.getFirstUserMessages().stream()
+                        .map(this::chatMessageEntityToChatMessageDto)
+                        .toList())
+                .secondMessages(chatRoom.getSecondUserMessages().stream()
+                        .map(this::chatMessageEntityToChatMessageDto)
+                        .toList())
+                .build();
+    }
+
+    public ChatMessageDto chatMessageEntityToChatMessageDto(com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage chatMessage) {
+        return ChatMessageDto.builder()
+                .id(chatMessage.getId())
+                .content(chatMessage.getContent())
+                .timestamp(String.valueOf(chatMessage.getTimestamp()))
+                .status(chatMessage.getStatus())
                 .build();
     }
 }

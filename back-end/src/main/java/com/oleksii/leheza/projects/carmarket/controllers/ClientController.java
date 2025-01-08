@@ -1,6 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.Response;
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,5 +75,39 @@ public class ClientController {
     public ResponseEntity<Response> getUserRole(@AuthenticationPrincipal String email) {
         Response response = new Response(userService.getUserRoleByEmail(email));
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get user id by vehicle id", description = "Get an user id by vehicle id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User id retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User role are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/id/vehicleId/{vehicleId}")
+    public ResponseEntity<Response> getUserIdByVehicleId(@PathVariable Long vehicleId) {
+        Response response = new Response(userService.getUserIdByVehicleId(vehicleId));
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Retrieve full user name if there is no name than return user email", description = "Retrieve full user name by its id, if there is no name than return user email.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieve full user name",
+                    content = @Content(schema = @Schema(implementation = ChatHistory.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),})
+    @GetMapping("{id}/name")
+    public ResponseEntity<Response> getChatNameById(@PathVariable String id) {
+        String chatName = userService.getFullUserNameById(id);
+        if (chatName == null) {
+            chatName = userService.getUserEmailById(id);
+        }
+        return new ResponseEntity<>(new Response(chatName), HttpStatus.OK);
     }
 }

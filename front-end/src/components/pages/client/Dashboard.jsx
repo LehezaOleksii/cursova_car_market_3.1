@@ -22,7 +22,7 @@ const Dashboard = () => {
         });
         if (response.ok) {
           const data = await response.json();
-          setCars(data);
+          setCars(data.content);
         } else {
           console.error("Failed to fetch cars:", response.status);
         }        
@@ -30,21 +30,6 @@ const Dashboard = () => {
     fetchData();
   }, [jwtStr]); 
 
-  const filterCars = async (filterData) => {
-    const queryParams = new URLSearchParams(filterData);
-    const url = `http://localhost:8080/vehicles/filter?${queryParams.toString()}`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + jwtStr
-      },
-      credentials: "include",
-    }); 
-    const data = await response.json();
-    setCars(data);
-  };
-  
   return (
     <div className="body">
       <Header />

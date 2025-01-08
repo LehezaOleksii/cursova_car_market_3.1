@@ -3,7 +3,7 @@ package com.oleksii.leheza.projects.carmarket.security.filter.specifications;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
-import com.oleksii.leheza.projects.carmarket.repositories.UserRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const DashboardCar = ({ car }) => {
   const [liked, setLiked] = useState(car.userLiked || false)
   const [likes, setLikes] = useState(Number(car.likes));
   const jwtStr = localStorage.getItem("jwtToken");
+  const navigate = useNavigate(); 
+
   const handleLikeToggle = async () => {
     const url = liked
       ? `http://localhost:8080/vehicles/${car.id}/no_like`
@@ -22,6 +24,26 @@ const DashboardCar = ({ car }) => {
       setLikes((prevLikes) => liked ? Number(prevLikes) - 1 : Number(prevLikes) + 1);
     } else {
       console.error("Failed to update like status.");
+    }
+  };
+
+  const handleSendMessage = async () => {
+    try {
+      const response = await fetch(`http://localhost:8080/clients/id/vehicleId/${car.id}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + jwtStr
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        navigate(`/chat/${data.data}`);
+      } else {
+        console.error("Failed to fetch owner information.");
+      }
+    } catch (error) {
+      console.error("Error fetching owner information:", error);
     }
   };
 
@@ -86,6 +108,9 @@ const DashboardCar = ({ car }) => {
               <Link to={`/client/car/${car.id}`} className="dropdown-item">
                 <button className="btn btn-primary">Details</button>
               </Link>
+              <div className="dropdown-item">
+                <button className="btn btn-secondary" onClick={handleSendMessage}>Send Message</button>
+              </div>
             </div>
           </div>
         </div>

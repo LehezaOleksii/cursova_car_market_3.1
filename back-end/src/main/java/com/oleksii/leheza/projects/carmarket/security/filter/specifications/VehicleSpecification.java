@@ -4,7 +4,7 @@ import com.oleksii.leheza.projects.carmarket.entities.psql.Vehicle;
 import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
-import com.oleksii.leheza.projects.carmarket.repositories.VehicleRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.VehicleRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
 import jakarta.persistence.criteria.Join;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.oleksii.leheza.projects.carmarket.repositories;
+package com.oleksii.leheza.projects.carmarket.repositories.sql;
 
 import com.oleksii.leheza.projects.carmarket.entities.psql.UserVehicleLike;
 import jakarta.transaction.Transactional;

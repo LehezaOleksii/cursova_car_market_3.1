@@ -1,5 +1,6 @@
-package com.oleksii.leheza.projects.carmarket.repositories;
+package com.oleksii.leheza.projects.carmarket.repositories.sql;
 
+import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
@@ -52,4 +53,17 @@ public interface UserRepository extends
 
     @Query("SELECT u.userRole FROM User u WHERE u.email = :email")
     String findRoleByEmail(String email);
+
+    @Query("SELECT new com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName(u.id, u.firstName, u.lastName, u.email, u.profileImageUrl) " +
+            "FROM User u WHERE u.id IN :userIds")
+    List<UserChatName> getUserChatNamesByIds(@Param("userIds") List<Long> userIds);
+
+    @Query("SELECT CONCAT(u.firstName, ' ', u.lastName) FROM User u WHERE u.id = :userId")
+    String findFirstNameAndLastNameById(String userId);
+
+    @Query("SELECT u.id FROM User u JOIN u.vehicles v WHERE v.id = :vehicleId")
+    String findUserIdByVehicleId(Long vehicleId);
+
+    @Query("SELECT u.email FROM User u WHERE u.id = :id")
+    String findEmailById(String id);
 }

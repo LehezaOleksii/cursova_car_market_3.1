@@ -149,6 +149,7 @@ const CarFilter = ({ setCars }) => {
 
     try {
       setCars([]);
+      queryParams.append("vehicleStatus", "POSTED");
       const url = `http://localhost:8080/vehicles/filter?${queryParams.toString()}`;
       const response = await fetch(url, {
         method: "GET",

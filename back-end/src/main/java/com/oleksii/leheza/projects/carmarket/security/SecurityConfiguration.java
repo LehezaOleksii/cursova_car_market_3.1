@@ -35,10 +35,10 @@ public class SecurityConfiguration {
                         .requestMatchers("/clients/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
                         .requestMatchers("/managers/**").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/admins/**").hasRole("ADMIN")
+                        .requestMatchers("/chat/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/index.html").permitAll()
-                        .requestMatchers("/chat/**").permitAll()//TODO
-                        .requestMatchers("/ws/**").permitAll()//TODO
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

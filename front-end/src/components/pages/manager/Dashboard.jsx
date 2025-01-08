@@ -26,6 +26,7 @@ const Dashboard = () => {
   });
 
   const filterCars = async (filterData) => {
+    filterData.vehicleStatus = "POSTED";
     const queryParams = new URLSearchParams(filterData);
     const url = `http://localhost:8080/vehicles/filter?${queryParams.toString()}`;
     const response = await fetch(url, {

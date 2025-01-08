@@ -1,36 +1,62 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
-import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage;
-import com.oleksii.leheza.projects.carmarket.dto.chat.ChatNotification;
-import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatMessageService;
+import com.oleksii.leheza.projects.carmarket.dto.Response;
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
+import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatController {
 
-    private final SimpMessagingTemplate messagingTemplate;
-    private final ChatMessageService chatMessageService;
     private final ChatRoomService chatRoomService;
 
-    @MessageMapping("/chat")
-    public void processMessage(@Payload ChatMessage chatMessage) {
-        var chatId = chatRoomService
-                .getChatId(chatMessage.getSenderId(), chatMessage.getRecipientId(), true);
-        chatMessage.setChatId(chatId.get());
+    @Operation(summary = "Retrieve chat by two users ids", description = "Retrieve Chat by two users ids.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieve messages history of two users",
+                    content = @Content(schema = @Schema(implementation = ChatHistory.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "History is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/history")
+    public ResponseEntity<ChatHistory> retrieveChatHistory(@RequestParam String firstUserId,
+                                                           @RequestParam String secondUserId) {
+        return new ResponseEntity<>(chatRoomService.retrieveChatHistory(firstUserId, secondUserId), HttpStatus.OK);
+    }
 
-        ChatMessage saved = chatMessageService.save(chatMessage);
-
-        messagingTemplate.convertAndSendToUser(
-                chatMessage.getRecipientId(), "/queue/messages",
-                new ChatNotification(
-                        saved.getId(),
-                        saved.getSenderId(),
-                        saved.getSenderName()));
+    @Operation(summary = "Retrieve chat by two users ids", description = "Retrieve Chat by two users ids.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieve messages history of two users",
+                    content = @Content(schema = @Schema(implementation = ChatHistory.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "History is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/rooms")
+    public ResponseEntity<List<UserChatName>> getAllExistingChatsForUser(@RequestParam String id) {
+        return new ResponseEntity<>(chatRoomService.getUserChats(id), HttpStatus.OK);
     }
 }

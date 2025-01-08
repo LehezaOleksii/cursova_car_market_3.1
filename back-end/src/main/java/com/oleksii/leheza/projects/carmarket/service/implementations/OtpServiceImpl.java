@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
-import com.oleksii.leheza.projects.carmarket.repositories.OtpRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.OtpRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.OtpService;
 import jakarta.transaction.Transactional;
