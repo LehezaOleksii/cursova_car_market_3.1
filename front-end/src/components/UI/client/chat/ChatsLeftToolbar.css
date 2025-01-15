@@ -1,0 +1,366 @@
+.chat-list {
+  width: 320px;
+  background-color: #f9f9f9;
+  border-right: 1px solid #ddd;
+  padding: 15px;
+}
+
+.chat-list::-webkit-scrollbar {
+  display: none;
+}
+
+.search-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 150, 255, 0.6);
+  border-color: 0 0 8px rgba(0, 150, 255, 0.6);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+ul.padding-left-0 {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.chat-item {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chat-item:hover {
+  background-color: #f1f1f1;
+}
+
+.chat-item.active {
+  background-color: #e0ebfa;
+}
+
+.chat-info {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.chat-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 12px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.chat-details h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.chat-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+
+.chat-date {
+  margin-top: 4px;
+  font-size: 10px;
+  color: #bbb;
+  align-self: flex-end;
+}
+
+.profile-picture,
+.initials {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+  overflow: hidden;
+}
+
+.blue-border {
+  border: 2px solid #007bff;
+}
+
+.initials {
+  background-color: #cccccc;
+  color: white;
+}
+
+.chat-container {
+  display: flex;
+  height: 100vh;
+}
+
+.chat-window {
+  flex-direction: column;
+  flex: 1;
+  display: flex;
+  padding: 15px;
+  padding-right: 0;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding-right: 10px;
+}
+
+.message {
+  margin-bottom: 10px;
+}
+
+.message.recipient {
+  text-align: left;
+}
+
+.message-content {
+  display: inline-block;
+  max-width: 50%;
+  min-width: 12%;
+  padding: 10px;
+  border-radius: 12px;
+  background-color: #f7f9fc;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  word-wrap: break-word;
+  word-break: break-word;
+  font-size: 14px;
+}
+
+.message-content p {
+  margin-bottom: 0px;
+}
+
+.message.sender {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.message.sender .message-content {
+  background-color: #cce5ff;
+}
+
+.message-input {
+  margin-right: 8px;
+  border: 1px solid #ccc;
+  flex-grow: 1;
+  padding: 12px 16px;
+  margin-right: 15px;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.message-input-container {
+  display: flex;
+  align-items: center;
+  margin-right: 15px;
+
+  padding: 15px;
+  background-color: #ffffff;
+  border-top: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.message-input-container:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.send-button {
+  border: none;
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.send-button:hover {
+  background-color: #0056b3;
+}
+
+.send-button:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 150, 255, 0.5);
+}
+
+.message-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 150, 255, 0.5);
+}
+
+.message-input:focus,
+.send-button:focus {
+  outline: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 15px;
+  border-radius: 25px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 8px rgba(0, 150, 255, 0.5);
+}
+
+.chat-window {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.messages {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.chat-window::-webkit-scrollbar {
+  width: 12px;
+}
+
+.chat-window::-webkit-scrollbar-thumb {
+  background-color: #007bff;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+  height: 50px;
+}
+
+.chat-window::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+.messages::-webkit-scrollbar {
+  width: 12px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background-color: #007bff;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+  height: 50px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+}
+
+
+.message.recipient .message-content {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 1;
+}
+
+.user-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+
+.day-date {
+  text-align: center;
+  margin: 15px 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+  position: relative;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.day-date::before,
+.day-date::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 30%;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.day-date::before {
+  left: 10%;
+}
+
+.day-date::after {
+  right: 10%;
+}

@@ -16,4 +16,6 @@ public interface ChatRoomService {
     ChatHistory retrieveChatHistory(String firstUserId, String secondUserId);
 
     List<UserChatName> getUserChats(String userId);
+
+    List<UserChatName> getUserChatsByName(String id, String name);
 }

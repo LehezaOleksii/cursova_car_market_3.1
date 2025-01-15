@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./components/pages/client/Dashboard";
 import Chats from "./components/pages/client/Chats";
-import Chat from "./components/pages/client/Chat";
+import Chat from "./components/pages/client/Chats";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
 import SaleCar from "./components/pages/client/SaleCar";
@@ -94,8 +94,8 @@ const App = () => {
       <Route path="/admin/cabinet" element={wrapPrivateRoute(<AdminCabinet />, isLoggedIn, 'AdminCabinet', 'ROLE_ADMIN')} />
 
       {/* chat */}
-      <Route path="/chats" element={wrapPrivateRoute(<Chats />, isLoggedIn, 'Chats', 'ROLE_CLIENT')} />
-      <Route path="/chat/:recipientId" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chat', 'ROLE_CLIENT')} />
+      <Route path="/chats" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chats', 'ROLE_CLIENT')} />
+      {/* <Route path="/chat/:recipientId" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chat', 'ROLE_CLIENT')} /> */}
 
     </Routes>
   );

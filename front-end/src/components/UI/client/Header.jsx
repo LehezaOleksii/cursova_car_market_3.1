@@ -35,7 +35,7 @@ const Header = () => {
   };
 
   return (
-    <header className="py-3 mb-3 border-bottom">
+    <header className="py-3 border-bottom">
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <nav className="navbar navbar-expand-lg">
           <div className="container-fluid">
@@ -61,11 +61,15 @@ const Header = () => {
                     Filter
                   </Link> 
                 </li> 
+                <li className="nav-item">
+                  <Link to={`/chats`} className="nav-link" >
+                    Chats
+                  </Link> 
+                </li> 
               </ul>
             </div>
           </div>
         </nav>
-
         <div className="flex-shrink-0 dropdown ml-5">
         <a
   href="#"

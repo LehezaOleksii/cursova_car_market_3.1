@@ -17,6 +17,6 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, String> {
             "] }")
     Optional<ChatRoom> findByFirstUserAndSecondUserId(String firstUserId, String secondUserId);
 
-    @Query(value = "{ '$or': [ { 'firstUserId': ?0 }, { 'secondUserId': ?0 } ] }", fields = "{ 'id': 1 }")
-    List<Long> getUserChatRoomIdsByUserId(String userId);
+    @Query(value = "{ '$or': [ { 'firstUserId': ?0 }, { 'secondUserId': ?0 } ] }")
+    List<ChatRoom> getUserChatRoomIdsByUserId(String id);
 }

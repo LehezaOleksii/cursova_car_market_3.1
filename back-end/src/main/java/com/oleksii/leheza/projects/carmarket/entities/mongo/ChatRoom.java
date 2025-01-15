@@ -8,7 +8,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Data
 @AllArgsConstructor
@@ -33,5 +36,10 @@ public class ChatRoom {
             this.firstUserMessages = secondUserMessages;
             this.secondUserMessages = tempFirstUserMessages;
         }
+    }
+
+    public Optional<ChatMessage> getLastChatMessage() {
+        return Stream.concat(firstUserMessages.stream(), secondUserMessages.stream())
+                .max(Comparator.comparing(ChatMessage::getTimestamp));
     }
 }

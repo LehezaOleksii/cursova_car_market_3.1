@@ -3,6 +3,7 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
+import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
 import com.oleksii.leheza.projects.carmarket.repositories.mogo.ChatRoomRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
@@ -81,6 +82,38 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<UserChatName> getUserChats(String userId) {
-        return userRepository.getUserChatNamesByIds(chatRoomRepository.getUserChatRoomIdsByUserId(userId));
+        List<ChatRoom> chatRooms = chatRoomRepository.getUserChatRoomIdsByUserId(userId);
+        List<Long> userIds = chatRooms.stream()
+                .map(c -> c.getFirstUserId().equals(userId) ? c.getSecondUserId() : c.getFirstUserId())
+                .map(Long::valueOf)
+                .toList();
+        List<UserChatName> userChats = userRepository.getUserChatNamesByIds(userIds);
+        userChats
+                .forEach(userChat -> {
+                    Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(userId, String.valueOf(userChat.getId()));
+                    chatRoomOpt.ifPresent(chatRoom -> {
+                        if (chatRoom.getLastChatMessage().isPresent()) {
+                            ChatMessage chatMessage = chatRoom.getLastChatMessage().get();
+                            userChat.setLastMessage(chatMessage);
+                        }
+                    });
+                });
+        return userChats;
+    }
+
+    @Override
+    public List<UserChatName> getUserChatsByName(String id, String name) {
+        List<UserChatName> userChats = userRepository.getUserChatNamesByName(name);
+        userChats
+                .forEach(userChat -> {
+                    Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(id, String.valueOf(userChat.getId()));
+                    chatRoomOpt.ifPresent(chatRoom -> {
+                        if (chatRoom.getLastChatMessage().isPresent()) {
+                            ChatMessage chatMessage = chatRoom.getLastChatMessage().get();
+                            userChat.setLastMessage(chatMessage);
+                        }
+                    });
+                });
+        return userChats;
     }
 }
