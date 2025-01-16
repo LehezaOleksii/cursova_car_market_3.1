@@ -42,7 +42,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             chatRoom.getSecondUserMessages().add((chatMessage));
         }
         chatRoomRepository.save(chatRoom);
-        return dtoMapper.chatMessageEntityToChatMessageDto(chatMessage);
+        chatRoom.sortMessagesById(chatSendMessage.getSenderId());
+        return dtoMapper.chatMessageEntityToChatMessageDto(chatMessage, chatRoom.getFirstUserId());
     }
 
     @Override

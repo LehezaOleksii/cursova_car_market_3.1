@@ -20,22 +20,28 @@ const ChatWindow = ({
 
     useEffect(() => {
         if (recipientId) {
+          // Fetch chat history for the selected recipient
           fetchChatHistory();
+
+          // Establish WebSocket connection
           const wsClient = connectWebSocket(senderId, (newMessage) => {
             const parsedMessage = JSON.parse(newMessage);
-            setMessages((prev) => [...prev, parsedMessage]);
-            updateLastMessage(
-              recipientId,
-              parsedMessage.content,
-              new Date(parsedMessage.timestamp).toISOString()
-            );
+            console.log(`RecipientId: ${recipientId}, ParsedMessageRecipientId: ${parsedMessage.recipientId}`);
+            if (recipientId ==  parsedMessage.recipientId) {
+              setMessages((prev) => [...prev, parsedMessage]);
+              updateLastMessage(
+                recipientId,
+                parsedMessage.content,
+                new Date(parsedMessage.timestamp).toISOString()
+              );
+            }
           });
           setClient(wsClient);
-    
+          
+          // Cleanup on unmount or recipientId change
           return () => wsClient.deactivate();
         }
       }, [recipientId]);
-    
 
     useEffect(() => {
         if (lastMessageRef.current) {

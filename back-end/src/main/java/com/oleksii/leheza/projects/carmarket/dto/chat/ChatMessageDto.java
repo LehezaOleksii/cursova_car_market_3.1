@@ -11,6 +11,7 @@ import lombok.*;
 public class ChatMessageDto {
 
     private String id;
+    private String recipientId;
     private String content;
     private String timestamp;
     private MessageStatus status;

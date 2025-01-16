@@ -213,17 +213,18 @@ public class DtoMapper {
     public ChatHistory chatRoomToChatHistory(ChatRoom chatRoom) {
         return ChatHistory.builder()
                 .firstMessages(chatRoom.getFirstUserMessages().stream()
-                        .map(this::chatMessageEntityToChatMessageDto)
+                        .map(c -> chatMessageEntityToChatMessageDto(c, chatRoom.getFirstUserId()))
                         .toList())
                 .secondMessages(chatRoom.getSecondUserMessages().stream()
-                        .map(this::chatMessageEntityToChatMessageDto)
+                        .map(c -> chatMessageEntityToChatMessageDto(c, chatRoom.getSecondUserId()))
                         .toList())
                 .build();
     }
 
-    public ChatMessageDto chatMessageEntityToChatMessageDto(com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage chatMessage) {
+    public ChatMessageDto chatMessageEntityToChatMessageDto(com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage chatMessage, String recipientId) {
         return ChatMessageDto.builder()
                 .id(chatMessage.getId())
+                .recipientId(recipientId)
                 .content(chatMessage.getContent())
                 .timestamp(String.valueOf(chatMessage.getTimestamp()))
                 .status(chatMessage.getStatus())

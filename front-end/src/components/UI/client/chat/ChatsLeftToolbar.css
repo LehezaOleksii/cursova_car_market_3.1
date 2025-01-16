@@ -141,7 +141,7 @@ ul.padding-left-0 {
 .messages {
   flex: 1;
   overflow-y: auto;
-  margin-bottom: 15px;
+  margin-bottom: 2px;
   padding-right: 10px;
 }
 
@@ -312,8 +312,7 @@ button {
 .chat-header {
   display: flex;
   align-items: center;
-  padding: 10px;
-  background-color: #f9f9f9;
+  padding: 10px; 
   border-bottom: 1px solid #ddd;
 }
 
