@@ -198,6 +198,19 @@ public class VehicleServiceImpl implements VehicleService {
         userVehicleLikeRepository.save(userVehicleLike);
     }
 
+    @Override
+    public Page<VehicleDashboardDto> getVehicleWithLikedStatus(Long userId, boolean isLiked, int page, int size) {
+        List<Long> vehicleIds = userVehicleLikeRepository.findAllVehiclesIdsByUserIdAndLikedStatus(userId, isLiked);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Vehicle> vehicles = vehicleRepository.findAllPostedVehiclesByIds(vehicleIds, pageable);
+        return vehicles.map(vehicle -> {
+            VehicleDashboardDto dto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+            dto.setUserLiked(isLiked);
+            return dto;
+        });
+
+    }
+
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found while creating vehicle use like"));
         UserVehicleLike userVehicleLike = new UserVehicleLike();

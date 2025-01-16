@@ -373,4 +373,26 @@ public class VehicleController {
         vehicleService.setLikeStatus(userId, vehicleId, false);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @Operation(summary = "Get all liked vehicles for user", description = "Get all liked vehicles for user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehicles retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = VehicleDashboardDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Vehicles are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/params")
+    public ResponseEntity<Page<VehicleDashboardDto>> getUserLikedCars(@AuthenticationPrincipal String email,
+                                                                      @RequestParam Boolean isLiked,
+                                                                      @RequestParam(defaultValue = "0") int page,
+                                                                      @RequestParam(defaultValue = "10") int size) {
+        Long userId = userService.getUserIdByEmail(email);
+        Page<VehicleDashboardDto> vehicleDtos = vehicleService.getVehicleWithLikedStatus(userId, isLiked, page, size);
+        return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
 }

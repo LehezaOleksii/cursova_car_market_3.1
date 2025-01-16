@@ -52,4 +52,7 @@ public interface VehicleRepository extends
 
     @Query("SELECT COUNT(v) > 0 FROM Vehicle v WHERE v.id = :vehicleId AND v.user.id = :userId")
     boolean isUserHasVehicle(Long userId, Long vehicleId);
+
+    @Query("SELECT v FROM Vehicle v WHERE v.id IN :vehicleIds")
+    Page<Vehicle> findAllPostedVehiclesByIds(List<Long> vehicleIds, Pageable pageable);
 }

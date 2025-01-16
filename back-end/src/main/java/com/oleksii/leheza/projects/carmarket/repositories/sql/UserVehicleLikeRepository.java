@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,4 +23,7 @@ public interface UserVehicleLikeRepository extends JpaRepository<UserVehicleLike
 
     @Query("SELECT uvl FROM UserVehicleLike uvl WHERE uvl.vehicle.id = :vehicleId AND uvl.user.id = :userId")
     Optional<UserVehicleLike> findByUserIdAndVehicleId(Long userId, Long vehicleId);
-    }
+
+    @Query("SELECT uvl.vehicle.id FROM UserVehicleLike uvl WHERE uvl.user.id = :userId AND uvl.isLiked = :isLiked")
+    List<Long> findAllVehiclesIdsByUserIdAndLikedStatus(Long userId, Boolean isLiked);
+}

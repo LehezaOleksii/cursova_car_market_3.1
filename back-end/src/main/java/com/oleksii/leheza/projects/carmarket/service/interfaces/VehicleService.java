@@ -46,4 +46,6 @@ public interface VehicleService {
 
     @Transactional
     void setLikeStatus(Long userId, Long vehicleId, Boolean isLiked);
+
+    Page<VehicleDashboardDto> getVehicleWithLikedStatus(Long userId, boolean isLiked, int page, int size);
 }
