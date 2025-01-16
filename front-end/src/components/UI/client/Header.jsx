@@ -62,6 +62,11 @@ const Header = () => {
                   </Link> 
                 </li> 
                 <li className="nav-item">
+                  <Link to={`/cars?isLiked=true`} className="nav-link" >
+                    Liked cars
+                  </Link> 
+                </li> 
+                <li className="nav-item">
                   <Link to={`/chats`} className="nav-link" >
                     Chats
                   </Link> 

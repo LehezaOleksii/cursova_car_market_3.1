@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import Dashboard from "./components/pages/client/Dashboard";
-import Chats from "./components/pages/client/Chats";
+import LikedCars from "./components/pages/client/LikedCars";
 import Chat from "./components/pages/client/Chats";
 import Login from "./components/login/Login";
 import Signup from "./components/login/Signup";
@@ -73,6 +73,7 @@ const App = () => {
       <Route path="/client/change_auto/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto', 'ROLE_CLIENT')} />
       <Route path="/client/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars', 'ROLE_CLIENT')} />
       <Route path="/client/advanced_filter" element={wrapPrivateRoute(<AdvancedFilter />, isLoggedIn, 'advanced_filter', 'ROLE_CLIENT')} />
+      <Route path="/cars" element={wrapPrivateRoute(<LikedCars />, isLoggedIn, 'LikedCars', 'ROLE_CLIENT')} />
 
       {/* manager */}
       <Route path="/manager" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard', 'ROLE_MANAGER')} />

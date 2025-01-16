@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { getInitials } from './getInitials';
 import './ChatsLeftToolbar.css';
 
-const ChatsLeftToolbar = ({ onSelectChat }) => {
+const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
   const jwtStr = localStorage.getItem('jwtToken');
   const id = localStorage.getItem('id');
-
-  const [chats, setChats] = useState([]);
+  
   const [activeChat, setActiveChat] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [filteredChats, setFilteredChats] = useState([]);
@@ -66,16 +65,14 @@ const ChatsLeftToolbar = ({ onSelectChat }) => {
     fetchChatRooms();
   }, []);
 
-  const renderChatItem = (chat, isExternal = false) => {
-    const fullName = isExternal 
-      ? `${chat.firstName || ''} ${chat.lastName || ''}`.trim() 
-      : chat.name;
-  
+  const renderChatItem = (chat) => {
+    const fullName = chat.name;
+
     return (
       <li
         key={chat.id}
-        className={`chat-item ${(!isExternal && activeChat === chat.id) || (isExternal && activeChat === chat.id) ? 'active' : ''}`}
-        onClick={() => handleChatClick(chat.id, fullName, chat.profilePicture, isExternal)}
+        className={`chat-item ${activeChat === chat.id ? 'active' : ''}`}
+        onClick={() => onSelectChat(chat.id, fullName, chat.profilePicture)}
       >
         <div className="chat-info">
           {chat.profilePicture ? (
@@ -85,12 +82,14 @@ const ChatsLeftToolbar = ({ onSelectChat }) => {
               className="profile-picture blue-border"
             />
           ) : (
-            <div className="initials profile-picture blue-border">{getInitials(fullName)}</div>
+            <div className="initials profile-picture blue-border">
+              {getInitials(fullName)}
+            </div>
           )}
           <div className="chat-details">
             <h3>{fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName}</h3>
-            <p>{chat.lastMessage ? chat.lastMessage.content : isExternal ? 'No chat yet' : 'No messages yet'}</p>
-            {!isExternal && chat.lastMessage && (
+            <p>{chat.lastMessage ? chat.lastMessage.content : 'No messages yet'}</p>
+            {chat.lastMessage && (
               <span className="chat-date">
                 {new Date(chat.lastMessage.timestamp).toLocaleString()}
               </span>
@@ -141,13 +140,7 @@ const ChatsLeftToolbar = ({ onSelectChat }) => {
         />
       </div>
       <ul className="padding-left-0">
-        {filteredChats.map(chat => renderChatItem(chat))}
-        {externalChats.length > 0 && (
-          <>
-            <li className="divider mb-2">Have no chat with</li>
-            {externalChats.map(chat => renderChatItem(chat, true))}
-          </>
-        )}
+        {chats.map((chat) => renderChatItem(chat))}
       </ul>
     </div>
   );

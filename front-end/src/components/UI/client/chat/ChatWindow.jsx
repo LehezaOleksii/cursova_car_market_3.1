@@ -3,8 +3,14 @@ import { connectWebSocket } from '../../../../components/chat/connectWebSocket';
 import { getInitials } from './getInitials';
 import './ChatsLeftToolbar.css';
 
-const ChatWindow = ({ senderId, recipientId, recipientName, senderName, recipientProfileImg, onSendMessage }) => {
-    const [messages, setMessages] = useState([]);
+const ChatWindow = ({
+    senderId,
+    recipientId,
+    recipientName,
+    senderName,
+    recipientProfileImg,
+    updateLastMessage, 
+  }) => {    const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [client, setClient] = useState(null);
     const jwtStr = localStorage.getItem("jwtToken");
@@ -57,14 +63,33 @@ const ChatWindow = ({ senderId, recipientId, recipientName, senderName, recipien
     };
 
     const sendMessage = () => {
-        if (client && messageInput.trim()) {
-            const chatMessageToSend = { senderId, recipientId, content: messageInput };
-            const chatMessage = { senderId, recipientId, content: messageInput, timestamp: new Date().toISOString() };
-            client.publish({ destination: '/app/chat', body: JSON.stringify(chatMessageToSend) });
-            setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
-            setMessageInput('');
+        if (messageInput.trim()) {
+          const chatMessageToSend = {
+            senderId,
+            recipientId,
+            content: messageInput,
+          };
+          const chatMessage = {
+            senderId,
+            recipientId,
+            content: messageInput,
+            timestamp: new Date().toISOString(),
+          };
+    
+          // Publish the message (assuming WebSocket or API logic here)
+          client.publish({
+            destination: '/app/chat',
+            body: JSON.stringify(chatMessageToSend),
+          });
+    
+          // Update local state
+          setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
+          setMessageInput('');
+    
+          // Update the last message in ChatsLeftToolbar
+          updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
         }
-    };
+      };
 
     const formatDate = (date) => {
         const today = new Date();
@@ -102,11 +127,6 @@ const ChatWindow = ({ senderId, recipientId, recipientName, senderName, recipien
                 </div>
             </div>
             <div className="messages">
-                {messages.length > 0 && (
-                    <div className="date-separator">
-                        {formatDate(messages[0].timestamp)}
-                    </div>
-                )}
                 {messages.map((msg, index) => {
                     const currentDay = new Date(msg.timestamp).toLocaleDateString();
                     const previousDay = index > 0 ? new Date(messages[index - 1].timestamp).toLocaleDateString() : null;
@@ -120,10 +140,14 @@ const ChatWindow = ({ senderId, recipientId, recipientName, senderName, recipien
                             )}
                             <div className={`message ${msg.isSender ? 'sender' : 'recipient'}`}>
                                 <div className="message-content">
-                                <strong>{msg.isSender ? senderName : recipientName}</strong>
-
+                                    <strong>{msg.isSender ? senderName : recipientName}</strong>
                                     <p>{msg.content}</p>
-                                    <small>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                                    <div className="message-details">
+                                        <small>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
+                                        {msg.status && (
+                                            <span className="message-status">{msg.status}</span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </React.Fragment>
@@ -131,6 +155,7 @@ const ChatWindow = ({ senderId, recipientId, recipientName, senderName, recipien
                 })}
                 <div ref={lastMessageRef}></div>
             </div>
+
 
             <div className="message-input-container">
                 <input
