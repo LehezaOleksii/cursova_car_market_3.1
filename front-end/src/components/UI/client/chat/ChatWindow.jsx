@@ -9,8 +9,9 @@ const ChatWindow = ({
     recipientName,
     senderName,
     recipientProfileImg,
-    updateLastMessage, 
-  }) => {    const [messages, setMessages] = useState([]);
+    updateLastMessage,
+}) => {
+    const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
     const [client, setClient] = useState(null);
     const jwtStr = localStorage.getItem("jwtToken");
@@ -18,17 +19,23 @@ const ChatWindow = ({
     const lastMessageRef = useRef(null);
 
     useEffect(() => {
-        if (client) client.deactivate();
         if (recipientId) {
-            fetchChatHistory();
-            const wsClient = connectWebSocket(senderId, (newMessage) => {
-                setMessages((prev) => [...prev, JSON.parse(newMessage)]);
-            });
-            setClient(wsClient);
-
-            return () => wsClient.deactivate();
+          fetchChatHistory();
+          const wsClient = connectWebSocket(senderId, (newMessage) => {
+            const parsedMessage = JSON.parse(newMessage);
+            setMessages((prev) => [...prev, parsedMessage]);
+            updateLastMessage(
+              recipientId,
+              parsedMessage.content,
+              new Date(parsedMessage.timestamp).toISOString()
+            );
+          });
+          setClient(wsClient);
+    
+          return () => wsClient.deactivate();
         }
-    }, [recipientId]);
+      }, [recipientId]);
+    
 
     useEffect(() => {
         if (lastMessageRef.current) {
@@ -64,49 +71,31 @@ const ChatWindow = ({
 
     const sendMessage = () => {
         if (messageInput.trim()) {
-          const chatMessageToSend = {
-            senderId,
-            recipientId,
-            content: messageInput,
-          };
-          const chatMessage = {
-            senderId,
-            recipientId,
-            content: messageInput,
-            timestamp: new Date().toISOString(),
-          };
-    
-          // Publish the message (assuming WebSocket or API logic here)
-          client.publish({
-            destination: '/app/chat',
-            body: JSON.stringify(chatMessageToSend),
-          });
-    
-          // Update local state
-          setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
-          setMessageInput('');
-    
-          // Update the last message in ChatsLeftToolbar
-          updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
+            const chatMessageToSend = {
+                senderId,
+                recipientId,
+                content: messageInput,
+            };
+            const chatMessage = {
+                senderId,
+                recipientId,
+                content: messageInput,
+                timestamp: new Date().toISOString(),
+            };
+
+            // Publish the message (assuming WebSocket or API logic here)
+            client.publish({
+                destination: '/app/chat',
+                body: JSON.stringify(chatMessageToSend),
+            });
+
+            // Update local state
+            setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
+            setMessageInput('');
+
+            // Update the last message in ChatsLeftToolbar
+            updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
         }
-      };
-
-    const formatDate = (date) => {
-        const today = new Date();
-        const messageDate = new Date(date);
-
-        const isToday = today.toDateString() === messageDate.toDateString();
-        const isYesterday = new Date(today.setDate(today.getDate() - 1)).toDateString() === messageDate.toDateString();
-
-        if (isToday) return 'Today';
-        if (isYesterday) return 'Yesterday';
-
-        return messageDate.toLocaleDateString(); // Format as MM/DD/YYYY or DD/MM/YYYY based on locale
-    };
-
-    const formatTime = (date) => {
-        const messageDate = new Date(date);
-        return messageDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
 
     return (

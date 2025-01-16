@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { getInitials } from './getInitials';
 import './ChatsLeftToolbar.css';
 
-const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
+const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
   const jwtStr = localStorage.getItem('jwtToken');
   const id = localStorage.getItem('id');
-  
+
   const [activeChat, setActiveChat] = useState(null);
   const [searchText, setSearchText] = useState('');
-  const [filteredChats, setFilteredChats] = useState([]);
   const [externalChats, setExternalChats] = useState([]);
 
   const fetchChatRooms = async () => {
@@ -27,7 +26,6 @@ const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
       }));
 
       setChats(formattedChats);
-      setFilteredChats(formattedChats);
     } catch (error) {
       console.error('Error fetching chat rooms:', error);
     }
@@ -38,13 +36,9 @@ const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
     setSearchText(name);
 
     if (!name) {
-      setFilteredChats(chats);
       setExternalChats([]);
       return;
     }
-
-    const filtered = chats.filter(chat => chat.name.toLowerCase().includes(name.toLowerCase()));
-    setFilteredChats(filtered);
     await searchExternalChats(name);
   };
 
@@ -99,6 +93,7 @@ const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
       </li>
     );
   };
+
   
   
   const searchExternalChats = async (name) => {
@@ -110,12 +105,10 @@ const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
       if (!response.ok) throw new Error('Failed to fetch external chats');
       const externalData = await response.json();
   
-      // Filter out users already in the chats collection
       const filteredExternalChats = externalData.filter(externalChat => {
         return !chats.some(existingChat => existingChat.id === externalChat.id);
       });
   
-      // Format the external chats to include first and last names
       const formattedExternalChats = filteredExternalChats.map(chat => ({
         ...chat,
         name: `${chat.firstName || ''} ${chat.lastName || ''}`.trim(),
@@ -140,7 +133,13 @@ const ChatsLeftToolbar = ({ chats,setChats, onSelectChat }) => {
         />
       </div>
       <ul className="padding-left-0">
-        {chats.map((chat) => renderChatItem(chat))}
+      {chats.map((chat) => renderChatItem(chat))}
+      {externalChats.length > 0 && (
+          <>
+            <li className="divider mb-2">Have no chat with</li>
+            {externalChats.map(chat => renderChatItem(chat, true))}
+          </>
+        )}
       </ul>
     </div>
   );
