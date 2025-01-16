@@ -27,13 +27,14 @@ const ChatWindow = ({
           const wsClient = connectWebSocket(senderId, (newMessage) => {
             const parsedMessage = JSON.parse(newMessage);
             console.log(`RecipientId: ${recipientId}, ParsedMessageRecipientId: ${parsedMessage.recipientId}`);
-            if (recipientId ==  parsedMessage.recipientId) {
-              setMessages((prev) => [...prev, parsedMessage]);
-              updateLastMessage(
-                recipientId,
+            
+            updateLastMessage(
+                parsedMessage.recipientId,
                 parsedMessage.content,
                 new Date(parsedMessage.timestamp).toISOString()
               );
+            if (recipientId ==  parsedMessage.recipientId) {
+              setMessages((prev) => [...prev, parsedMessage]);
             }
           });
           setClient(wsClient);
