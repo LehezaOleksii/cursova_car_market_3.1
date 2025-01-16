@@ -2,7 +2,7 @@ package com.oleksii.leheza.projects.carmarket.enums;
 
 public enum MessageStatus {
     CREATED,
-    RECEIVED,
+    SENT,
     DELIVERED,
     READ
 }
