@@ -20,29 +20,22 @@ const ChatWindow = ({
 
     useEffect(() => {
         if (recipientId) {
-          // Fetch chat history for the selected recipient
-          fetchChatHistory();
-
-          // Establish WebSocket connection
-          const wsClient = connectWebSocket(senderId, (newMessage) => {
-            const parsedMessage = JSON.parse(newMessage);
-            console.log(`RecipientId: ${recipientId}, ParsedMessageRecipientId: ${parsedMessage.recipientId}`);
-            
-            updateLastMessage(
-                parsedMessage.recipientId,
-                parsedMessage.content,
-                new Date(parsedMessage.timestamp).toISOString()
-              );
-            if (recipientId ==  parsedMessage.recipientId) {
-              setMessages((prev) => [...prev, parsedMessage]);
-            }
-          });
-          setClient(wsClient);
-          
-          // Cleanup on unmount or recipientId change
-          return () => wsClient.deactivate();
+            fetchChatHistory();
+            const wsClient = connectWebSocket(senderId, (newMessage) => {
+                const parsedMessage = JSON.parse(newMessage);
+                updateLastMessage(
+                    parsedMessage.recipientId,
+                    parsedMessage.content,
+                    new Date(parsedMessage.timestamp).toISOString()
+                );
+                if (recipientId == parsedMessage.recipientId) {
+                    setMessages((prev) => [...prev, parsedMessage]);
+                }
+            });
+            setClient(wsClient);
+            return () => wsClient.deactivate();
         }
-      }, [recipientId]);
+    }, [recipientId]);
 
     useEffect(() => {
         if (lastMessageRef.current) {
@@ -90,18 +83,23 @@ const ChatWindow = ({
                 timestamp: new Date().toISOString(),
             };
 
-            // Publish the message (assuming WebSocket or API logic here)
-            client.publish({
-                destination: '/app/chat',
-                body: JSON.stringify(chatMessageToSend),
-            });
 
-            // Update local state
-            setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
-            setMessageInput('');
+            if (recipientId != senderId) {
+                // Publish the message (assuming WebSocket or API logic here)
+                client.publish({
+                    destination: '/app/chat',
+                    body: JSON.stringify(chatMessageToSend),
+                });
 
-            // Update the last message in ChatsLeftToolbar
-            updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
+                // Update local state
+                setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
+                setMessageInput('');
+
+                // Update the last message in ChatsLeftToolbar
+                updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
+            } else {
+                alert("You cannot send a message to yourself.");
+            }
         }
     };
 
