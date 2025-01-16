@@ -47,13 +47,13 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
     onSelectChat(chatId, name, profilePicture);
     setActiveChat(chatId);
     setSearchText('');
-  
+
     // If it's an external chat, set it as active
     if (isExternal) {
       setActiveChat(chatId);  // Ensure the external chat is marked as active
     }
   };
-  
+
 
   useEffect(() => {
     fetchChatRooms();
@@ -65,8 +65,8 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
     return (
       <li
         key={chat.id}
-        className={`chat-item ${activeChat === chat.id ? 'active' : ''}`}
-        onClick={() => onSelectChat(chat.id, fullName, chat.profilePicture)}
+        className={`chat-item ${(activeChat === chat.id) || (activeChat === chat.id) ? 'active' : ''}`}
+        onClick={() => handleChatClick(chat.id, fullName, chat.profilePicture)}
       >
         <div className="chat-info">
           {chat.profilePicture ? (
@@ -94,8 +94,8 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
     );
   };
 
-  
-  
+
+
   const searchExternalChats = async (name) => {
     try {
       const response = await fetch(`http://localhost:8080/chat/users?id=${id}&name=${name}`, {
@@ -104,22 +104,22 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
       });
       if (!response.ok) throw new Error('Failed to fetch external chats');
       const externalData = await response.json();
-  
+
       const filteredExternalChats = externalData.filter(externalChat => {
         return !chats.some(existingChat => existingChat.id === externalChat.id);
       });
-  
+
       const formattedExternalChats = filteredExternalChats.map(chat => ({
         ...chat,
         name: `${chat.firstName || ''} ${chat.lastName || ''}`.trim(),
       }));
-  
+
       setExternalChats(formattedExternalChats);
     } catch (error) {
       console.error('Error fetching external chats:', error);
     }
   };
-  
+
 
   return (
     <div className="chat-list">
@@ -133,8 +133,8 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
         />
       </div>
       <ul className="padding-left-0">
-      {chats.map((chat) => renderChatItem(chat))}
-      {externalChats.length > 0 && (
+        {chats.map((chat) => renderChatItem(chat))}
+        {externalChats.length > 0 && (
           <>
             <li className="divider mb-2">Have no chat with</li>
             {externalChats.map(chat => renderChatItem(chat, true))}
