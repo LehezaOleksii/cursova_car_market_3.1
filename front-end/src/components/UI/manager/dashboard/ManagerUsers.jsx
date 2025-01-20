@@ -14,7 +14,7 @@ const ManagerUsers = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/managers/users`;
+      const url = `http://localhost:8080/users`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -22,9 +22,11 @@ const ManagerUsers = () => {
           Authorization: 'Bearer ' + jwtStr
         },
       });
-      const data = await response.json();
-      setUsers(data);
-      setFilteredUsers(data);
+      if(response.ok){
+        const data = await response.json();
+        setUsers(data);
+        setFilteredUsers(data);
+      }
     };
 
     fetchData();
@@ -68,7 +70,6 @@ const ManagerUsers = () => {
       )
     );
   };
-  
 
   const handleFilterChange = async (filters) => {
     const { name, email, status, role } = filters;
@@ -96,6 +97,10 @@ const ManagerUsers = () => {
   return (
     <div>
       <UserFilter onFilterChange={handleFilterChange} />
+      <div className="d-flex justify-content-between mb-3">
+        <h3>User Management</h3>
+        <p>{filteredUsers.length} Users Found</p>
+      </div>
       {currentUsers.map((user) => (
         <ManagerUserDashboard
           key={user.id}
@@ -104,6 +109,8 @@ const ManagerUsers = () => {
           currentRole={role}
         />
       ))}
+
+      {/* Pagination */}
       <nav aria-label="User pagination">
         <ul className="pagination justify-content-center mt-4">
           <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>

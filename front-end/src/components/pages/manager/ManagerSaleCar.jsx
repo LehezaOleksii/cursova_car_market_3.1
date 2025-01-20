@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import Header from "../../UI/manager/Header";
-import Footer from "../../UI/manager/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const ManagerSaleCar = () => {
   const [car, setCarData] = useState([]);
@@ -28,7 +28,7 @@ const ManagerSaleCar = () => {
 
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="container mt-5">
         <div className="row justify-content-center">
           <div className="col-md-6">
@@ -66,7 +66,7 @@ const ManagerSaleCar = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

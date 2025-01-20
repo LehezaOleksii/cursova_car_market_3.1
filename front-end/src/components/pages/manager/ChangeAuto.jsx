@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../UI/manager/Header";
-import Footer from "../../UI/manager/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import { useParams, useNavigate } from "react-router-dom";
@@ -103,7 +103,7 @@ const convertImageToBase64 = (image) => {
 
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="container mt-5">
         <div className="row">
           <div className="col-md-6"> 
@@ -244,7 +244,7 @@ const convertImageToBase64 = (image) => {
           </div>
         </div>
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

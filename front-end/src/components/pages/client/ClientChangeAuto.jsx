@@ -1,8 +1,8 @@
 
 import CarFilterField from "../../UI/client/fields/CarFilterField";
 import React, { useState, useEffect } from "react";
-import Header from "../../UI/client/Header";
-import Footer from "../../UI/client/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 import CarState from "../../UI/client/fields/CarState";
 import {useNavigate, useParams} from "react-router-dom";
 import Select from "react-select";
@@ -351,7 +351,7 @@ const ClientChangeAuto = () => {
       });
 
       if (response.ok) {
-        navigate(`/client`);
+        navigate(`/dashboard`);
       } else {
         console.error("Error adding car:", response.statusText);
       }
@@ -374,7 +374,7 @@ const ClientChangeAuto = () => {
 
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="container mt-5">
         <div className="row">
           <div className="col-md-6">
@@ -574,7 +574,7 @@ const ClientChangeAuto = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

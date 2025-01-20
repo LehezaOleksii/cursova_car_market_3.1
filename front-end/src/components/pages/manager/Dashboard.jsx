@@ -2,8 +2,8 @@ import React, {useState, useEffect} from "react";
 import CarFilter from "../../UI/client/dashboard/CarFilter";
 import SaledCars from "../../UI/client/dashboard/SaledCars";
 import BrandsFilter from "../../UI/client/dashboard/BrandsFilter";
-import Header from "../../UI/manager/Header";
-import Footer from "../../UI/manager/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const Dashboard = () => {
   const [cars, setCars] = useState([]);
@@ -43,13 +43,12 @@ const Dashboard = () => {
   
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="dashboard">
       <CarFilter onFilter={filterCars}/>
       <SaledCars cars={cars}/>
-      {/* <BrandsFilter /> */}
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   )
 };

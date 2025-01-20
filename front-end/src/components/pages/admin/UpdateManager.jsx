@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Header from "../../UI/admin/Header";
-import Footer from "../../UI/admin/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const UpdateManager = () => {
 
@@ -157,7 +157,7 @@ const convertImageToBase64 = (image) => {
 
   return (
     <div className="body">
-      <Header/>
+      <WrappedHeader/>
       <div className="row justify-content-center mt-5">
         <div className="col-md-6 ">
           <div className="card">
@@ -280,7 +280,7 @@ const convertImageToBase64 = (image) => {
           </div>
         </div>
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

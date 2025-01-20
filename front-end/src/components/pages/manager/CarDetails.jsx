@@ -4,7 +4,7 @@ import ApproveCar from "../../UI/manager/approveCar/ApproveCar";
 import WrappedHeader from "../../WrappedHeader";
 import WrappedFooter from "../../WrappedFooter";
 
-const ApproveCarPage = () => {
+const CarDetails = () => {
   const [cars, setCars] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
@@ -99,4 +99,4 @@ const ApproveCarPage = () => {
   );
 };
 
-export default ApproveCarPage;
+export default CarDetails;

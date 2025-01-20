@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 
 const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
   const [profilePicture, setProfilePicture] = useState('');
   const jwtStr = localStorage.getItem('jwtToken');
-
-  const Roles = {
-    ROLE_CLIENT: 1,
-    ROLE_MANAGER: 2,
-    ROLE_ADMIN: 3,
-  };
+  const navigate = useNavigate();
 
   const roleMapping = {
-    "ROLE_CLIENT": Roles.ROLE_CLIENT,
-    "ROLE_MANAGER": Roles.ROLE_MANAGER,
-    "ROLE_ADMIN": Roles.ROLE_ADMIN,
+    "ROLE_CLIENT": "Client",
+    "ROLE_MANAGER": "Manager",
+    "ROLE_ADMIN": "Admin",
   };
 
-  const blockUser = async () => {
-    const url = `http://localhost:8080/managers/clients/${user.id}/block`;
+  const changeUserStatus = async (newStatus) => {
+    const url = `http://localhost:8080/users/${user.id}/status/${newStatus}`;
     await fetch(url, {
       method: 'PUT',
       headers: {
@@ -25,23 +21,8 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
         Authorization: 'Bearer ' + jwtStr
       },
     });
-    // Call to update the status in the parent component
-    updateUserStatus(user.id, "BLOCKED");
+    updateUserStatus(user.id, newStatus);
   };
-  
-  const unblockUser = async () => {
-    const url = `http://localhost:8080/managers/clients/${user.id}/unblock`;
-    await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + jwtStr
-      },
-    });
-    // Call to update the status in the parent component
-    updateUserStatus(user.id, "ACTIVE");
-  };
-  
 
   const fetchProfilePicture = (profileImageUrl) => {
     if (profileImageUrl === null) {
@@ -53,38 +34,47 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
   };
 
   const sendMessage = async () => {
-    const messageContent = "Your message here";
-    const url = `http://localhost:8080/managers/clients/${user.id}/sendMessage`;
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + jwtStr,
-      },
-      body: JSON.stringify({ content: messageContent }),
-    });
+    navigate(`/chats?recipientId=${user.id}`);
   };
+
 
   useEffect(() => {
     fetchProfilePicture(user.profileImageUrl);
   }, [user.profileImageUrl]);
 
   const getNumericRole = (roleString) => {
-    return roleMapping[roleString] || 0;
+    return roleMapping[roleString] || "Unknown";
+  };
+
+  const getRoleFormNumber = (roleString) => {
+    switch (roleString) {
+      case "ROLE_CLIENT":
+        return 1;
+      case "ROLE_MANAGER":
+        return 2;
+      case "ROLE_ADMIN":
+        return 3;
+      default:
+        return 0;
+    }
   };
 
   const canManageUser = () => {
-    return getNumericRole(currentRole) > getNumericRole(user.userRole);
+    return getRoleFormNumber(currentRole) > getRoleFormNumber(user.userRole);
   };
 
   return (
     <div className="card mb-3">
       <div className="row g-0">
-        <div className="col-md-2">
+        <div className="col-md-1">
           <div
-            className="rounded-circle d-flex align-items-center justify-content-center"
-            style={{ height: "50px", width: "50px", backgroundColor: "#ccc" }}
+            className="rounded-circle d-flex align-items-center justify-content-center mt-2 mb-2"
+            style={{
+              height: "50px",
+              width: "50px",
+              backgroundColor: "#ccc",
+              marginLeft: "10px",
+            }}
           >
             {user.profileImageUrl ? (
               <img
@@ -105,29 +95,54 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
             )}
           </div>
         </div>
-        <div className="col-md-5">
+        <div className="col-md-7">
           <div className="card-body">
-            <div>
-              <span className="card-text ms-2">{user.firstName} {user.lastName}</span>
-              <span className="card-text ms-4">{user.email}</span>
+            <div className="d-flex justify-content-between">
+              <span className="card-text ms-4 col-md-5">{user.firstName} {user.lastName}</span>
+              <span className="card-text ms-4 col-md-4">{user.email || "No Email Provided"}</span>
+              <span className="card-text ms-4 col-md-3">{getNumericRole(user.userRole) || "No Role Assigned"}</span>
             </div>
           </div>
         </div>
-        <div className="col-md-5 d-flex align-items-center justify-content-end">
-          <button className="btn btn-primary me-2" onClick={sendMessage}>
-            Send Message
-          </button>
-          {canManageUser() && (
-            user.status === "BLOCKED" ? (
-              <button className="btn btn-primary me-3" onClick={unblockUser}>
-                Unblock user
-              </button>
-            ) : (
-              <button className="btn btn-danger me-3" onClick={blockUser}>
-                Block user
-              </button>
-            )
-          )}
+        <div className="col-md-4 d-flex align-items-center justify-content-end">
+          <div className="col-5">
+            <button className="btn btn-primary" style={{ width: "130px" }} onClick={sendMessage}>
+              Send message
+            </button>
+          </div>
+          <div className="col-4 me-3">
+            {
+              canManageUser() ? (
+                user.status === "BLOCKED" ? (
+                  <button className="btn btn-primary" style={{ width: "120px" }} onClick={() => changeUserStatus("ACTIVE")}>
+                    Unblock user
+                  </button>
+                ) : user.status === "INACTIVE" ? (
+                  <button className="btn btn-success" style={{ width: "120px" }} onClick={() => changeUserStatus("ACTIVE")}>
+                    Activate user
+                  </button>
+                ) : (
+                  <button className="btn btn-danger" style={{ width: "120px" }} onClick={() => changeUserStatus("BLOCKED")}>
+                    Block user
+                  </button>
+                )
+              ) : (
+                user.status === "BLOCKED" ? (
+                  <button className="btn btn-secondary" style={{ width: "120px" }} disabled>
+                    Unblock user
+                  </button>
+                ) : user.status === "INACTIVE" ? (
+                  <button className="btn btn-secondary" style={{ width: "120px" }} disabled>
+                    Activate user
+                  </button>
+                ) : (
+                  <button className="btn btn-secondary" style={{ width: "120px" }} disabled>
+                    Block user
+                  </button>
+                )
+              )
+            }
+          </div>
         </div>
       </div>
     </div>

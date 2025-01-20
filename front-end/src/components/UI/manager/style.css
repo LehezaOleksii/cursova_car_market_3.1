@@ -1,0 +1,21 @@
+.nav-subtext {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-top: -5px;
+    margin-left: 10px;
+  }
+  
+  .delimiter {
+    border-left: 1px solid #ccc;
+    height: 55px;
+    margin: 0 10px;
+  }
+
+  .nav-subtext {
+    display: block;
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+  }
+  

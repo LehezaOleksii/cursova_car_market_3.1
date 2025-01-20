@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ChatWindow from '../../UI/client/chat/ChatWindow';
 import ChatsLeftToolbar from '../../UI/client/chat/ChatsLeftToolbar';
-import Header from '../../UI/client/Header';
+import WrappedHeader from "../../WrappedHeader";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Chats = () => {
   const senderId = localStorage.getItem("id");
@@ -10,7 +11,8 @@ const Chats = () => {
   const [recipientId, setRecipientId] = useState(null);
   const [recipientName, setRecipientName] = useState('');
   const [profileImgUrl, setProfileImgUrl] = useState(null);
-  const [chats, setChats] = useState([]); // State to hold chat information
+  const [chats, setChats] = useState([]);
+  const location = useLocation();
 
   const handleSelectChat = (id, name, profileImgUrl) => {
     setRecipientId(id);
@@ -28,9 +30,18 @@ const Chats = () => {
     );
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const recipientIdFromUrl = params.get('recipientId');
+    
+    if (recipientIdFromUrl) {
+      setRecipientId(recipientIdFromUrl);
+    }
+  }, [location.search]);
+
   return (
     <div>
-      <Header />
+      <WrappedHeader />
       <div className="chat-container">
         <ChatsLeftToolbar chats={chats} setChats={setChats} onSelectChat={handleSelectChat} />
         {recipientId ? (

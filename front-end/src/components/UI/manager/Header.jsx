@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import './style.css';
 
 const Header = () => {
-  const id = localStorage.getItem("id");
-  const [manager, setManager] = useState("");
+  const [client, setClient] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
   const jwtStr = localStorage.getItem('jwtToken');
+  const id = localStorage.getItem('id');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,115 +15,128 @@ const Header = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + jwtStr
+          'Authorization': 'Bearer ' + jwtStr
         },
       });
       const data = await response.json();
-      setManager(data);
-      fetchProfilePicture(data.profileImageUrl) 
+      setClient(data);
+      fetchProfilePicture(data.profileImageUrl)
     };
-
     fetchData();
   }, [id]);
 
   const fetchProfilePicture = (updateProfileImage) => {
-    if(updateProfileImage === null){
+    if (updateProfileImage === null) {
       const pictureUrl = 'https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png';
       setProfilePicture(pictureUrl);
     }
-    else{
+    else {
       setProfilePicture(updateProfileImage);
     }
   };
 
-  const settings = async () => {
-      await fetch(`http://localhost:8080/clients/cabinet`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': 'Bearer ' + jwtStr
-        },
-      });
-  };
-
   return (
-    <header className="py-3 mb-3 border-bottom">
+    <header className="pt-3 border-bottom">
       <div className="container-fluid d-flex justify-content-between align-items-center">
         <nav className="navbar navbar-expand-lg">
           <div className="container-fluid">
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                <Link to={`/manager`} className="nav-link" >
+                  <Link to={`/dashboard`} className="nav-link">
                     Home
-                </Link> 
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/add_auto`} className="nav-link" >
+                  <Link to={`/add_auto`} className="nav-link">
                     Sale car
-                  </Link> 
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/my_autos`} className="nav-link" >
+                  <Link to={`/my_autos`} className="nav-link">
                     My cars
-                  </Link> 
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/approve/cars`} className="nav-link" >
-                    Approve cars
-                  </Link> 
+                  <Link to={`/advanced_filter`} className="nav-link">
+                    Filter
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/cars`} className="nav-link" >
-                    Cars
-                  </Link> 
+                  <Link to={`/cars?isLiked=true`} className="nav-link">
+                    Liked cars
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/manager/view/cars`} className="nav-link" >
-                    View cars
-                  </Link> 
+                  <Link to={`/chats`} className="nav-link">
+                    Chats
+                  </Link>
                 </li>
+                <li className="nav-item delimiter"></li>
+                <div>
+                  <div className="d-flex justify-content-center">
+                    <li className="nav-item">
+                      <Link to={`/users`} className="nav-link">
+                        Users
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to={`/cars/on_moderation`} className="nav-link">
+                        Moderation cars
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link to={`/cars/components`} className="nav-link">
+                        Car components
+                      </Link>
+                    </li>
+                  </div>
+                  <p className="text-center nav-subtext">System management</p>
+                </div>
+                <li className="nav-item delimiter"></li>
               </ul>
             </div>
           </div>
         </nav>
-
         <div className="flex-shrink-0 dropdown ml-5">
-        <a
-  href="#"
-  className="d-block link-dark text-decoration-none dropdown-toggle"
-  id="dropdownUser2"
-  data-bs-toggle="dropdown"
-  aria-expanded="false"
->
-  {manager.profileImageUrl ? (
-    <img
-    src={manager.profileImageUrl ? `data:image/png;base64,${manager.profileImageUrl}` : 'default-image-url'}
-    className="rounded-circle"
-    width="44"
-    height="44"
-  />
-) : (
-  <img
-    src={profilePicture}
-    className="rounded-circle"
-    width="44"
-    height="44"
-    alt="Default Profile"
-  />
-)}
-</a>
+          <a
+            href="#"
+            className="d-block link-dark text-decoration-none dropdown-toggle"
+            id="dropdownUser2"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {client.profileImageUrl ? (
+              <img
+                src={client.profileImageUrl ? `data:image/png;base64,${client.profileImageUrl}` : 'default-image-url'}
+                className="rounded-circle"
+                width="44"
+                height="44"
+              />
+            ) : (
+              <img
+                src={profilePicture}
+                className="rounded-circle"
+                width="44"
+                height="44"
+                alt="Default Profile"
+              />
+            )}
+          </a>
           <ul
             className="dropdown-menu text-small shadow"
             aria-labelledby="dropdownUser2"
           >
-            <li> 
-            <Link to={`/manager/cabinet`} className="dropdown-item" onClick={() => settings()}>
-              Settings
-            </Link>
+            <li>
+              <Link to={`/cabinet`} className="dropdown-item" >
+                Profile
+              </Link>
             </li>
             <li>
-            <Link className="dropdown-item" to="/signout">Sign Out</Link>
+              <hr className="dropdown-divider" />
+            </li>
+            <li>
+              <Link className="dropdown-item" to="/signout">Sign Out</Link>
             </li>
           </ul>
         </div>

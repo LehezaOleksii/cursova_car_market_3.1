@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Select from "react-select";
-import Header from "../../client/Header";
-import Footer from "../../client/Footer";
+import WrappedHeader from "../../../WrappedHeader";
+import WrappedFooter from "../../../WrappedFooter";
 import CarFilterField from "../../client/fields/CarFilterField";
 import CarStateFilter from "../../client/fields/CarStateFilter";
 import SaledCars from "./SaledCars";
@@ -317,7 +317,7 @@ const AdvancedFilter = () => {
 
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="container mt-5 card w-50 mx-auto">
         <h4 className="text-center mt-4">Advanced Filter</h4>
         <div className="row">
@@ -496,7 +496,7 @@ const AdvancedFilter = () => {
       ) : (
         <div className="text-center mt-4">No cars found.</div>
       )}
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

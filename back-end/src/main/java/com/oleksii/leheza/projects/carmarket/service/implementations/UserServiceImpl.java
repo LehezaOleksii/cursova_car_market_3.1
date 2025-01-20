@@ -50,14 +50,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updateUserStatusByOtherUserById(Long userId, UserStatus status) {
-        if (isUserHasHigherRole(userId)) {
-            userRepository.updateUserStatus(userId, status);
-            log.info("Update user with id: {} to status: {}", userId, status);
-            return true;
-        } else {
-            return false;
-        }
+    public void updateUserStatusByOtherUserById(Long userId, UserStatus status) {
+        userRepository.updateUserStatus(userId, status);
+        log.info("Update user with id: {} to status: {}", userId, status);
     }
 
     @Override
@@ -149,6 +144,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmailIgnoreCase(username).orElseThrow(() -> new UsernameNotFoundException("User with username " + username + " not found"));
     }
 
+    @Override
     public boolean isUserHasHigherRole(Long otherUserId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {

@@ -1,16 +1,16 @@
 import React from "react";
 import ManagerUsers from "../../UI/manager/dashboard/ManagerUsers";
-import Header from "../../UI/manager/Header";
-import Footer from "../../UI/manager/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const ManagerDashboard = () => {
   return (
     <div >
-      <Header />
+      <WrappedHeader />
       <div className="dashboard">
       <ManagerUsers />
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   )
 };

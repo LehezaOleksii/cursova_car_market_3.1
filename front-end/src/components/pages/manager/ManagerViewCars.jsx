@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import CarFilter from "../../UI/client/dashboard/CarFilter";
-import Header from "../../UI/manager/Header";
-import Footer from "../../UI/manager/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 import ManagerSaledCars from "../../UI/manager/ManagerSaledCars";
 
 const ManagerViewCars = () => {
@@ -50,13 +50,13 @@ const ManagerViewCars = () => {
 
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="dashboard">
       <CarFilter onFilter={filterCars}/>
       <ManagerSaledCars cars={cars}/>
       {/* <BrandsFilter /> */} 
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   )
 };

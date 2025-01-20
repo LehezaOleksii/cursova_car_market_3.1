@@ -16,7 +16,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> getUsersByRole(UserRole role);
 
-    boolean updateUserStatusByOtherUserById(Long userId, UserStatus status);
+    void updateUserStatusByOtherUserById(Long userId, UserStatus status);
 
     UserUpdateDto update(UserUpdateDto user);
 
@@ -47,4 +47,6 @@ public interface UserService extends UserDetailsService {
     String getUserIdByVehicleId(Long vehicleId);
 
     String getUserEmailById(String id);
+
+    boolean isUserHasHigherRole(Long otherUserId);
 }

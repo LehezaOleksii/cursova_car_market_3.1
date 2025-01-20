@@ -20,13 +20,13 @@ const Login = () => {
       localStorage.setItem('id', userId);
       switch (role) {
         case 'ROLE_CLIENT':
-          window.location.href = '/client';
+          window.location.href = '/dashboard';
           break;
         case 'ROLE_MANAGER':
-          window.location.href = '/manager';
+          window.location.href = '/dashboard';
           break;
         case 'ROLE_ADMIN':
-          window.location.href = '/admin';
+          window.location.href = '/dashboard';
           break;
         default:
           window.location.href = '/login';

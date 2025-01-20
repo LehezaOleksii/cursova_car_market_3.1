@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [client, setClient] = useState("");
@@ -16,20 +16,20 @@ const Header = () => {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + jwtStr
         },
-      });      
+      });
       const data = await response.json();
       setClient(data);
-      fetchProfilePicture(data.profileImageUrl) 
+      fetchProfilePicture(data.profileImageUrl)
     };
     fetchData();
   }, [id]);
 
   const fetchProfilePicture = (updateProfileImage) => {
-    if(updateProfileImage === null){
+    if (updateProfileImage === null) {
       const pictureUrl = 'https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png';
       setProfilePicture(pictureUrl);
     }
-    else{
+    else {
       setProfilePicture(updateProfileImage);
     }
   };
@@ -42,78 +42,78 @@ const Header = () => {
             <div className="collapse navbar-collapse" id="navbarNavDropdown">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                  <Link to={`/client`} className="nav-link" >
+                  <Link to={`/dashboard`} className="nav-link" >
                     Home
-                  </Link> 
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/client/add_auto`} className="nav-link" >
+                  <Link to={`/add_auto`} className="nav-link" >
                     Sale car
-                  </Link> 
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/client/my_autos`} className="nav-link" >
+                  <Link to={`/my_autos`} className="nav-link" >
                     My cars
-                  </Link> 
-                </li> 
+                  </Link>
+                </li>
                 <li className="nav-item">
-                  <Link to={`/client/advanced_filter`} className="nav-link" >
+                  <Link to={`/advanced_filter`} className="nav-link" >
                     Filter
-                  </Link> 
-                </li> 
+                  </Link>
+                </li>
                 <li className="nav-item">
                   <Link to={`/cars?isLiked=true`} className="nav-link" >
                     Liked cars
-                  </Link> 
-                </li> 
+                  </Link>
+                </li>
                 <li className="nav-item">
                   <Link to={`/chats`} className="nav-link" >
                     Chats
-                  </Link> 
-                </li> 
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
         </nav>
         <div className="flex-shrink-0 dropdown ml-5">
-        <a
-  href="#"
-  className="d-block link-dark text-decoration-none dropdown-toggle"
-  id="dropdownUser2"
-  data-bs-toggle="dropdown"
-  aria-expanded="false"
->
-{client.profileImageUrl ? (
-    <img
-      src={client.profileImageUrl ? `data:image/png;base64,${client.profileImageUrl}` : 'default-image-url'}
-      className="rounded-circle"
-      width="44"
-      height="44"
-    />
-  ) : (
-    <img
-      src={profilePicture}
-      className="rounded-circle"
-      width="44"
-      height="44"
-      alt="Default Profile"
-    />
-  )}
-</a>
+          <a
+            href="#"
+            className="d-block link-dark text-decoration-none dropdown-toggle"
+            id="dropdownUser2"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {client.profileImageUrl ? (
+              <img
+                src={client.profileImageUrl ? `data:image/png;base64,${client.profileImageUrl}` : 'default-image-url'}
+                className="rounded-circle"
+                width="44"
+                height="44"
+              />
+            ) : (
+              <img
+                src={profilePicture}
+                className="rounded-circle"
+                width="44"
+                height="44"
+                alt="Default Profile"
+              />
+            )}
+          </a>
           <ul
             className="dropdown-menu text-small shadow"
             aria-labelledby="dropdownUser2"
           >
-            <li> 
-            <Link to={`/client/cabinet`} className="dropdown-item" >
-              Profile
-            </Link>
+            <li>
+              <Link to={`/cabinet`} className="dropdown-item" >
+                Profile
+              </Link>
             </li>
             <li>
               <hr className="dropdown-divider" />
             </li>
             <li>
-            <Link className="dropdown-item" to="/signout">Sign Out</Link>
+              <Link className="dropdown-item" to="/signout">Sign Out</Link>
             </li>
           </ul>
         </div>

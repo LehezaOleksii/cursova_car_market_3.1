@@ -34,34 +34,47 @@ const UserFilter = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="card mb-4">
+    <div className="card mb-4 mt-4">
       <div className="card-header">
         <h5 className="card-title">Filter Users</h5>
       </div>
       <div className="card-body">
         <form onSubmit={handleSubmit}>
           <div className="row">
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
+              <label htmlFor="name" className="form-label">
+                Filter by Name
+              </label>
               <input
                 type="text"
+                id="name"
                 name="name"
                 value={filter.name}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="Filter by Name"
+                placeholder="Enter name"
               />
             </div>
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
+              <label htmlFor="email" className="form-label">
+                Filter by Email
+              </label>
               <input
+                type="text"
+                id="email"
                 name="email"
                 value={filter.email}
                 onChange={handleChange}
                 className="form-control"
-                placeholder="Filter by Email"
+                placeholder="Enter email"
               />
             </div>
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
+              <label htmlFor="status" className="form-label">
+                Filter by Status
+              </label>
               <select
+                id="status"
                 name="status"
                 value={filter.status}
                 onChange={handleChange}
@@ -73,8 +86,12 @@ const UserFilter = ({ onFilterChange }) => {
                 <option value={UserStatus.BLOCKED}>{UserStatus.BLOCKED}</option>
               </select>
             </div>
-            <div className="col-md-4 mb-3">
+            <div className="col-md-3 mb-3">
+              <label htmlFor="role" className="form-label">
+                Filter by Role
+              </label>
               <select
+                id="role"
                 name="role"
                 value={filter.role}
                 onChange={handleChange}
@@ -87,10 +104,12 @@ const UserFilter = ({ onFilterChange }) => {
               </select>
             </div>
           </div>
-          <button type="submit" className="btn btn-primary">
-            Search
-          </button>
         </form>
+      </div>
+      <div className="d-flex justify-content-center mb-3">
+        <button type="submit" className="btn btn-primary" style={{ width: "300px" }}>
+          Search
+        </button>
       </div>
     </div>
   );

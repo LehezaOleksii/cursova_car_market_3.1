@@ -1,11 +1,11 @@
 import React from 'react';
-import ClientHeader from "../../UI/client/Header";
-import ClientFooter from "../../UI/client/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 import Cabinet from '../../UI/client/Cabinet/Cabinet';
 
 const ClientCabinet = () => {
   return (
-    <Cabinet Header={ClientHeader} Footer={ClientFooter} />
+    <Cabinet Header={WrappedHeader} Footer={WrappedFooter} />
   );
 };
 

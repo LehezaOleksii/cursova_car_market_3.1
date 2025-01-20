@@ -1,7 +1,7 @@
 version: '3'
 
 services:
-  backend:
+  localhost:
     build:
       context: ./back-end
       dockerfile: Dockerfile
@@ -9,10 +9,13 @@ services:
       - '8080:8080'
     depends_on:
       - postgres
+      - mongo
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/car_market_database
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 1234
+    networks:
+      - app_network
 
   frontend:
     build:
@@ -21,8 +24,9 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      - backend
-      - postgres
+      - localhost
+    networks:
+      - app_network
 
   postgres:
     image: postgres
@@ -33,3 +37,28 @@ services:
       POSTGRES_PASSWORD: 1234
     ports:
       - '5432:5432'
+    networks:
+      - app_network
+
+  mongo:
+    image: mongo:7.0
+    restart: on-failure
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: car_market_admin
+      MONGO_INITDB_ROOT_PASSWORD: car_market_admin
+      MONGO_INITDB_DATABASE: car_market_db
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app_network
+      
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  mongo_data:

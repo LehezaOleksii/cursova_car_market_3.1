@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MyCar from "../../UI/client/AddAuto/MyCar";
-import Header from "../../UI/client/Header";
-import Footer from "../../UI/client/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const MyCars = () => {
   const [cars, setCars] = useState([]);
@@ -31,13 +31,13 @@ const MyCars = () => {
 
   return (
     <div>
-      <Header />
+      <WrappedHeader />
       <div  className="dashboard">
       {cars.map((car) => (
         <MyCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
       ))}
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

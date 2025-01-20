@@ -36,13 +36,13 @@ const SignIn = () => {
   
         switch (role) {
           case "CLIENT":
-            navigate(`/client`);
+            navigate(`/dashboard`);
             break;
           case "MANAGER":
-            navigate(`/manager/users`);
+            navigate(`/dashboard`);
             break;
           case "ADMIN":
-            navigate(`/admin`);
+            navigate(`/dashboard`);
             break;
           default:
             alert("User with this data does not exist at the system");

@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import Header from "../../UI/admin/Header";
-import Footer from "../../UI/admin/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 import AdminManager from "../../UI/admin/dashboard/AdminManager";
 
 const AdminDashboard = () => {
@@ -33,13 +33,13 @@ const AdminDashboard = () => {
 
   return (
     <div >
-      <Header />
+      <WrappedHeader />
       <div className="dashboard">
       {managers.map((manager) => (
         <AdminManager key={manager.id} manager={manager} id={adminId} removeManagerFromList={removeManagerFromList} />
       ))}
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   )
 };

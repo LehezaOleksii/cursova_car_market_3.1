@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import Header from "../../UI/client/Header";
-import Footer from "../../UI/client/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const SaleCar = () => {
   const { carId } = useParams(); 
@@ -43,7 +43,7 @@ const SaleCar = () => {
 
   return (
     <div className="body">
-      <Header />
+      <WrappedHeader />
       <div className="container mt-5">
         <div className="row">
           <div className="col-md-6">
@@ -168,7 +168,7 @@ const SaleCar = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

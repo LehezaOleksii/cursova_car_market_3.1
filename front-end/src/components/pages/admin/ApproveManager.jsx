@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";  
 import ApproveManager from "../../UI/admin/approve_manager/ApproveManager";
-import Header from "../../UI/admin/Header";
-import Footer from "../../UI/admin/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const ApproveManagersPage = () => {
 
@@ -32,13 +32,13 @@ const ApproveManagersPage = () => {
 
   return (
     <div>
-      <Header />
+      <WrappedHeader />
       <div className="p-5">
         {users.map((manager) => (
           <ApproveManager key={manager.id} manager={manager} id={adminId} removeManagerFromList={removeUserFromList} />
         ))}
       </div>
-      <Footer />
+      <WrappedFooter />
     </div>
   );
 };

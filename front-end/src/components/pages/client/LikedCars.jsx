@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Import useLocation
+import { useLocation } from "react-router-dom";
 import SaledCars from "../../UI/client/dashboard/SaledCars";
-import Header from "../../UI/client/Header";
-import Footer from "../../UI/client/Footer";
+import WrappedHeader from "../../WrappedHeader";
+import WrappedFooter from "../../WrappedFooter";
 
 const LikedCars = () => {
     const [cars, setCars] = useState([]);
     const jwtStr = localStorage.getItem('jwtToken');
-
-    // Extract query parameters from the URL
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
-    const isLiked = searchParams.get('isLiked'); // Get the isLiked parameter
+    const isLiked = searchParams.get('isLiked');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,15 +30,15 @@ const LikedCars = () => {
             }
         };
         fetchData();
-    }, [isLiked, jwtStr]); // Add isLiked as a dependency
+    }, [isLiked, jwtStr]);
 
     return (
         <div className="body">
-            <Header />
+            <WrappedHeader />
             <div className="dashboard mt-5">
                 <SaledCars cars={cars} />
             </div>
-            <Footer />
+            <WrappedFooter />
         </div>
     );
 };
