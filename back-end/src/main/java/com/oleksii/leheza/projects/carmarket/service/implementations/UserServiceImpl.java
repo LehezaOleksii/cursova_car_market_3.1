@@ -1,6 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.service.implementations;
 
+import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.EmailConfirmation;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
@@ -8,12 +10,14 @@ import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.EmailConfirmationRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
-import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
+import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.UserSpecification;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +41,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailConfirmationRepository emailConfirmationRepository;
     private final UserSpecification userSpecification;
+    private final DtoMapper dtoMapper;
 
     @Override
     public void approveManager(Long userId) {
@@ -114,9 +119,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getUsersWithFilter(int page, int size, VehilcleSearchCriteria criteria) {
+    public Page<UserManagerDashboardDto> getUsersWithFilter(int page, int size, UserSearchCriteria criteria) {
         Sort sort = Sort.by(SORT_PROPERTY_FIRST_NAME);
-        return userSpecification.getUsersWithCriterias(criteria, page, size, sort);
+        return userSpecification.getUsersWithCriterias(criteria, page, size, sort)
+                .map(dtoMapper::userToUserManagerDashboardDto);
     }
 
     @Override
@@ -159,4 +165,10 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
+    @Override
+    public Page<UserManagerDashboardDto> findAllUsersManagerDashboardDto(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(dtoMapper::userToUserManagerDashboardDto);
+    }
 }

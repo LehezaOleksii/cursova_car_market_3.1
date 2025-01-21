@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VehilcleSearchCriteria {
+public class UserSearchCriteria {
 
-    private String fullName;
+    private String name;
     private String email;
     private String status;
     private String role;

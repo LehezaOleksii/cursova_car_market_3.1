@@ -4,6 +4,7 @@ import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -12,7 +13,6 @@ import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
-import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,7 +31,6 @@ public class DtoMapper {
     private final VehicleModelRepository vehicleModelRepository;
     private final VehicleBodyTypeRepository vehicleBodyTypeRepository;
     private final EngineRepository engineRepository;
-    private final UserService userService;
     private final UserVehicleLikeRepository userVehicleLikeRepository;
     private final VehicleRepository vehicleRepository;
 
@@ -145,10 +144,6 @@ public class DtoMapper {
         }
         VehicleBodyType bodyType = vehicleBodyTypeRepository.findByBodyTypeName(vehicleDto.getBodyType())
                 .orElseThrow(() -> new ResourceNotFoundException("BodyType not found : " + vehicleDto.getBodyType()));
-        if (vehicleDto.getUserId() != null) {
-            User user = userService.findById(vehicleDto.getUserId());
-            vehicle.setUser(user);
-        }
         return vehicle.toBuilder()
                 .id(vehicleDto.getId())
                 .price(vehicleDto.getPrice())
@@ -228,6 +223,18 @@ public class DtoMapper {
                 .content(chatMessage.getContent())
                 .timestamp(String.valueOf(chatMessage.getTimestamp()))
                 .status(chatMessage.getStatus())
+                .build();
+    }
+
+    public UserManagerDashboardDto userToUserManagerDashboardDto(User user) {
+        return UserManagerDashboardDto.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .profileImageUrl(user.getProfileImageUrl())
+                .status(String.valueOf(user.getStatus()))
+                .userRole(user.getUserRole().name())
                 .build();
     }
 }

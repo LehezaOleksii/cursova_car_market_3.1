@@ -121,7 +121,12 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void updateVehicle(Long userId, UpdateVehicleDto vehicleDto, Long vehicleId) {
         if (vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
-            vehicleRepository.save(dtoMapper.updateVehicleDtoToVehicle(vehicleDto, getPhotosList(vehicleDto.getPhotos())));
+            if (vehicleDto.getUserId() != null) {
+                Vehicle vehicle = vehicleRepository.save(dtoMapper.updateVehicleDtoToVehicle(vehicleDto, getPhotosList(vehicleDto.getPhotos())));
+                User user = userRepository.findById(vehicleDto.getUserId())
+                        .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                vehicle.setUser(user);
+            }
         } else {
             log.warn("User does not have vehicle: {}, user: {}", vehicleId, userId);
             throw new SecurityException("User does not have vehicle");

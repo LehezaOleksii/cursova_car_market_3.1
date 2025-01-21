@@ -4,33 +4,62 @@ import { useParams } from "react-router";
 import UserFilter from "../../../../components/pages/manager/UserFilter";
 
 const ManagerUsers = () => {
-  const { id: managerId } = useParams();
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [role, setRole] = useState();
-  const [usersPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize] = useState(5);
   const jwtStr = localStorage.getItem('jwtToken');
+
+  const [filter, setFilter] = useState({
+    name: "",
+    email: "",
+    status: "ALL",
+    role: "ALL",
+  });
+
+  const [baseFilter] = useState({
+    name: "",
+    email: "",
+    status: "ALL",
+    role: "ALL",
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/users`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + jwtStr
-        },
-      });
-      if(response.ok){
-        const data = await response.json();
-        setUsers(data);
-        setFilteredUsers(data);
+      let url = `http://localhost:8080/users?page=${currentPage}&size=${pageSize}`;
+        if (filter !== baseFilter) {
+        url = `http://localhost:8080/users/filter?page=${currentPage}&size=${pageSize}`;
+      }
+  
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + jwtStr,
+          },
+          body: filter !== baseFilter ? JSON.stringify(filter) : null, 
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setUsers(data.content || []);
+          setTotalPages(data.totalPages || 1);
+        } else {
+          setUsers([]);
+          setTotalPages(0);
+          console.error("Error fetching users:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setUsers([]);
+        setTotalPages(1);
       }
     };
-
-    fetchData();
-  }, [managerId]);
+      fetchData();
+  }, [currentPage, pageSize]);
+  
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -40,7 +69,7 @@ const ManagerUsers = () => {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + jwtStr,
+            Authorization: 'Bearer ' + jwtStr,
           },
         });
         if (response.ok) {
@@ -51,57 +80,42 @@ const ManagerUsers = () => {
           console.error("Error fetching role:", response.statusText);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching role:", error);
       }
     };
+
     fetchUserRole();
   }, [jwtStr]);
-  
 
   const updateUserStatus = (userId, newStatus) => {
     setUsers((prevUsers) =>
-      prevUsers.map(user =>
-        user.id === userId ? { ...user, status: newStatus } : user
-      )
-    );
-    setFilteredUsers((prevFilteredUsers) =>
-      prevFilteredUsers.map(user =>
+      prevUsers.map((user) =>
         user.id === userId ? { ...user, status: newStatus } : user
       )
     );
   };
 
-  const handleFilterChange = async (filters) => {
-    const { name, email, status, role } = filters;
-    const response = await fetch(`http://localhost:8080/managers/clients/filter?name=${name}&email=${email}&status=${status}&role=${role}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + jwtStr,
-      },
-    });
-
-    if (response.ok) {
-      const filteredData = await response.json();
-      setFilteredUsers(filteredData.content || filteredData);
-      setCurrentPage(1);
-    } else {
-      console.error("Failed to fetch filtered users");
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setCurrentPage(newPage);
     }
   };
 
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
-
   return (
     <div>
-      <UserFilter onFilterChange={handleFilterChange} />
+      <UserFilter
+        setUsers={setUsers}
+        setFilter={setFilter}
+        setTotalPages={setTotalPages}
+        setCurrentPage={setCurrentPage}
+        filter={filter}
+        pageSize={pageSize}
+        currentPage={currentPage}
+      />
       <div className="d-flex justify-content-between mb-3">
         <h3>User Management</h3>
-        <p>{filteredUsers.length} Users Found</p>
       </div>
-      {currentUsers.map((user) => (
+      {users.map((user) => (
         <ManagerUserDashboard
           key={user.id}
           user={user}
@@ -109,25 +123,25 @@ const ManagerUsers = () => {
           currentRole={role}
         />
       ))}
-
-      {/* Pagination */}
       <nav aria-label="User pagination">
         <ul className="pagination justify-content-center mt-4">
-          <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+          <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
             <button
               className="page-link"
-              onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+              onClick={() => handlePageChange(currentPage - 1)}
             >
               Previous
             </button>
           </li>
           <li className="page-item disabled">
-            <span className="page-link">Page {currentPage} of {totalPages || 1}</span>
+            <span className="page-link">
+              Page {currentPage + 1} of {totalPages}
+            </span>
           </li>
-          <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+          <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
             <button
               className="page-link"
-              onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+              onClick={() => handlePageChange(currentPage + 1)}
             >
               Next
             </button>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 
-const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
+const ManagerUserDashboard = ({ user, updateUserStatus, currentRole}) => {
   const [profilePicture, setProfilePicture] = useState('');
   const jwtStr = localStorage.getItem('jwtToken');
   const navigate = useNavigate();
@@ -10,6 +10,12 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
     "ROLE_CLIENT": "Client",
     "ROLE_MANAGER": "Manager",
     "ROLE_ADMIN": "Admin",
+  };
+
+  const statusMapping = {
+    "ACTIVE": "Active",
+    "BLOCKED": "Blocked",
+    "INACTIVE": "Inactive",
   };
 
   const changeUserStatus = async (newStatus) => {
@@ -37,7 +43,6 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
     navigate(`/chats?recipientId=${user.id}`);
   };
 
-
   useEffect(() => {
     fetchProfilePicture(user.profileImageUrl);
   }, [user.profileImageUrl]);
@@ -59,7 +64,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
     }
   };
 
-  const canManageUser = () => {
+  const isEnableToChangeStatus = () => {
     return getRoleFormNumber(currentRole) > getRoleFormNumber(user.userRole);
   };
 
@@ -97,11 +102,12 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
         </div>
         <div className="col-md-7">
           <div className="card-body">
-            <div className="d-flex justify-content-between">
-              <span className="card-text ms-4 col-md-5">{user.firstName} {user.lastName}</span>
-              <span className="card-text ms-4 col-md-4">{user.email || "No Email Provided"}</span>
-              <span className="card-text ms-4 col-md-3">{getNumericRole(user.userRole) || "No Role Assigned"}</span>
-            </div>
+            <div className="d-flex justify-content-center align-items-center">
+              <span className="card-text text-center ms-4 col-md-4">{user.firstName} {user.lastName}</span>
+              <span className="card-text text-center ms-4 col-md-4">{user.email || "No Email"}</span>
+              <span className="card-text text-center ms-4 col-md-2">{getNumericRole(user.userRole) || "No Role"}</span>
+              <span className="card-text text-center ms-4 col-md-2">{statusMapping[user.status] || "No Status"}</span>
+              </div>
           </div>
         </div>
         <div className="col-md-4 d-flex align-items-center justify-content-end">
@@ -112,7 +118,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
           </div>
           <div className="col-4 me-3">
             {
-              canManageUser() ? (
+              isEnableToChangeStatus() ? (
                 user.status === "BLOCKED" ? (
                   <button className="btn btn-primary" style={{ width: "120px" }} onClick={() => changeUserStatus("ACTIVE")}>
                     Unblock user

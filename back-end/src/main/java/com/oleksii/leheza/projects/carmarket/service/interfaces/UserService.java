@@ -1,10 +1,11 @@
 package com.oleksii.leheza.projects.carmarket.service.interfaces;
 
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
-import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehilcleSearchCriteria;
+import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -38,7 +39,7 @@ public interface UserService extends UserDetailsService {
 
     Long getUserIdByEmail(String username);
 
-    Page<User> getUsersWithFilter(int page, int size, VehilcleSearchCriteria criteria);
+    Page<UserManagerDashboardDto> getUsersWithFilter(int page, int size, UserSearchCriteria criteria);
 
     String getUserRoleByEmail(String email);
 
@@ -49,4 +50,6 @@ public interface UserService extends UserDetailsService {
     String getUserEmailById(String id);
 
     boolean isUserHasHigherRole(Long otherUserId);
+
+    Page<UserManagerDashboardDto> findAllUsersManagerDashboardDto(int page, int size);
 }

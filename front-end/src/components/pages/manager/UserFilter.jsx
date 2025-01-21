@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
+
+const jwtStr = localStorage.getItem('jwtToken');
 
 const UserStatus = {
   ACTIVE: "ACTIVE",
@@ -12,25 +14,40 @@ const UserRole = {
   ADMIN: "ROLE_ADMIN",
 };
 
-const UserFilter = ({ onFilterChange }) => {
-  const [filter, setFilter] = useState({
-    name: "",
-    email: "",
-    status: "ALL",
-    role: "ALL",
-  });
-
+const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter, pageSize, currentPage }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilter((prevFilter) => ({
       ...prevFilter,
       [name]: value,
     }));
+    setCurrentPage(0);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onFilterChange(filter);
+    try {
+      const response = await fetch(
+        `http://localhost:8080/users/filter?page=${currentPage}&size=${pageSize}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + jwtStr,
+          },
+          body: JSON.stringify(filter),
+        }
+      );
+      const results = await response.json();
+      setUsers(results.content || []);
+      setCurrentPage(0);
+      setTotalPages(results.totalPages || 1);
+    } catch (error) {
+      setUsers( []);
+      setTotalPages(1);
+      setCurrentPage(0);
+      console.error("Error occurred while fetching search results:", error);
+    }
   };
 
   return (
@@ -42,9 +59,7 @@ const UserFilter = ({ onFilterChange }) => {
         <form onSubmit={handleSubmit}>
           <div className="row">
             <div className="col-md-3 mb-3">
-              <label htmlFor="name" className="form-label">
-                Filter by Name
-              </label>
+              <label htmlFor="name" className="form-label">Filter by Name</label>
               <input
                 type="text"
                 id="name"
@@ -56,9 +71,7 @@ const UserFilter = ({ onFilterChange }) => {
               />
             </div>
             <div className="col-md-3 mb-3">
-              <label htmlFor="email" className="form-label">
-                Filter by Email
-              </label>
+              <label htmlFor="email" className="form-label">Filter by Email</label>
               <input
                 type="text"
                 id="email"
@@ -70,9 +83,7 @@ const UserFilter = ({ onFilterChange }) => {
               />
             </div>
             <div className="col-md-3 mb-3">
-              <label htmlFor="status" className="form-label">
-                Filter by Status
-              </label>
+              <label htmlFor="status" className="form-label">Filter by Status</label>
               <select
                 id="status"
                 name="status"
@@ -87,9 +98,7 @@ const UserFilter = ({ onFilterChange }) => {
               </select>
             </div>
             <div className="col-md-3 mb-3">
-              <label htmlFor="role" className="form-label">
-                Filter by Role
-              </label>
+              <label htmlFor="role" className="form-label">Filter by Role</label>
               <select
                 id="role"
                 name="role"
@@ -104,12 +113,12 @@ const UserFilter = ({ onFilterChange }) => {
               </select>
             </div>
           </div>
+          <div className="d-flex justify-content-center mb-2 mt-2">
+            <button type="submit" className="btn btn-primary" style={{ width: "300px" }}>
+              Search
+            </button>
+          </div>
         </form>
-      </div>
-      <div className="d-flex justify-content-center mb-3">
-        <button type="submit" className="btn btn-primary" style={{ width: "300px" }}>
-          Search
-        </button>
       </div>
     </div>
   );
