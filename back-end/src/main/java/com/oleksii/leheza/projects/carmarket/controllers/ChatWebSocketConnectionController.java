@@ -4,7 +4,6 @@ import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessage;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatMessageService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
-import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -17,7 +16,6 @@ public class ChatWebSocketConnectionController {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatMessageService chatMessageService;
-    private final UserService userService;
     private final ChatRoomService chatRoomService;
 
     @MessageMapping("/chat")

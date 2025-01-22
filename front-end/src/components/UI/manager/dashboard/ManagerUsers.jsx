@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import ManagerUserDashboard from "./ManagerUserDashboard";
-import { useParams } from "react-router";
 import UserFilter from "../../../../components/pages/manager/UserFilter";
 
 const ManagerUsers = () => {

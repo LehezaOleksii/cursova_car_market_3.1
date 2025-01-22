@@ -395,4 +395,22 @@ public class VehicleController {
         Page<VehicleDashboardDto> vehicleDtos = vehicleService.getVehicleWithLikedStatus(userId, isLiked, page, size);
         return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
+
+    @Operation(summary = "Get all users cars by user id", description = "Get all users cars by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehicles retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = VehicleDashboardDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "Vehicles are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<List<VehicleDashboardDto>> getUserLikedCars(@PathVariable Long userId) {
+        List<VehicleDashboardDto> vehicles = vehicleService.getVehiclesByUserId(userId);
+        return new ResponseEntity<>(vehicles, vehicles != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
 }

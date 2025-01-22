@@ -55,4 +55,7 @@ public interface VehicleRepository extends
 
     @Query("SELECT v FROM Vehicle v WHERE v.id IN :vehicleIds")
     Page<Vehicle> findAllPostedVehiclesByIds(List<Long> vehicleIds, Pageable pageable);
+
+    @Query("SELECT v FROM Vehicle v WHERE v.user.id = :userId")
+    List<Vehicle> findByUserId(Long userId);
 }

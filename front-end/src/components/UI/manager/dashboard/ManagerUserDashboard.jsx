@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import SaledCars from "../../client/dashboard/SaledCars";
+import "./ManagerUserDashboard.css";
 
-const ManagerUserDashboard = ({ user, updateUserStatus, currentRole}) => {
-  const [profilePicture, setProfilePicture] = useState('');
-  const jwtStr = localStorage.getItem('jwtToken');
+const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
+  const [profilePicture, setProfilePicture] = useState("");
+  const [cars, setCars] = useState([]);
+  const [showCars, setShowCars] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const jwtStr = localStorage.getItem("jwtToken");
   const navigate = useNavigate();
 
   const roleMapping = {
-    "ROLE_CLIENT": "Client",
-    "ROLE_MANAGER": "Manager",
-    "ROLE_ADMIN": "Admin",
+    ROLE_CLIENT: "Client",
+    ROLE_MANAGER: "Manager",
+    ROLE_ADMIN: "Admin",
   };
 
   const statusMapping = {
-    "ACTIVE": "Active",
-    "BLOCKED": "Blocked",
-    "INACTIVE": "Inactive",
+    ACTIVE: "Active",
+    BLOCKED: "Blocked",
+    INACTIVE: "Inactive",
   };
 
   const changeUserStatus = async (newStatus) => {
     const url = `http://localhost:8080/users/${user.id}/status/${newStatus}`;
     await fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + jwtStr
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwtStr,
       },
     });
     updateUserStatus(user.id, newStatus);
@@ -32,24 +37,52 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole}) => {
 
   const fetchProfilePicture = (profileImageUrl) => {
     if (profileImageUrl === null) {
-      const pictureUrl = 'https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png';
+      const pictureUrl =
+        "https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png";
       setProfilePicture(pictureUrl);
     } else {
       setProfilePicture(profileImageUrl);
     }
   };
 
-  const sendMessage = async () => {
+  const sendMessage = () => {
     navigate(`/chats?recipientId=${user.id}`);
+  };
+
+  const viewUsersCars = async () => {
+    if (showCars) {
+      setIsAnimating(true);
+      setTimeout(() => {
+        setShowCars(false);
+        setIsAnimating(false);
+      }, 500);
+    } else {
+      const url = `http://localhost:8080/vehicles/users/${user.id}`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + jwtStr,
+          },
+        });
+        if (response.ok) {
+          const carsData = await response.json();
+          setCars(carsData);
+          setShowCars(true);
+        } else {
+          console.error("Failed to fetch cars");
+        }
+      } catch (error) {
+        console.error("Error fetching cars:", error);
+      }
+    }
   };
 
   useEffect(() => {
     fetchProfilePicture(user.profileImageUrl);
   }, [user.profileImageUrl]);
 
-  const getNumericRole = (roleString) => {
-    return roleMapping[roleString] || "Unknown";
-  };
+  const getNumericRole = (roleString) => roleMapping[roleString] || "Unknown";
 
   const getRoleFormNumber = (roleString) => {
     switch (roleString) {
@@ -64,9 +97,8 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole}) => {
     }
   };
 
-  const isEnableToChangeStatus = () => {
-    return getRoleFormNumber(currentRole) > getRoleFormNumber(user.userRole);
-  };
+  const isEnableToChangeStatus = () =>
+    getRoleFormNumber(currentRole) > getRoleFormNumber(user.userRole);
 
   return (
     <div className="card mb-3">
@@ -100,59 +132,82 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole}) => {
             )}
           </div>
         </div>
-        <div className="col-md-7">
+        <div className="col-md-6">
           <div className="card-body">
             <div className="d-flex justify-content-center align-items-center">
-              <span className="card-text text-center ms-4 col-md-4">{user.firstName} {user.lastName}</span>
-              <span className="card-text text-center ms-4 col-md-4">{user.email || "No Email"}</span>
-              <span className="card-text text-center ms-4 col-md-2">{getNumericRole(user.userRole) || "No Role"}</span>
-              <span className="card-text text-center ms-4 col-md-2">{statusMapping[user.status] || "No Status"}</span>
-              </div>
+              <span className="card-text text-center col-md-3">
+                {user.firstName} {user.lastName}
+              </span>
+              <span className="card-text text-center col-md-5">
+                {user.email || "No Email"}
+              </span>
+              <span className="card-text text-center col-md-2">
+                {getNumericRole(user.userRole) || "No Role"}
+              </span>
+              <span className="card-text text-center col-md-2">
+                {statusMapping[user.status] || "No Status"}
+              </span>
+            </div>
           </div>
         </div>
-        <div className="col-md-4 d-flex align-items-center justify-content-end">
-          <div className="col-5">
-            <button className="btn btn-primary" style={{ width: "130px" }} onClick={sendMessage}>
-              Send message
-            </button>
-          </div>
-          <div className="col-4 me-3">
-            {
-              isEnableToChangeStatus() ? (
+        <div className="col-md-5 d-flex align-items-center justify-content-end">
+          <div className="col-12 d-flex justify-content-center">
+            <div className="col-3 mx-2">
+              <button className="btn btn-primary w-100" onClick={viewUsersCars}>
+                {showCars && !isAnimating ? "Hide cars" : "View cars"}
+              </button>
+            </div>
+            <div className="col-4 mx-2">
+              <button className="btn btn-primary w-100" onClick={sendMessage}>
+                Send message
+              </button>
+            </div>
+            <div className="col-3 mx-2">
+              {isEnableToChangeStatus() ? (
                 user.status === "BLOCKED" ? (
-                  <button className="btn btn-primary" style={{ width: "120px" }} onClick={() => changeUserStatus("ACTIVE")}>
-                    Unblock user
+                  <button
+                    className="btn btn-primary w-100"
+                    onClick={() => changeUserStatus("ACTIVE")}
+                  >
+                    Unblock
                   </button>
                 ) : user.status === "INACTIVE" ? (
-                  <button className="btn btn-success" style={{ width: "120px" }} onClick={() => changeUserStatus("ACTIVE")}>
-                    Activate user
+                  <button
+                    className="btn btn-success w-100"
+                    onClick={() => changeUserStatus("ACTIVE")}
+                  >
+                    Activate
                   </button>
                 ) : (
-                  <button className="btn btn-danger" style={{ width: "120px" }} onClick={() => changeUserStatus("BLOCKED")}>
-                    Block user
+                  <button
+                    className="btn btn-danger w-100"
+                    onClick={() => changeUserStatus("BLOCKED")}
+                  >
+                    Block
                   </button>
                 )
+              ) : user.status === "BLOCKED" ? (
+                <button className="btn btn-secondary w-100" disabled>
+                  Unblock
+                </button>
+              ) : user.status === "INACTIVE" ? (
+                <button className="btn btn-secondary w-100" disabled>
+                  Activate
+                </button>
               ) : (
-                user.status === "BLOCKED" ? (
-                  <button className="btn btn-secondary" style={{ width: "120px" }} disabled>
-                    Unblock user
-                  </button>
-                ) : user.status === "INACTIVE" ? (
-                  <button className="btn btn-secondary" style={{ width: "120px" }} disabled>
-                    Activate user
-                  </button>
-                ) : (
-                  <button className="btn btn-secondary" style={{ width: "120px" }} disabled>
-                    Block user
-                  </button>
-                )
-              )
-            }
+                <button className="btn btn-secondary w-100" disabled>
+                  Block
+                </button>
+              )}
+            </div>
           </div>
+        </div>
+        <div
+          className={`saled-cars ${isAnimating ? "hiding" : showCars ? "visible" : "hidden"}`}>
+          {showCars && <SaledCars cars={cars} />}
         </div>
       </div>
     </div>
   );
 };
-
 export default ManagerUserDashboard;

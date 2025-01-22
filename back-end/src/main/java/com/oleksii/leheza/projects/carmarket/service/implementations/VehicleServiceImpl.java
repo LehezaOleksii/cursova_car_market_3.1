@@ -216,6 +216,13 @@ public class VehicleServiceImpl implements VehicleService {
 
     }
 
+    @Override
+    public List<VehicleDashboardDto> getVehiclesByUserId(Long userId) {
+        return vehicleRepository.findByUserId(userId).stream()
+                .map(dtoMapper::vehicleToVehicleDashboardDto)
+                .toList();
+    }
+
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found while creating vehicle use like"));
         UserVehicleLike userVehicleLike = new UserVehicleLike();
