@@ -1,0 +1,12 @@
+.saled-cars {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    margin-top: 0;
+  }
+  
+  .saled-cars.visible {
+    opacity: 1;
+    transform: translateY(0);
+    margin-top: 20px;
+  }
