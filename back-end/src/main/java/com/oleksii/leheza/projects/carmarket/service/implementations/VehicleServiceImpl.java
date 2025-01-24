@@ -2,6 +2,9 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
+import com.oleksii.leheza.projects.carmarket.dto.update.BrandDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.ModelDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
@@ -9,6 +12,7 @@ import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
+import com.oleksii.leheza.projects.carmarket.exceptions.ResourceAlreadyExistsException;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
@@ -46,6 +50,7 @@ public class VehicleServiceImpl implements VehicleService {
     private final VehicleSpecification vehicleSpecification;
     private final UserVehicleLikeRepository userVehicleLikeRepository;
     private final UserRepository userRepository;
+    private final VehicleBrandRepository brandRepository;
 
     @Override
     public void deleteVehicleById(Long vehicleId) {
@@ -221,6 +226,101 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleRepository.findByUserId(userId).stream()
                 .map(dtoMapper::vehicleToVehicleDashboardDto)
                 .toList();
+    }
+
+    @Override
+    public List<BrandDto> getVehicleBrandDtos() {
+        return vehicleBrandRepository.findAll().stream()
+                .map(dtoMapper::brandToBrandDto)
+                .toList();
+    }
+
+    @Override
+    public void updateVehicleBrandName(BrandDto brandDto) {
+        vehicleBrandRepository.updateBrandName(brandDto.getName(), brandDto.getId());
+    }
+
+    @Override
+    public void deleteBrandById(Long brandId) {
+        vehicleBrandRepository.deleteById(brandId);
+    }
+
+    @Override
+    public List<ModelDto> getVehicleModelDtos() {
+        return vehicleModelRepository.findAll().stream()
+                .map(dtoMapper::modelToModelDto)
+                .toList();
+    }
+
+    @Override
+    public List<EngineDto> getEngines() {
+        return engineRepository.findAll().stream()
+                .map(dtoMapper::engineToEngineDto)
+                .toList();
+    }
+
+    @Override
+    public void updateVehicleModel(ModelDto modelDto) {
+        vehicleModelRepository.findById(modelDto.getId()).ifPresent(vehicleModel -> {
+            VehicleModel vm = vehicleModel.toBuilder()
+                    .id(modelDto.getId())
+                    .modelName(modelDto.getModelName())
+                    .firstProductionYear(modelDto.getFirstProductionYear())
+                    .lastProductionYear(modelDto.getLastProductionYear())
+                    .bodyType(vehicleBodyTypeRepository.findByBodyTypeName(modelDto.getBodyTypeName())
+                            .orElseThrow(() -> new ResourceNotFoundException("Body type not found while model save")))
+                    .vehicleBrand(brandRepository.findByBrandName(modelDto.getVehicleBrandName())
+                            .orElseThrow(() -> new ResourceNotFoundException("Brand not found while model save")))
+                    .build();
+            vehicleModelRepository.save(vm);
+        });
+    }
+
+    @Override
+    public void addEngineToModel(Long engineId, Long modelId) {
+        VehicleModel vehicleModel = vehicleModelRepository.findById(modelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Model not found with ID: " + modelId));
+        Engine engine = engineRepository.findById(engineId)
+                .orElseThrow(() -> new ResourceNotFoundException("Engine not found with ID: " + engineId));
+        vehicleModel.addEngine(engine);
+        vehicleModelRepository.save(vehicleModel);
+    }
+
+    @Override
+    public void deleteEngineToModel(Long engineId, Long modelId) {
+        vehicleModelRepository.deleteEngineFromModel(modelId, engineId);
+    }
+
+    @Override
+    public BrandDto createBrand(BrandDto brandDto) {
+        if (brandRepository.findByBrandName(brandDto.getName()).isEmpty()) {
+            return dtoMapper.brandToBrandDto(brandRepository.save(new VehicleBrand(brandDto.getName())));
+        } else {
+            throw new ResourceAlreadyExistsException("Resource with name " + brandDto.getName() + " already exists");
+        }
+    }
+
+    @Override
+    public ModelDto createModel(ModelDto modelDto) {
+        if (brandRepository.findByBrandName(modelDto.getModelName()).isEmpty()) {
+            VehicleBodyType bodyType = vehicleBodyTypeRepository.findByBodyTypeName(modelDto.getBodyTypeName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Body type not found while model save"));
+            VehicleBrand brand = vehicleBrandRepository.findByBrandName(modelDto.getVehicleBrandName())
+                    .orElseThrow(() -> new ResourceNotFoundException("Brand not found while model save"));
+            return dtoMapper.modelToModelDto(vehicleModelRepository.save(new VehicleModel(
+                    modelDto.getModelName(),
+                    modelDto.getFirstProductionYear(),
+                    modelDto.getLastProductionYear(),
+                    bodyType,
+                    brand)));
+        } else {
+            throw new ResourceAlreadyExistsException("Resource with name " + modelDto.getModelName() + " already exists");
+        }
+    }
+
+    @Override
+    public void deleteModel(Long modelId) {
+        vehicleModelRepository.deleteById(modelId);
     }
 
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {

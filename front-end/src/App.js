@@ -18,7 +18,7 @@ import ManagerDashboard from "./components/pages/manager/ManagerDashboard";
 import Autos from "./components/pages/manager/Autos";
 import ApproveCarPage from "./components/pages/manager/ApproveCarPage";
 import ManagerCabinet from "./components/pages/manager/ManagerCabinet";
-import CarDetails from "./components/pages/manager/CarDetails";
+import CarDetails from "./components/pages/manager/car_details/CarDetails";
 
 
 import AdminDashboard from "./components/pages/admin/AdminDashboard";

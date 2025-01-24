@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Getter
 @Setter
@@ -22,6 +25,8 @@ public class Engine {
     private String name;
     private float volume;
     private float horsepower;
+    @ManyToMany
+    private Set<VehicleModel> vehicleModels = new HashSet<>();
 
     public Engine(String name, float volume, float horsepower) {
         this.name = name;

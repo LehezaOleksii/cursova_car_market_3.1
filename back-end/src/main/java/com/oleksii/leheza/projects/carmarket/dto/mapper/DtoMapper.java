@@ -3,6 +3,9 @@ package com.oleksii.leheza.projects.carmarket.dto.mapper;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.BrandDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.ModelDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
@@ -21,6 +24,7 @@ import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +37,7 @@ public class DtoMapper {
     private final EngineRepository engineRepository;
     private final UserVehicleLikeRepository userVehicleLikeRepository;
     private final VehicleRepository vehicleRepository;
+    private final VehicleBrandRepository brandRepository;
 
     public VehicleGarageDto vehicleToVehicleGarageDto(Vehicle vehicle) {
         VehicleModel model = vehicle.getVehicleModel();
@@ -235,6 +240,39 @@ public class DtoMapper {
                 .profileImageUrl(user.getProfileImageUrl())
                 .status(String.valueOf(user.getStatus()))
                 .userRole(user.getUserRole().name())
+                .build();
+    }
+
+    public BrandDto brandToBrandDto(VehicleBrand vehicleBrand) {
+        return BrandDto.builder()
+                .name(vehicleBrand.getBrandName())
+                .id(vehicleBrand.getId())
+                .build();
+    }
+
+    public ModelDto modelToModelDto(VehicleModel vehicleModel) {
+        return ModelDto.builder()
+                .id(vehicleModel.getId())
+                .modelName(vehicleModel.getModelName())
+                .bodyTypeName(vehicleModel.getBodyType().getBodyTypeName())
+                .engines(vehicleModel.getEngines().stream()
+                        .map(this::engineToEngineDto)
+                        .toList())
+                .firstProductionYear(vehicleModel.getFirstProductionYear())
+                .lastProductionYear(vehicleModel.getLastProductionYear())
+                .vehicleBrandName(vehicleModel.getVehicleBrand().getBrandName())
+                .build();
+    }
+
+    public EngineDto engineToEngineDto(Engine engine) {
+        return EngineDto.builder()
+                .id(engine.getId())
+                .name(engine.getName())
+                .volume(engine.getVolume())
+                .modelNames(engine.getVehicleModels().stream()
+                        .map(VehicleModel::getModelName)
+                        .collect(Collectors.toSet()))
+                .horsepower(engine.getHorsepower())
                 .build();
     }
 }
