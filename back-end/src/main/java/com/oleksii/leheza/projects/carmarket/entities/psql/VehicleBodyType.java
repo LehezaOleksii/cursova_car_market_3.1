@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @Entity
 @Builder(toBuilder = true)
@@ -16,6 +19,8 @@ public class VehicleBodyType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @OneToMany(mappedBy = "bodyType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VehicleModel> vehicleModels = new HashSet<>();
 
     private String bodyTypeName;
 

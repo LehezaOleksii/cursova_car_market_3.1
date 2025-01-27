@@ -25,7 +25,7 @@ public class Engine {
     private String name;
     private float volume;
     private float horsepower;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "vehicle_models_engines",
             joinColumns = @JoinColumn(name = "engines_id"),

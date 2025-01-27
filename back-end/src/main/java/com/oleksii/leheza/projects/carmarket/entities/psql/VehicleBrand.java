@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +22,8 @@ public class VehicleBrand {
     private Long id;
     @Size(min = 1, max = 255, message = "Brand name should be from 1 to 255 characters")
     private String brandName;
+    @OneToMany(mappedBy = "vehicleBrand", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<VehicleModel> vehicleModels = new HashSet<>();
 
     public VehicleBrand(String brandName) {
         this.brandName = brandName;

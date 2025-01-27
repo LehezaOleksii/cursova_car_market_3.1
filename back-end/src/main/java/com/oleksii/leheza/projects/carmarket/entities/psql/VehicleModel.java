@@ -24,12 +24,12 @@ public class VehicleModel {
     private String modelName;
     private int firstProductionYear;
     private int lastProductionYear;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_body_type_id")
     private VehicleBodyType bodyType;
-    @ManyToMany(mappedBy = "vehicleModels")
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "vehicleModels")
     private Set<Engine> engines = new HashSet<>();
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "vehicle_brand_id")
     private VehicleBrand vehicleBrand;
 
