@@ -31,6 +31,10 @@ public class VehicleSpecification {
         log.info("Start creating vehicle specifications");
         List<Specification<Vehicle>> specifications = new ArrayList<>();
 
+        if (criterias.getStatus() != null && !criterias.getStatus().isEmpty() && !criterias.getStatus().equals("ALL")) {
+            specifications.add(vehicleStatusLike(VehicleStatus.valueOf(criterias.getStatus())));
+        }
+
         if (criterias.getUsageStatus() != null && !criterias.getUsageStatus().isEmpty() && !criterias.getUsageStatus().equals("ALL")) {
             specifications.add(usageStatusLike(criterias));
         }
@@ -81,10 +85,6 @@ public class VehicleSpecification {
 
         if (criterias.getToMileage() != null && !criterias.getToMileage().isEmpty()) {
             specifications.add(toMileage(criterias));
-        }
-
-        if (vehicleStatus != null) {
-            specifications.add(vehicleStatusLike(vehicleStatus));
         }
 
         Specification<Vehicle> specification = Specification.where(Specification.allOf(specifications));

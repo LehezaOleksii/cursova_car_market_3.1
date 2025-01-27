@@ -22,4 +22,5 @@ public class VehicleSearchCriteria {
     private String toPrice;
     private String fromMileage;
     private String toMileage;
+    private String status;
 }
