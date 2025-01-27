@@ -2,7 +2,6 @@ package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.*;
-import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -71,7 +70,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/brands")
     public ResponseEntity<List<String>> getVehicleBrandNames() {
         List<String> brands = vehicleService.getVehicleBrandNames();
@@ -545,10 +544,10 @@ public class VehicleController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
-    @GetMapping("/to_approve")
-    public ResponseEntity<Page<VehicleModerationDto>> getVehicleModerationDtosByStatus(@RequestParam(defaultValue = "0") int page,
+    @GetMapping
+    public ResponseEntity<Page<VehicleModerationDto>> getVehicleModerationDtos(@RequestParam(defaultValue = "0") int page,
                                                                                        @RequestParam(defaultValue = "10") int size) {
-        Page<VehicleModerationDto> vehicleDtos = vehicleService.getVehicleModerationDtosByStatus(VehicleStatus.ON_MODERATION, page, size);
+        Page<VehicleModerationDto> vehicleDtos = vehicleService.findAll(page, size);
         return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
@@ -563,7 +562,7 @@ public class VehicleController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @DeleteMapping("{vehicleId}/remove")
+    @DeleteMapping("/{vehicleId}")
     public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long vehicleId) {
         vehicleService.deleteVehicleById(vehicleId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -622,7 +621,7 @@ public class VehicleController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @GetMapping
+    @GetMapping("/posted")
     public ResponseEntity<Page<VehicleDashboardDto>> getAllPostedVehicles(@RequestParam(defaultValue = "0") int page,
                                                                           @RequestParam(defaultValue = "10") int size) {
         Page<VehicleDashboardDto> vehicleDtos = vehicleService.findAllPostedVehicles(page, size);
@@ -664,6 +663,25 @@ public class VehicleController {
                                                                     @RequestParam(defaultValue = "10") int size) {
         VehicleStatus vehicleStatus = VehicleStatus.valueOf(params.get("vehicleStatus"));
         return new ResponseEntity<>(vehicleService.filterVehicles(params, vehicleStatus, page, size), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get all posted vehicles with filter", description = "Get all posted vehicles with filter.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vehicles retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = VehicleDashboardDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Vehicles are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/management/filter")
+    public ResponseEntity<Page<VehicleModerationDto>> filterVehiclesWithStatus(@RequestParam Map<String, String> params,
+                                                                    @RequestParam(defaultValue = "0") int page,
+                                                                    @RequestParam(defaultValue = "10") int size) {
+        return new ResponseEntity<>(vehicleService.filterVehiclesModeration(params, page, size), HttpStatus.OK);
     }
 
     @Operation(summary = "Update an existing vehicle likes", description = "Update an existing vehicle likes.")

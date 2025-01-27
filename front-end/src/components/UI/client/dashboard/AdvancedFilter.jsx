@@ -298,7 +298,7 @@ const AdvancedFilter = () => {
   };
 
   const setPostedCars = async () => {
-    const url = `http://localhost:8080/vehicles`;
+    const url = `http://localhost:8080/vehicles/posted`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {

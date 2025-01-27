@@ -81,7 +81,7 @@ const Header = () => {
                       </Link>
                     </li>
                     <li className="nav-item">
-                      <Link to={`/cars/on_moderation`} className="nav-link">
+                      <Link to={`/cars/managment`} className="nav-link">
                         Moderation cars
                       </Link>
                     </li>

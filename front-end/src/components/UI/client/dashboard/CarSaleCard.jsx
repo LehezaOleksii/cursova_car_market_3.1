@@ -26,7 +26,7 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
     }
   };
   const handleRemoveCarSubmit = async (carId) => {
-    const url = `http://localhost:8080/vehicles/${car.id}/remove`;
+    const url = `http://localhost:8080/vehicles/${car.id}`;
     await fetch(url, {
       method: 'DELETE',
       headers: {

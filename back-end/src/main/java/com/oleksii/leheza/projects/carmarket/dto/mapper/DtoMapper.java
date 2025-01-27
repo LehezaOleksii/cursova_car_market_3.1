@@ -127,6 +127,7 @@ public class DtoMapper {
                 .brandName(params.get("brandName"))
                 .bodyType(params.get("bodyType"))
                 .region(params.get("region"))
+                .status(params.get("status"))
                 .build();
     }
 
@@ -204,6 +205,7 @@ public class DtoMapper {
                 .region(vehicle.getRegion())
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus())
+                .status(vehicle.getStatus().name())
                 .build();
     }
 

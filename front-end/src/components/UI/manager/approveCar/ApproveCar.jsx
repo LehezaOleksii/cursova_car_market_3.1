@@ -1,18 +1,30 @@
 import React from "react";
-import { useNavigate} from "react-router";
+import { useNavigate } from "react-router";
 
 const ApproveCar = ({ car, removeCarFromList }) => {
-
-  const jwtStr = localStorage.getItem('jwtToken');
+  const jwtStr = localStorage.getItem("jwtToken");
   const navigate = useNavigate();
+
+  const deleteCar = async () => {
+    const url = `http://localhost:8080/vehicles/${car.id}`;
+    await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwtStr,
+      },
+      credentials: "include",
+    });
+    removeCarFromList(car.id);
+  };
 
   const blockCar = async () => {
     const url = `http://localhost:8080/vehicles/${car.id}/disapprove`;
     await fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + jwtStr
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwtStr,
       },
       credentials: "include",
     });
@@ -22,17 +34,17 @@ const ApproveCar = ({ car, removeCarFromList }) => {
   const approveCar = async () => {
     const url = `http://localhost:8080/vehicles/${car.id}/approve`;
     await fetch(url, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + jwtStr
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwtStr,
       },
       credentials: "include",
     });
     removeCarFromList(car.id);
   };
 
-  const getDetailsInformation = async () => {
+  const getDetailsInformation = () => {
     navigate(`/manager/approve/car/${car.id}`);
   };
 
@@ -41,15 +53,17 @@ const ApproveCar = ({ car, removeCarFromList }) => {
       <div className="row g-0">
         <div className="col-md-4">
           <img
-            src={car.photo
-              ? `data:image/png;base64,${car.photo}`
-              : 'default-image-url'}
+            src={
+              car.photo
+                ? `data:image/png;base64,${car.photo}`
+                : "default-image-url"
+            }
             alt="Car"
             style={{
               height: "260px",
               width: "100%",
               objectFit: "cover",
-              borderRadius: "10px"
+              borderRadius: "10px",
             }}
           />
         </div>
@@ -64,24 +78,40 @@ const ApproveCar = ({ car, removeCarFromList }) => {
                 <p className="card-text">{`Usage status: ${car.usageStatus}`}</p>
               </div>
               <div className="col-md-6">
-                <p className="card-text">{`phone number: ${car.phoneNumber}`}</p>
+                <p className="card-text">{`Phone number: ${car.phoneNumber}`}</p>
                 <p className="card-text">{`Price: ${car.price}`}</p>
                 <p className="card-text">{`Region: ${car.region}`}</p>
-                <p className="card-text">{`Mileage: ${car.mileage}`} km</p>
+                <p className="card-text">{`Mileage: ${car.mileage} km`}</p>
               </div>
             </div>
             <div className="d-flex justify-content-end mt-3">
               <div className="d-flex align-items-center">
-                <button className="btn btn-primary" onClick={getDetailsInformation}>Details</button>
+                <button className="btn btn-primary" onClick={getDetailsInformation}>
+                  Details
+                </button>
               </div>
               <div style={{ width: "15px" }}></div>
-              <div className="d-flex align-items-center">
-                <button className="btn btn-primary" onClick={approveCar}>Approve car</button>
-              </div>
-              <div style={{ width: "15px" }}></div>
-              <div className="d-flex align-items-center">
-                <button className="btn btn-danger" onClick={blockCar}>Disapprove car</button>
-              </div>
+              {car.status === "POSTED" ? (
+                <div className="d-flex align-items-center">
+                  <button className="btn btn-danger" onClick={deleteCar}>
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="d-flex align-items-center">
+                    <button className="btn btn-primary" onClick={approveCar}>
+                      Approve car
+                    </button>
+                  </div>
+                  <div style={{ width: "15px" }}></div>
+                  <div className="d-flex align-items-center">
+                    <button className="btn btn-danger" onClick={blockCar}>
+                      Disapprove car
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

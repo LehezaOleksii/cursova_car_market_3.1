@@ -78,7 +78,7 @@ const App = () => {
 
       {/* manager */}
       <Route path="/users" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard', 'ROLE_MANAGER')} />
-      <Route path="/cars/on_moderation" element={wrapPrivateRoute(<ApproveCarPage />, isLoggedIn, 'ApproveCarPage', 'ROLE_MANAGER')} />
+      <Route path="/cars/managment" element={wrapPrivateRoute(<ApproveCarPage />, isLoggedIn, 'ApproveCarPage', 'ROLE_MANAGER')} />
       <Route path="/cars/components" element={wrapPrivateRoute(<CarDetails />, isLoggedIn, 'CarsDetails', 'ROLE_MANAGER')} />
 
       {/* admin */}

@@ -89,4 +89,8 @@ public interface VehicleService {
     EngineDto createEngine(EngineDto engineDto);
 
     void deleteEngineById(Long engineId);
+
+    Page<VehicleModerationDto> findAll(int page, int size);
+
+    Page<VehicleModerationDto> filterVehiclesModeration(Map<String, String> params, int page, int size);
 }

@@ -19,5 +19,6 @@ public class VehicleModerationDto {
     private String region;
     private String phoneNumber;
     private UsageStatus usageStatus;
+    private String status;
     private byte[] photo;
 }

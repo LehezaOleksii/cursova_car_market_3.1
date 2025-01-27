@@ -375,6 +375,22 @@ public class VehicleServiceImpl implements VehicleService {
         engineRepository.deleteById(engineId);
     }
 
+    @Override
+    public Page<VehicleModerationDto> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return vehicleRepository.findAll(pageable)
+                .map(dtoMapper::vehicleToVehicleModerationDto);
+    }
+
+    @Override
+    public Page<VehicleModerationDto> filterVehiclesModeration(Map<String, String> params, int page, int size) {
+        Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
+        VehicleSearchCriteria criteria = dtoMapper.mapToVehicleSearchCriteria(params);
+        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, null, page, size, sort);
+        return vehiclesPage
+                .map(dtoMapper::vehicleToVehicleModerationDto);
+    }
+
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new RuntimeException("Vehicle with id: " + vehicleId + " not found while creating vehicle use like"));
         UserVehicleLike userVehicleLike = new UserVehicleLike();

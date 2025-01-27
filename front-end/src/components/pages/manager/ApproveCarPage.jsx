@@ -3,12 +3,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ApproveCar from "../../UI/manager/approveCar/ApproveCar";
 import WrappedHeader from "../../WrappedHeader";
 import WrappedFooter from "../../WrappedFooter";
+import CarFilter from "../../UI/manager/approveCar/CarFilter";
 
 const ApproveCarPage = () => {
   const [cars, setCars] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const jwtStr = localStorage.getItem('jwtToken');
+  const jwtStr = localStorage.getItem("jwtToken");
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,16 +22,16 @@ const ApproveCarPage = () => {
   };
 
   const fetchData = async (page = 0, size = 5) => {
-    const url = `http://localhost:8080/vehicles/to_approve?page=${page}&size=${size}`;
-    const response = await fetch(url, {
-      method: 'GET',
+    const url = `http://localhost:8080/vehicles?page=${page}&size=${size}`;
+    const responseVehiclesOnModeration = await fetch(url, {
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + jwtStr
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + jwtStr,
       },
       credentials: "include",
     });
-    const data = await response.json();
+    const data = await responseVehiclesOnModeration.json();
     setCars(data.content);
     setTotalPages(data.totalPages);
     setCurrentPage(data.number);
@@ -53,15 +54,38 @@ const ApproveCarPage = () => {
   const isPreviousDisabled = currentPage <= 0;
   const isNextDisabled = currentPage >= totalPages - 1;
 
+  const onModerationCars = cars.filter((car) => car.status === "ON_MODERATION");
+  const postedCars = cars.filter((car) => car.status === "POSTED");
+
   return (
     <div>
       <WrappedHeader />
-      <div className="p-5">
-        {cars.length > 0 ? (
+      <div className="card-container p-5">
+      <CarFilter setCars={setCars} />
+      {cars.length > 0 ? (
           <>
-            {cars.map((car) => (
-              <ApproveCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
-            ))}
+            {onModerationCars.length > 0 && (
+              <div>
+                <hr />
+                <h4 className="text-center">Cars on Moderation</h4>
+                <hr />
+                {onModerationCars.map((car) => (
+                  <ApproveCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
+                ))}
+              </div>
+            )}
+
+            {postedCars.length > 0 && (
+              <div>
+                <hr />
+                <h4 className="text-center">Posted Cars</h4>
+                <hr />
+                {postedCars.map((car) => (
+                  <ApproveCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
+                ))}
+              </div>
+            )}
+
             <div className="d-flex justify-content-center mt-4">
               <button
                 className="btn btn-outline-primary mx-1"
@@ -74,7 +98,7 @@ const ApproveCarPage = () => {
               {[...Array(totalPages).keys()].map((page) => (
                 <button
                   key={page}
-                  className={`btn ${page === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+                  className={`btn ${page === currentPage ? "btn-primary" : "btn-outline-primary"} mx-1`}
                   onClick={() => handlePageChange(page)}
                 >
                   {page + 1}
