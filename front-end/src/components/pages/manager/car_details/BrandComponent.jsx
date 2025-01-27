@@ -136,7 +136,7 @@ const BrandComponent = () => {
                 className="car-details-button"
                 onClick={() => setShowCreateMenu(!showCreateMenu)}
             >
-                {showCreateMenu ? "Hide create brand menu" : "Show create brand menu"}
+                {showCreateMenu ? "Hide Create brand menu" : "Show Create brand menu"}
             </button>
             {showCreateMenu && (
                 <div className="create-brand-section">

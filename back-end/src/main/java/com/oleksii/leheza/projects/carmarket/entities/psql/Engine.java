@@ -26,6 +26,11 @@ public class Engine {
     private float volume;
     private float horsepower;
     @ManyToMany
+    @JoinTable(
+            name = "vehicle_models_engines",
+            joinColumns = @JoinColumn(name = "engines_id"),
+            inverseJoinColumns = @JoinColumn(name = "vehicle_model_id")
+    )
     private Set<VehicleModel> vehicleModels = new HashSet<>();
 
     public Engine(String name, float volume, float horsepower) {

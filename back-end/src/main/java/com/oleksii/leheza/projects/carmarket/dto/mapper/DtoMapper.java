@@ -3,10 +3,7 @@ package com.oleksii.leheza.projects.carmarket.dto.mapper;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.BrandDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.ModelDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.*;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
@@ -22,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,7 +35,6 @@ public class DtoMapper {
     private final EngineRepository engineRepository;
     private final UserVehicleLikeRepository userVehicleLikeRepository;
     private final VehicleRepository vehicleRepository;
-    private final VehicleBrandRepository brandRepository;
 
     public VehicleGarageDto vehicleToVehicleGarageDto(Vehicle vehicle) {
         VehicleModel model = vehicle.getVehicleModel();
@@ -265,14 +262,34 @@ public class DtoMapper {
     }
 
     public EngineDto engineToEngineDto(Engine engine) {
-        return EngineDto.builder()
+        EngineDto engineDto = new EngineDto();
+        if (engine != null && engine.getVehicleModels() != null) {
+            engineDto.setModelNames(engine.getVehicleModels().stream()
+                    .map(VehicleModel::getModelName)
+                    .collect(Collectors.toSet()));
+        } else {
+            engineDto.setModelNames(new HashSet<>());
+        }
+        return engineDto.toBuilder()
                 .id(engine.getId())
                 .name(engine.getName())
                 .volume(engine.getVolume())
-                .modelNames(engine.getVehicleModels().stream()
-                        .map(VehicleModel::getModelName)
-                        .collect(Collectors.toSet()))
                 .horsepower(engine.getHorsepower())
+                .build();
+    }
+
+    public BodyTypeDto bodyTypeToBodyTypeDto(VehicleBodyType vehicleBodyType) {
+        return BodyTypeDto.builder()
+                .id(vehicleBodyType.getId())
+                .name(vehicleBodyType.getBodyTypeName())
+                .build();
+    }
+
+    public Engine engineDtoToEngine(EngineDto engineDto) {
+        return Engine.builder()
+                .name(engineDto.getName())
+                .horsepower(engineDto.getHorsepower())
+                .volume(engineDto.getVolume())
                 .build();
     }
 }

@@ -1,14 +1,14 @@
 package com.oleksii.leheza.projects.carmarket.dto.update;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 @Getter
 @Setter
 @Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class EngineDto {
 
     private long id;

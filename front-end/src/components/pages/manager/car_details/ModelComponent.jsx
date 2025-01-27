@@ -399,11 +399,7 @@ const ModelComponent = () => {
             console.error("Error creating model:", error);
         }
     };
-
-    const handleNewInputChange = (field, value) => {
-        setNewModel((prevModel) => ({ ...prevModel, [field]: value }));
-    };
-
+    
     return (
         <div className="car-details-list mt-4 bg-light">
             <h3>Available Models</h3>

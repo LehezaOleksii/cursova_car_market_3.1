@@ -2,15 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./CarDetails.css";
 
 const BodyTypeComponent = () => {
-    const [brands, setBrands] = useState([]);
-    const [editingBrand, setEditingBrand] = useState(null);
-    const [editedBrandName, setEditedBrandName] = useState("");
+    const [bodyTypes, setBodyTypes] = useState([]);
+    const [editingBodyTypes, setEditingBodyTypes] = useState(null);
+    const [editedBodyTypes, setEditedBodyTypes] = useState("");
+    const [newBodyTypeName, setNewBodyTypeName] = useState("");
+    const [showCreateMenu, setShowCreateMenu] = useState(false);
     const jwtStr = localStorage.getItem("jwtToken");
 
     useEffect(() => {
-        const fetchBrands = async () => {
+        const fetchBodyTypes = async () => {
             try {
-                const response = await fetch("http://localhost:8080/vehicles/brands/dtos", {
+                const response = await fetch("http://localhost:8080/vehicles/body-types/dtos", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -20,64 +22,64 @@ const BodyTypeComponent = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    setBrands(data);
+                    setBodyTypes(data);
                 } else {
-                    console.error("Failed to fetch brands");
+                    console.error("Failed to fetch body types");
                 }
             } catch (error) {
-                console.error("Error fetching brands:", error);
+                console.error("Error fetching body types:", error);
             }
         };
 
-        fetchBrands();
+        fetchBodyTypes();
     }, [jwtStr]);
 
-    const handleEditBrand = (brand) => {
-        if (editingBrand === brand.id) {
-            setEditingBrand(null);
+    const handleEditBodyType = (bodyTypes) => {
+        if (editingBodyTypes === bodyTypes.id) {
+            setEditingBodyTypes(null);
         } else {
-            setEditingBrand(brand.id);
-            setEditedBrandName(brand.name);
+            setEditingBodyTypes(bodyTypes.id);
+            setEditedBodyTypes(bodyTypes.name);
         }
     };
 
-    const handleSaveBrand = async () => {
+    const handleSaveBodyType = async () => {
         try {
-            const brandToUpdate = {
-                id: editingBrand,
-                name: editedBrandName,
+            const bodyTypeToUpdate = {
+                id: editingBodyTypes,
+                name: editedBodyTypes,
             };
 
             const response = await fetch(
-                `http://localhost:8080/vehicles/brands`,
+                `http://localhost:8080/vehicles/body-types`,
                 {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + jwtStr,
                     },
-                    body: JSON.stringify(brandToUpdate),
+                    body: JSON.stringify(bodyTypeToUpdate),
                 }
             );
 
             if (response.ok) {
-                const updatedBrands = brands.map((brand) =>
-                    brand.id === editingBrand ? { ...brand, name: editedBrandName } : brand
+                const updatedBodyTypes = bodyTypes.map((bodyTypes) =>
+                    bodyTypes.id === editingBodyTypes ? { ...bodyTypes, name: editedBodyTypes } : bodyTypes
                 );
-                setBrands(updatedBrands);
-                setEditingBrand(null);
+                setBodyTypes(updatedBodyTypes);
+                setEditingBodyTypes(null);
             } else {
-                console.error("Failed to update brand");
+                console.error("Failed to update body types");
             }
         } catch (error) {
-            console.error("Error updating brand:", error);
+            console.error("Error updating body types:", error);
         }
     };
 
-    const handleDeleteBrand = async (brand) => {
+    const handleDeleteBodyTypes = async (brand) => {
         try {
             const response = await fetch(
-                `http://localhost:8080/vehicles/brands/${brand.id}`,
+                `http://localhost:8080/vehicles/body-types/${brand.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -88,8 +90,8 @@ const BodyTypeComponent = () => {
             );
 
             if (response.ok) {
-                const filteredBrands = brands.filter((b) => b.id !== brand.id);
-                setBrands(filteredBrands);
+                const filteredBrands = bodyTypes.filter((b) => b.id !== brand.id);
+                setBodyTypes(filteredBrands);
             } else {
                 console.error("Failed to delete brand");
             }
@@ -98,37 +100,85 @@ const BodyTypeComponent = () => {
         }
     };
 
+    const handleCreateBrand = async () => {
+        if (!newBodyTypeName) return;
+
+        const newBrand = {
+            name: newBodyTypeName,
+        };
+        try {
+            const response = await fetch("http://localhost:8080/vehicles/body-types", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + jwtStr,
+                },
+                body: JSON.stringify(newBrand),
+            });
+
+            if (response.ok) {
+                const createdBrand = await response.json();
+                setBodyTypes([...bodyTypes, createdBrand]);
+                setNewBodyTypeName("");
+                setShowCreateMenu(false);
+            } else {
+                console.error("Failed to create body-type");
+            }
+        } catch (error) {
+            console.error("Error creating body-type:", error);
+        }
+    };
+
     return (
-        <div className="car-details-container mt-4 bg-light">
-            <h3>Available Brands</h3>
-            <ul className="car-details-list">
-                {brands.map((brand) => (
-                    <li key={brand.id} className={editingBrand === brand.id ? 'editing' : ''}>
+        <div className="car-details-list mt-4 bg-light">
+            <h3>Available Body types:</h3>
+            <button
+                className="car-details-button"
+                onClick={() => setShowCreateMenu(!showCreateMenu)}
+            >
+                {showCreateMenu ? "Hide Create body type menu" : "Show Create body type menu"}
+            </button>
+            {showCreateMenu && (
+                <div className="create-brand-section">
+                    <input
+                        type="text"
+                        placeholder="New body type name"
+                        value={newBodyTypeName}
+                        onChange={(e) => setNewBodyTypeName(e.target.value)}
+                    />
+                    <button className="car-details-button" onClick={handleCreateBrand}>
+                        Create Body type
+                    </button>
+                </div>
+            )}
+            <ul className="car-details-elements">
+                {bodyTypes.map((brand) => (
+                    <li key={brand.id} className={editingBodyTypes === brand.id ? 'editing' : ''}>
                         <div className="d-flex justify-content-between align-items-center">
                             <span className="car-details-name">{brand.name}</span>
                             <div className="d-flex ml-auto">
                                 <button
                                     className="car-details-button"
-                                    onClick={() => handleEditBrand(brand)}
+                                    onClick={() => handleEditBodyType(brand)}
                                 >
-                                    {editingBrand === brand.id ? "Cancel" : "Edit"}
+                                    {editingBodyTypes === brand.id ? "Cancel" : "Edit"}
                                 </button>
                                 <button
                                     className="delete-button car-details-button"
-                                    onClick={() => handleDeleteBrand(brand)}
+                                    onClick={() => handleDeleteBodyTypes(brand)}
                                 >
                                     Delete
                                 </button>
                             </div>
                         </div>
-                        <div className={`edit-input-container ${editingBrand === brand.id ? 'active' : ''}`}>
-                            <label><strong>Brand name</strong></label>
+                        <div className={`edit-input-container ${editingBodyTypes === brand.id ? 'active' : ''}`}>
+                            <label><strong>Body type name</strong></label>
                             <input
                                 type="text"
-                                value={editedBrandName}
-                                onChange={(e) => setEditedBrandName(e.target.value)}
+                                value={editedBodyTypes}
+                                onChange={(e) => setEditedBodyTypes(e.target.value)}
                             />
-                            <button className="car-details-button mt-2" onClick={handleSaveBrand}>
+                            <button className="car-details-button mt-2" onClick={handleSaveBodyType}>
                                 Save
                             </button>
                         </div>

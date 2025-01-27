@@ -1,10 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.service.interfaces;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.BrandDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.*;
 import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.ModelDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -75,4 +73,20 @@ public interface VehicleService {
     ModelDto createModel(ModelDto modelDto);
 
     void deleteModel(Long modelId);
+
+    List<EngineDto> getVehicleEngineDtos();
+
+    void updateVehicleEngine(EngineDto engineDto);
+
+    List<BodyTypeDto> getVehicleBodyTypesDtos();
+
+    BodyTypeDto createBodyType(BodyTypeDto bodyTypeDto);
+
+    void updateVehicleBodyType(BodyTypeDto bodyTypeDto);
+
+    void deleteBodyType(Long bodyTypeId);
+
+    EngineDto createEngine(EngineDto engineDto);
+
+    void deleteEngineById(Long engineId);
 }

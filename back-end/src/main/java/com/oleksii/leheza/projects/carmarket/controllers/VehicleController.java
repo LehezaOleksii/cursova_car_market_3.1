@@ -1,10 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.BrandDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.*;
 import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.ModelDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -110,6 +108,36 @@ public class VehicleController {
         return new ResponseEntity<>(vehicleService.createModel(modelDto), HttpStatus.OK);
     }
 
+    @Operation(summary = "Create a new engine", description = "Create a new engine.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Engine created successfully",
+                    content = @Content(schema = @Schema(implementation = EngineDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PostMapping("/engines")
+    public ResponseEntity<EngineDto> createEngine(@RequestBody EngineDto engineDto) {
+        return new ResponseEntity<>(vehicleService.createEngine(engineDto), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Create a new body type", description = "Create a new body type.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Body type created successfully",
+                    content = @Content(schema = @Schema(implementation = BodyTypeDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PostMapping("/body-types")
+    public ResponseEntity<BodyTypeDto> createBodyType(@RequestBody BodyTypeDto bodyTypeDto) {
+        return new ResponseEntity<>(vehicleService.createBodyType(bodyTypeDto), HttpStatus.OK);
+    }
+
     @Operation(summary = "Get all brands dtos to change", description = "Get a list of all vehicle brand dtos to change.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Brand dtos retrieved successfully",
@@ -128,6 +156,24 @@ public class VehicleController {
         return new ResponseEntity<>(brandsDtos, brandsDtos != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
+    @Operation(summary = "Get all brands dtos to change", description = "Get a list of all vehicle brand dtos to change.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Brand dtos retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = EngineDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "Brand dtos are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/engines/dtos")
+    public ResponseEntity<List<EngineDto>> getVehicleEngineDtos() {
+        List<EngineDto> engineDtos = vehicleService.getVehicleEngineDtos();
+        return new ResponseEntity<>(engineDtos, engineDtos != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
+
     @Operation(summary = "Update vehicle brand name", description = "Update vehicle brand name by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Brand names updated successfully",
@@ -141,15 +187,32 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @PutMapping("/brands")
-    public ResponseEntity<?> changeVehicleBrandName(@RequestBody BrandDto brandDto) {
+    public ResponseEntity<?> changeVehicleBrand(@RequestBody BrandDto brandDto) {
         vehicleService.updateVehicleBrandName(brandDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Update vehicle body type", description = "Update body type by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Body type updated successfully",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "Body type is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PutMapping("/body-types")
+    public ResponseEntity<?> changeBodyType(@RequestBody BodyTypeDto bodyTypeDto) {
+        vehicleService.updateVehicleBodyType(bodyTypeDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Operation(summary = "Update vehicle models", description = "Update vehicle model")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Model updated successfully",
-                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "200", description = "Model updated successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "204", description = "Models are not found",
@@ -161,6 +224,23 @@ public class VehicleController {
     @PutMapping("/models")
     public ResponseEntity<?> updateVehicleModel(@RequestBody ModelDto modelDto) {
         vehicleService.updateVehicleModel(modelDto);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Operation(summary = "Update vehicle engine", description = "Update vehicle engine")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Engine updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "Engine are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PutMapping("/engines")
+    public ResponseEntity<?> updateVehicleEngine(@RequestBody EngineDto engineDto) {
+        vehicleService.updateVehicleEngine(engineDto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -219,6 +299,24 @@ public class VehicleController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @Operation(summary = "Remove a body type", description = "Remove a body type by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Body type removed successfully",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Body type is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @DeleteMapping("/body-types/{bodyTypeId}")
+    public ResponseEntity<?> deleteBodyType(@PathVariable Long bodyTypeId) {
+        vehicleService.deleteBodyType(bodyTypeId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @Operation(summary = "Delete vehicle brand", description = "Delete vehicle brand by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Deleted brand successfully",
@@ -234,6 +332,24 @@ public class VehicleController {
     @DeleteMapping("/brands/{brandId}")
     public ResponseEntity<?> deleteVehicleBrandName(@PathVariable Long brandId) {
         vehicleService.deleteBrandById(brandId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Delete vehicle engine", description = "Delete vehicle engine by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deleted engine successfully",
+                    content = @Content(schema = @Schema(implementation = String.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "Engine is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @DeleteMapping("/engines/{engineId}")
+    public ResponseEntity<?> deleteVehicleEngine(@PathVariable Long engineId) {
+        vehicleService.deleteEngineById(engineId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -253,6 +369,24 @@ public class VehicleController {
     public ResponseEntity<List<ModelDto>> getVehicleModelsDtos() {
         List<ModelDto> modelDtos = vehicleService.getVehicleModelDtos();
         return new ResponseEntity<>(modelDtos, modelDtos != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
+    }
+
+    @Operation(summary = "Get all body types dtos to change", description = "Get a list of all body types dtos to change.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Body type dtos retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = BodyTypeDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "204", description = "Body types are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/body-types/dtos")
+    public ResponseEntity<List<BodyTypeDto>> getVehicleBodyTypesDtos() {
+        List<BodyTypeDto> bodyTypes = vehicleService.getVehicleBodyTypesDtos();
+        return new ResponseEntity<>(bodyTypes, bodyTypes != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
     @Operation(summary = "Get all body types names", description = "Get a list of all vehicle body types names.")

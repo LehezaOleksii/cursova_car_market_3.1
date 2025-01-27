@@ -2,10 +2,7 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
-import com.oleksii.leheza.projects.carmarket.dto.update.BrandDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.ModelDto;
-import com.oleksii.leheza.projects.carmarket.dto.update.UpdateVehicleDto;
+import com.oleksii.leheza.projects.carmarket.dto.update.*;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -321,6 +318,61 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public void deleteModel(Long modelId) {
         vehicleModelRepository.deleteById(modelId);
+    }
+
+    @Override
+    public List<EngineDto> getVehicleEngineDtos() {
+        return engineRepository.findAll().stream()
+                .map(dtoMapper::engineToEngineDto)
+                .toList();
+    }
+
+    @Override
+    public void updateVehicleEngine(EngineDto engineDto) {
+        engineRepository.findById(engineDto.getId()).ifPresent(engine -> {
+            Engine e = engine.toBuilder()
+                    .name(engineDto.getName())
+                    .horsepower(engineDto.getHorsepower())
+                    .volume(engineDto.getVolume())
+                    .build();
+            engineRepository.save(e);
+        });
+    }
+
+    @Override
+    public List<BodyTypeDto> getVehicleBodyTypesDtos() {
+        return vehicleBodyTypeRepository.findAll().stream()
+                .map(dtoMapper::bodyTypeToBodyTypeDto)
+                .toList();
+    }
+
+    @Override
+    public BodyTypeDto createBodyType(BodyTypeDto bodyTypeDto) {
+        return dtoMapper.bodyTypeToBodyTypeDto(vehicleBodyTypeRepository.save(new VehicleBodyType(bodyTypeDto.getName())));
+    }
+
+    @Override
+    public void updateVehicleBodyType(BodyTypeDto bodyTypeDto) {
+        VehicleBodyType bodyType = vehicleBodyTypeRepository.findById(bodyTypeDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Body type not found with ID: " + bodyTypeDto.getId()));
+        bodyType.setBodyTypeName(bodyTypeDto.getName());
+        vehicleBodyTypeRepository.save(bodyType);
+    }
+
+    @Override
+    public void deleteBodyType(Long bodyTypeId) {
+        vehicleBodyTypeRepository.deleteById(bodyTypeId);
+    }
+
+    @Override
+    public EngineDto createEngine(EngineDto engineDto) {
+        Engine engine = dtoMapper.engineDtoToEngine(engineDto);
+        return dtoMapper.engineToEngineDto(engineRepository.save(engine));
+    }
+
+    @Override
+    public void deleteEngineById(Long engineId) {
+        engineRepository.deleteById(engineId);
     }
 
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {

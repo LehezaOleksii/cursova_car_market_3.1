@@ -27,7 +27,7 @@ public class VehicleModel {
     @ManyToOne
     @JoinColumn(name = "vehicle_body_type_id")
     private VehicleBodyType bodyType;
-    @ManyToMany
+    @ManyToMany(mappedBy = "vehicleModels")
     private Set<Engine> engines = new HashSet<>();
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "vehicle_brand_id")
