@@ -8,7 +8,7 @@ import lombok.*;
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatMessageDto {
+public class ChatMessageDto extends ChatAbstractMessage{
 
     private String id;
     private String recipientId;

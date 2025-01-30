@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { getInitials } from './getInitials';
 import './ChatsLeftToolbar.css';
 
-const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
+const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCount }) => {
+
   const jwtStr = localStorage.getItem('jwtToken');
   const id = localStorage.getItem('id');
 
   const [activeChat, setActiveChat] = useState(null);
   const [searchText, setSearchText] = useState('');
   const [externalChats, setExternalChats] = useState([]);
+
+  const [chatId, setChatId] = useState(null);
 
   const fetchChatRooms = async () => {
     try {
@@ -23,6 +26,7 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
       const formattedChats = data.map(chat => ({
         ...chat,
         name: chat.firstName && chat.lastName ? `${chat.firstName} ${chat.lastName}` : 'Unknown User',
+        unreadMessages: chat.unreadMessages || 0,
       }));
 
       setChats(formattedChats);
@@ -42,18 +46,26 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
     await searchExternalChats(name);
   };
 
-  const handleChatClick = (chatId, name, profilePicture, isExternal = false) => {
-    // Set active status for the clicked chat, whether it's internal or external
+  setUnreadMessagesCount(prevCount => {
+    const totalUnread = chats.reduce((acc, chat) => acc + chat.unreadMessages, 0);
+    return totalUnread;
+  });
+
+  const handleChatClick = async (chatId, name, profilePicture, isExternal = false) => {
     onSelectChat(chatId, name, profilePicture);
+    setChatId(chatId);
     setActiveChat(chatId);
     setSearchText('');
 
-    // If it's an external chat, set it as active
+    setChats(prevChats =>
+      prevChats.map(chat =>
+        chat.id === chatId ? { ...chat, unreadMessages: 0 } : chat
+      )
+    );
     if (isExternal) {
-      setActiveChat(chatId);  // Ensure the external chat is marked as active
+      setActiveChat(chatId);
     }
   };
-
 
   useEffect(() => {
     fetchChatRooms();
@@ -65,7 +77,7 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
     return (
       <li
         key={chat.id}
-        className={`chat-item ${(activeChat === chat.id) || (activeChat === chat.id) ? 'active' : ''}`}
+        className={`chat-item ${activeChat === chat.id ? 'active' : ''}`}
         onClick={() => handleChatClick(chat.id, fullName, chat.profilePicture)}
       >
         <div className="chat-info">
@@ -89,12 +101,16 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
               </span>
             )}
           </div>
+
+          {chat.unreadMessages > 0 && (
+            <div className="unread-messages">
+              {chat.unreadMessages}
+            </div>
+          )}
         </div>
       </li>
     );
   };
-
-
 
   const searchExternalChats = async (name) => {
     try {
@@ -119,7 +135,6 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat }) => {
       console.error('Error fetching external chats:', error);
     }
   };
-
 
   return (
     <div className="chat-list">

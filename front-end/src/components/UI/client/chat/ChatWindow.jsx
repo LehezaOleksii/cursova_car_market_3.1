@@ -9,7 +9,7 @@ const ChatWindow = ({
     recipientName,
     senderName,
     recipientProfileImg,
-    updateLastMessage,
+    updateLastMessage
 }) => {
     const [messages, setMessages] = useState([]);
     const [messageInput, setMessageInput] = useState('');
@@ -17,6 +17,7 @@ const ChatWindow = ({
     const jwtStr = localStorage.getItem("jwtToken");
 
     const lastMessageRef = useRef(null);
+    const messageRefs = useRef(new Map());
 
     useEffect(() => {
         if (recipientId) {
@@ -42,6 +43,36 @@ const ChatWindow = ({
             lastMessageRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [messages]);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const messageId = entry.target.dataset.id;
+                        const message = messages.find((msg) => msg.id === messageId);
+    
+                        if (message && message.status === 'SENT' && !message.isSender) {
+                            updateMessageStatus(messageId);
+                        }
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+    
+        messages.forEach((msg) => {
+            if (msg.status === 'SENT' && !msg.isSender) {
+                const messageElement = messageRefs.current.get(msg.id);
+                if (messageElement) {
+                    observer.observe(messageElement);
+                }
+            }
+        });
+    
+        return () => observer.disconnect();
+    }, [messages]);
+    
 
     const fetchChatHistory = async () => {
         try {
@@ -69,6 +100,35 @@ const ChatWindow = ({
         }
     };
 
+    const updateMessageStatus = async (messageId) => {
+        try {
+            const message = messages.find((msg) => msg.id === messageId);
+
+            if (!message) {
+                console.error('Message not found for status update');
+                return;
+            }
+
+            await client.publish({
+                destination: '/app/chat/message/status',
+                body: JSON.stringify({
+                    messageId: messageId,
+                    senderId: message.isSender ? senderId : recipientId,
+                    recipientId: message.isSender ? recipientId : senderId,
+                    status: 'READ',
+                }),
+            });
+
+            setMessages((prev) =>
+                prev.map((msg) =>
+                    msg.id === messageId ? { ...msg, status: 'READ' } : msg
+                )
+            );
+        } catch (error) {
+            console.error('Failed to update message status:', error);
+        }
+    };
+
     const sendMessage = () => {
         if (messageInput.trim()) {
             const chatMessageToSend = {
@@ -83,19 +143,15 @@ const ChatWindow = ({
                 timestamp: new Date().toISOString(),
             };
 
-
             if (recipientId != senderId) {
-                // Publish the message (assuming WebSocket or API logic here)
                 client.publish({
                     destination: '/app/chat',
                     body: JSON.stringify(chatMessageToSend),
                 });
 
-                // Update local state
                 setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
                 setMessageInput('');
 
-                // Update the last message in ChatsLeftToolbar
                 updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
             } else {
                 alert("You cannot send a message to yourself.");
@@ -126,13 +182,17 @@ const ChatWindow = ({
                     const previousDay = index > 0 ? new Date(messages[index - 1].timestamp).toLocaleDateString() : null;
 
                     return (
-                        <React.Fragment key={index}>
+                        <React.Fragment key={msg.id}>
                             {currentDay !== previousDay && (
                                 <div className="day-date">
                                     {currentDay === new Date().toLocaleDateString() ? 'Today' : currentDay}
                                 </div>
                             )}
-                            <div className={`message ${msg.isSender ? 'sender' : 'recipient'}`}>
+                            <div
+                                className={`message ${msg.isSender ? 'sender' : 'recipient'}`}
+                                ref={(el) => messageRefs.current.set(msg.id, el)}
+                                data-id={msg.id}
+                            >
                                 <div className="message-content">
                                     <strong>{msg.isSender ? senderName : recipientName}</strong>
                                     <p>{msg.content}</p>
@@ -149,7 +209,6 @@ const ChatWindow = ({
                 })}
                 <div ref={lastMessageRef}></div>
             </div>
-
 
             <div className="message-input-container">
                 <input

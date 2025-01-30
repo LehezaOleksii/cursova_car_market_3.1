@@ -23,8 +23,8 @@ public class ChatRoom {
     private String id;
     private String firstUserId;
     private String secondUserId;
-    private List<ChatMessage> firstUserMessages = new ArrayList<>();
-    private List<ChatMessage> secondUserMessages = new ArrayList<>();
+    private List<ChatMessageMongo> firstUserMessages = new ArrayList<>();
+    private List<ChatMessageMongo> secondUserMessages = new ArrayList<>();
 
     public void sortMessagesById(String firstUserId) {
         if (!firstUserId.equals(this.firstUserId)) {
@@ -32,14 +32,14 @@ public class ChatRoom {
             this.firstUserId = secondUserId;
             this.secondUserId = tempFirstUserId;
 
-            List<ChatMessage> tempFirstUserMessages = firstUserMessages;
+            List<ChatMessageMongo> tempFirstUserMessages = firstUserMessages;
             this.firstUserMessages = secondUserMessages;
             this.secondUserMessages = tempFirstUserMessages;
         }
     }
 
-    public Optional<ChatMessage> getLastChatMessage() {
+    public Optional<ChatMessageMongo> getLastChatMessage() {
         return Stream.concat(firstUserMessages.stream(), secondUserMessages.stream())
-                .max(Comparator.comparing(ChatMessage::getTimestamp));
+                .max(Comparator.comparing(ChatMessageMongo::getTimestamp));
     }
 }

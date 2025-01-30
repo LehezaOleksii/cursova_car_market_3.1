@@ -7,9 +7,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatSendMessage extends ChatAbstractMessage{
+public class ChatSendMessageStatus extends ChatAbstractMessage{
 
     private String senderId;
     private String recipientId;
-    private String content;
+    private String messageId;
+    private String status;
 }

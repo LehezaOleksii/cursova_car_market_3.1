@@ -1,7 +1,8 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
-import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessage;
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessageStatus;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatMessageService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -23,15 +24,15 @@ public class ChatWebSocketConnectionController {
         if (chatRoomService.getChat(chatSendMessage.getSenderId(), chatSendMessage.getRecipientId()).isEmpty()) {
             chatRoomService.createChatRoom(chatSendMessage.getSenderId(), chatSendMessage.getRecipientId());
         }
-        ChatMessageDto chatMessageDto = chatMessageService.createMessage(chatSendMessage);
-//        String senderName = userService.getFullUserNameById(chatSendMessage.getSenderId());
-//        messagingTemplate.convertAndSendToUser(
-//                chatSendMessage.getRecipientId(), "/messages",
-//                new ChatNotification(
-//                        chatSendMessage.getRecipientId(),
-//                        chatSendMessage.getSenderId(),
-//                        senderName));
+        ChatMessage chatMessage = chatMessageService.createMessage(chatSendMessage);
         messagingTemplate.convertAndSendToUser(
-                chatSendMessage.getRecipientId(), "/messages", chatMessageDto);
+                chatSendMessage.getRecipientId(), "/messages", chatMessage);
+    }
+
+    @MessageMapping("/chat/message/status")
+    public void processMessageStatus(@Payload ChatSendMessageStatus chatSendMessageStatus) {
+        chatMessageService.changeMessageSatus(chatSendMessageStatus);
+        messagingTemplate.convertAndSendToUser(
+                chatSendMessageStatus.getRecipientId(), "/messages/status", chatSendMessageStatus);
     }
 }

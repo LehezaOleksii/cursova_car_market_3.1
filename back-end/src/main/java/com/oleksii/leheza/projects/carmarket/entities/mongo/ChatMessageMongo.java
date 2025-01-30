@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "chat_messages")
-public class ChatMessage {
+public class ChatMessageMongo {
 
     @Id
     private String id;
@@ -21,13 +21,13 @@ public class ChatMessage {
     private LocalDateTime timestamp;
     private MessageStatus status;
 
-    public ChatMessage(String content) {
+    public ChatMessageMongo(String content) {
         this.content = content;
         this.timestamp = LocalDateTime.now();
         this.status = MessageStatus.CREATED;
     }
 
-    public ChatMessage(String content, MessageStatus status) {
+    public ChatMessageMongo(String content, MessageStatus status) {
         this.content = content;
         this.status = status;
         this.timestamp = LocalDateTime.now();

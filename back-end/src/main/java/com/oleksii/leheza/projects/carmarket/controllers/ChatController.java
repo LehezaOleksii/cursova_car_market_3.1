@@ -1,5 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
+import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
@@ -12,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -73,6 +71,23 @@ public class ChatController {
     @GetMapping("/users")
     public ResponseEntity<List<UserChatName>> getChatsByUserName(@RequestParam String id,
                                                                  @RequestParam String name) {
-        List<UserChatName> chats = chatRoomService.getUserChatsByName(id, name);return !chats.isEmpty() ? new ResponseEntity<>(chats, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<UserChatName> chats = chatRoomService.getUserChatsByName(id, name);
+        return !chats.isEmpty() ? new ResponseEntity<>(chats, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "Retrieve unread message count for user", description = "Retrieve unread message count for user by its id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieve unread message count",
+                    content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "History is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/users/{id}/messages/unread")
+    public ResponseEntity<Response> getUnreadMessagesForUser(@PathVariable long id) {
+        return new ResponseEntity<>(new Response(String.valueOf(chatRoomService.findUnreadMessageCountForUser(id))), HttpStatus.OK);
     }
 }

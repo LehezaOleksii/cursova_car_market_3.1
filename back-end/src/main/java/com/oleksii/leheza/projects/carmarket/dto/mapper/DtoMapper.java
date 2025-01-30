@@ -2,14 +2,17 @@ package com.oleksii.leheza.projects.carmarket.dto.mapper;
 
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
+import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessageStatus;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.*;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessageMongo;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
 import com.oleksii.leheza.projects.carmarket.entities.psql.*;
+import com.oleksii.leheza.projects.carmarket.enums.ChatMessageType;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
@@ -220,15 +223,29 @@ public class DtoMapper {
                 .build();
     }
 
-    public ChatMessageDto chatMessageEntityToChatMessageDto(com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage chatMessage, String recipientId) {
-        return ChatMessageDto.builder()
-                .id(chatMessage.getId())
+    public com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageEntityToChatMessage(ChatMessageMongo chatMessageMongo, String recipientId) {
+        com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageChat = new com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage();
+        chatMessageChat.setType(ChatMessageType.MESSAGE_FROM_USER);
+        chatMessageChat.setMessage(ChatMessageDto.builder()
+                .id(chatMessageMongo.getId())
                 .recipientId(recipientId)
-                .content(chatMessage.getContent())
-                .timestamp(String.valueOf(chatMessage.getTimestamp()))
-                .status(chatMessage.getStatus())
+                .content(chatMessageMongo.getContent())
+                .timestamp(String.valueOf(chatMessageMongo.getTimestamp()))
+                .status(chatMessageMongo.getStatus())
+                .build());
+        return chatMessageChat;
+    }
+
+    public ChatMessageDto chatMessageEntityToChatMessageDto(ChatMessageMongo chatMessageMongo, String recipientId) {
+        return ChatMessageDto.builder()
+                .id(chatMessageMongo.getId())
+                .recipientId(recipientId)
+                .content(chatMessageMongo.getContent())
+                .timestamp(String.valueOf(chatMessageMongo.getTimestamp()))
+                .status(chatMessageMongo.getStatus())
                 .build();
     }
+
 
     public UserManagerDashboardDto userToUserManagerDashboardDto(User user) {
         return UserManagerDashboardDto.builder()
@@ -293,5 +310,16 @@ public class DtoMapper {
                 .horsepower(engineDto.getHorsepower())
                 .volume(engineDto.getVolume())
                 .build();
+    }
+
+    public com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageEntityToChatSendMessageStatus(ChatMessageMongo chatMessageMongo, String recipientId) {
+        com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageChat = new com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage();
+        chatMessageChat.setType(ChatMessageType.MESSAGE_FROM_USER);
+        chatMessageChat.setMessage(ChatSendMessageStatus.builder()
+                .messageId(chatMessageMongo.getId())
+                .recipientId(recipientId)
+                .status(chatMessageMongo.getStatus().name())
+                .build());
+        return chatMessageChat;
     }
 }

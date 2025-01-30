@@ -1,6 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.dto.chat;
 
-import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessage;
+import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessageMongo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,8 +15,9 @@ public class UserChatName {
     private Long id;
     private String firstName;
     private String lastName;
-    private ChatMessage lastMessage;
+    private ChatMessageMongo lastMessage;
     private String email;
+    private int unreadMessages;
     private byte[] profilePicture;
 
     public UserChatName(Long id, String firstName, String lastName, String email, byte[] profilePicture) {
