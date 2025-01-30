@@ -10,29 +10,41 @@ const Chats = () => {
   const [recipientId, setRecipientId] = useState(null);
   const [recipientName, setRecipientName] = useState('');
   const [profileImgUrl, setProfileImgUrl] = useState(null);
-  const [chats, setChats] = useState([]); // State to hold chat information
+  const [chats, setChats] = useState([]); 
+  const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const handleSelectChat = (id, name, profileImgUrl) => {
     setRecipientId(id);
     setRecipientName(name);
     setProfileImgUrl(profileImgUrl);
-  };
 
-  const updateLastMessage = (chatId, message, timestamp) => {
-    setChats((prevChats) =>
-      prevChats.map((chat) =>
-        chat.id === chatId
-          ? { ...chat, lastMessage: { content: message, timestamp } }
-          : chat
-      )
-    );
+    // Mark messages as read
+    setChats(prevChats => {
+      return prevChats.map(chat => {
+        if (chat.id === id) {
+          return { ...chat, unreadMessages: 0 };
+        }
+        return chat;
+      });
+    });
+
+    // Update unread message count in header
+    setUnreadMessagesCount(prevCount => {
+      const totalUnread = chats.reduce((acc, chat) => acc + chat.unreadMessages, 0);
+      return totalUnread - chats.find(chat => chat.id === id)?.unreadMessages || 0;
+    });
   };
 
   return (
     <div>
-      <WrappedHeader />
+      <WrappedHeader unreadMessagesCount={unreadMessagesCount} />
       <div className="chat-container">
-        <ChatsLeftToolbar chats={chats} setChats={setChats} onSelectChat={handleSelectChat} />
+        <ChatsLeftToolbar 
+          chats={chats} 
+          setChats={setChats} 
+          onSelectChat={handleSelectChat} 
+          setUnreadMessagesCount={setUnreadMessagesCount}
+        />
         {recipientId ? (
           <ChatWindow
             senderId={senderId}
@@ -40,7 +52,6 @@ const Chats = () => {
             recipientName={recipientName}
             senderName={senderName}
             recipientProfileImg={profileImgUrl}
-            updateLastMessage={updateLastMessage}
           />
         ) : (
           <div className="chat-window">
