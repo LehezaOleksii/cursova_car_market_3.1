@@ -104,7 +104,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(userId, String.valueOf(userChat.getId()));
             chatRoomOpt.ifPresent(chatRoom -> {
                 chatRoom.sortMessagesById(String.valueOf(userId));
-                chatRoom.getLastChatMessage().ifPresent(userChat::setLastMessage);
                 int unreadMessagesCount = (int)
                         chatRoom.getSecondUserMessages().stream()
                                 .filter(msg -> msg.getStatus() == MessageStatus.SENT)
