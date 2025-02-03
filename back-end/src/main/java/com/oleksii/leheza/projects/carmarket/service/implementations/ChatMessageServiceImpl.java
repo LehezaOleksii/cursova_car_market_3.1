@@ -6,6 +6,7 @@ import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessageStatus;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessageMongo;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
+import com.oleksii.leheza.projects.carmarket.enums.ChatMessageType;
 import com.oleksii.leheza.projects.carmarket.enums.MessageStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.mogo.ChatMessageRepository;
@@ -35,7 +36,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             throw new ResourceNotFoundException("Chat room between users " + chatSendMessage.getSenderId() + " and " + chatSendMessage.getRecipientId() + " does not exist");
         }
         ChatRoom chatRoom = chatRoomOpt.get();
-        ChatMessageMongo chatMessageMongo =new ChatMessageMongo(chatSendMessage.getContent(), MessageStatus.SENT);
+        ChatMessageMongo chatMessageMongo = new ChatMessageMongo(chatSendMessage.getContent(), MessageStatus.SENT);
         chatMessageMongo.setId(UUID.randomUUID().toString());
         if (chatRoom.getFirstUserId().equals(chatSendMessage.getSenderId())) {
             chatRoom.getFirstUserMessages().add((chatMessageMongo));
@@ -69,9 +70,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         if (!messageUpdated) {
             throw new ResourceNotFoundException("Can't find message (" + messageId + ") in chat room");
         }
-        chatRoomRepository.save(chatRoom);
-        return dtoMapper.chatMessageEntityToChatSendMessageStatus(
+        chatRoom = chatRoomRepository.save(chatRoom);
+        ChatMessage chatMessage = dtoMapper.chatMessageEntityToChatSendMessageStatus(
                 new ChatMessageMongo(messageId, newStatus), chatRoom.getFirstUserId());
+        chatMessage.setType(ChatMessageType.CHANGE_MESSAGE_STATUS);
+        return chatMessage;
     }
 
     private boolean updateMessageStatus(List<ChatMessageMongo> messages, String messageId, MessageStatus status) {

@@ -10,7 +10,7 @@ const Chats = () => {
   const [recipientId, setRecipientId] = useState(null);
   const [recipientName, setRecipientName] = useState('');
   const [profileImgUrl, setProfileImgUrl] = useState(null);
-  const [chats, setChats] = useState([]); 
+  const [chats, setChats] = useState([]);
   const [unreadMessagesCount, setUnreadMessagesCount] = useState(0);
 
   const handleSelectChat = (id, name, profileImgUrl) => {
@@ -18,11 +18,10 @@ const Chats = () => {
     setRecipientName(name);
     setProfileImgUrl(profileImgUrl);
 
-    // Mark messages as read
     setChats(prevChats => {
       return prevChats.map(chat => {
         if (chat.id === id) {
-          return { ...chat, unreadMessages: 0 };
+          return { ...chat};
         }
         return chat;
       });
@@ -35,15 +34,26 @@ const Chats = () => {
     });
   };
 
+  const updateLastMessage = (chatId, content, timestamp) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat.id === chatId
+          ? { ...chat, lastMessage: { content, timestamp } }
+          : chat
+      )
+    );
+  };
+
   return (
     <div>
       <WrappedHeader unreadMessagesCount={unreadMessagesCount} />
       <div className="chat-container">
-        <ChatsLeftToolbar 
-          chats={chats} 
-          setChats={setChats} 
-          onSelectChat={handleSelectChat} 
+        <ChatsLeftToolbar
+          chats={chats}
+          setChats={setChats}
+          onSelectChat={handleSelectChat}
           setUnreadMessagesCount={setUnreadMessagesCount}
+          updateLastMessage={updateLastMessage}
         />
         {recipientId ? (
           <ChatWindow
@@ -52,6 +62,8 @@ const Chats = () => {
             recipientName={recipientName}
             senderName={senderName}
             recipientProfileImg={profileImgUrl}
+            setChats={setChats}
+            updateLastMessage={updateLastMessage}
           />
         ) : (
           <div className="chat-window">

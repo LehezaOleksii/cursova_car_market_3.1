@@ -316,7 +316,7 @@ public class DtoMapper {
         com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageChat = new com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage();
         chatMessageChat.setType(ChatMessageType.MESSAGE_FROM_USER);
         chatMessageChat.setMessage(ChatSendMessageStatus.builder()
-                .messageId(chatMessageMongo.getId())
+                .messageId(chatMessageMongo.getContent())
                 .recipientId(recipientId)
                 .status(chatMessageMongo.getStatus().name())
                 .build());

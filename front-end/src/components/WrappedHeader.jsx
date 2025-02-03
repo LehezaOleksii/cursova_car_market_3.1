@@ -8,37 +8,6 @@ const WrappedHeader = ({ unreadMessagesCount }) => {
   const role = localStorage.getItem("role");
   const [notifications, setNotifications] = useState([]);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     const newNotification = {
-  //       id: Date.now(),
-  //       senderName: "John Doe",
-  //       senderImage: "https://via.placeholder.com/40",
-  //       messageContent: "Hello, you have a new message!",
-  //     };
-
-  //     setNotifications((prev) => [...prev, newNotification]);
-  //     setUnreadMessagesCount((prev) => prev + 1);
-
-  //     setTimeout(() => {
-  //       setNotifications((prev) =>
-  //         prev.map((notification) =>
-  //           notification.id === newNotification.id
-  //             ? { ...notification, isFadingOut: true }
-  //             : notification
-  //         )
-  //       );
-  //       setTimeout(() => {
-  //         setNotifications((prev) =>
-  //           prev.filter((notification) => notification.id !== newNotification.id)
-  //         );
-  //       }, 500);
-  //     }, 10000);
-  //   }, 5000); // Simulate a new message every 5 seconds TODO
-
-  //   return () => clearTimeout(timer);
-  // }, []);
-
   const removeNotification = (id) => {
     setNotifications((prev) => prev.filter((notification) => notification.id !== id));
   };

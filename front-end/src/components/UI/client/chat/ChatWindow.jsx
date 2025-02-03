@@ -9,6 +9,7 @@ const ChatWindow = ({
     recipientName,
     senderName,
     recipientProfileImg,
+    setChats,
     updateLastMessage
 }) => {
     const [messages, setMessages] = useState([]);
@@ -23,20 +24,25 @@ const ChatWindow = ({
         if (recipientId) {
             fetchChatHistory();
             const wsClient = connectWebSocket(senderId, (newMessage) => {
-                const parsedMessage = JSON.parse(newMessage);
-                updateLastMessage(
-                    parsedMessage.recipientId,
-                    parsedMessage.content,
-                    new Date(parsedMessage.timestamp).toISOString()
-                );
-                if (recipientId == parsedMessage.recipientId) {
-                    setMessages((prev) => [...prev, parsedMessage]);
+                const response = JSON.parse(newMessage);
+                if (response.type === 'MESSAGE_FROM_USER') {
+                    const parsedMessage = response.message;
+                    updateLastMessage(
+                        parsedMessage.recipientId,
+                        parsedMessage.content,
+                        new Date(parsedMessage.timestamp).toISOString()
+                    );
+                    if (recipientId == parsedMessage.recipientId) {
+                        setMessages((prev) => [...prev, parsedMessage]);
+                    }
+                } else {
+                    markAllMessagesAsRead();
                 }
             });
             setClient(wsClient);
             return () => wsClient.deactivate();
         }
-    }, [recipientId]);
+    }, [recipientId, senderId, updateLastMessage]);
 
     useEffect(() => {
         if (lastMessageRef.current) {
@@ -51,7 +57,7 @@ const ChatWindow = ({
                     if (entry.isIntersecting) {
                         const messageId = entry.target.dataset.id;
                         const message = messages.find((msg) => msg.id === messageId);
-    
+
                         if (message && message.status === 'SENT' && !message.isSender) {
                             updateMessageStatus(messageId);
                         }
@@ -60,7 +66,7 @@ const ChatWindow = ({
             },
             { threshold: 0.5 }
         );
-    
+
         messages.forEach((msg) => {
             if (msg.status === 'SENT' && !msg.isSender) {
                 const messageElement = messageRefs.current.get(msg.id);
@@ -69,10 +75,9 @@ const ChatWindow = ({
                 }
             }
         });
-    
+
         return () => observer.disconnect();
     }, [messages]);
-    
 
     const fetchChatHistory = async () => {
         try {
@@ -124,6 +129,14 @@ const ChatWindow = ({
                     msg.id === messageId ? { ...msg, status: 'READ' } : msg
                 )
             );
+
+            setChats((prevChats) =>
+                prevChats.map((chat) =>
+                    chat.id == recipientId
+                        ? { ...chat, unreadMessages: (chat.unreadMessages || 0) - 1 }
+                        : chat
+                )
+            );
         } catch (error) {
             console.error('Failed to update message status:', error);
         }
@@ -159,6 +172,32 @@ const ChatWindow = ({
         }
     };
 
+    const getLastSentMessageId = (isSender) => {
+        const sentMessages = messages.filter(msg => msg.isSender === isSender && msg.status === 'SENT');
+        return sentMessages.length > 0 ? sentMessages[sentMessages.length - 1].id : null;
+    };
+
+    const getLastReadMessageId = (isSender) => {
+        const readMessages = messages.filter(msg => msg.isSender === isSender && msg.status === 'READ');
+        return readMessages.length > 0 ? readMessages[readMessages.length - 1].id : null;
+    };
+
+    const formatDateWithDots = (timestamp) => {
+        const date = new Date(timestamp);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}.${month}.${year}`;
+    };
+
+    const markAllMessagesAsRead = () => {
+        setMessages((prev) =>
+            prev.map((msg) =>
+                msg.status === "SENT" ? { ...msg, status: 'READ' } : msg
+            )
+        );
+    };
+
     return (
         <div className="chat-window">
             <div className="chat-header">
@@ -180,12 +219,17 @@ const ChatWindow = ({
                 {messages.map((msg, index) => {
                     const currentDay = new Date(msg.timestamp).toLocaleDateString();
                     const previousDay = index > 0 ? new Date(messages[index - 1].timestamp).toLocaleDateString() : null;
-
+                    const isLastSentMessage = msg.id === getLastSentMessageId(msg.isSender);
+                    const isLastReadMessage = msg.id === getLastReadMessageId(msg.isSender);
                     return (
                         <React.Fragment key={msg.id}>
                             {currentDay !== previousDay && (
                                 <div className="day-date">
-                                    {currentDay === new Date().toLocaleDateString() ? 'Today' : currentDay}
+                                    {currentDay === new Date().toLocaleDateString()
+                                        ? 'Today'
+                                        : currentDay === (new Date(Date.now() - 86400000)).toLocaleDateString()
+                                            ? 'Yesterday'
+                                            : formatDateWithDots(currentDay)}
                                 </div>
                             )}
                             <div
@@ -198,9 +242,18 @@ const ChatWindow = ({
                                     <p>{msg.content}</p>
                                     <div className="message-details">
                                         <small>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>
-                                        {msg.status && (
-                                            <span className="message-status">{msg.status}</span>
-                                        )}
+                                        <span className="message-status">
+                                            {isLastSentMessage && (
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check" viewBox="0 0 16 16">
+                                                    <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z" />
+                                                </svg>
+                                            )}
+                                            {isLastReadMessage && (
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-all" viewBox="0 0 16 16">
+                                                    <path d="M8.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L2.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093L8.95 4.992zm-.92 5.14.92.92a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 1 0-1.091-1.028L9.477 9.417l-.485-.486z" />
+                                                </svg>
+                                            )}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
