@@ -2,10 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../headerStyles.css";
 
-const Header = ({ unreadMessagesCount }) => {
+const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
   const [client, setClient] = useState("");
   const [profilePicture, setProfilePicture] = useState('');
-  const [initialUnreadMessagesCount, setInitialUnreadMessagesCount] = useState(unreadMessagesCount);
   const jwtStr = localStorage.getItem('jwtToken');
   const id = localStorage.getItem('id');
 
@@ -36,20 +35,18 @@ const Header = ({ unreadMessagesCount }) => {
   };
 
   const fetchUnreadMessagesCount = async () => {
-    if (unreadMessagesCount === undefined) {
-      const url = `http://localhost:8080/chat/users/${id}/messages/unread`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwtStr
-        },
-      });
-      const data = await response.json();
-      setInitialUnreadMessagesCount(data.data);
-    } else {
-      setInitialUnreadMessagesCount(unreadMessagesCount);
-    }
+    const url = `http://localhost:8080/chat/users/${id}/messages/unread`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + jwtStr
+      },
+    });
+    const data = await response.json();
+    
+    // Update unread messages count using the function
+    setUnreadMessagesCount(data.data);
   };
 
   return (
@@ -79,9 +76,6 @@ const Header = ({ unreadMessagesCount }) => {
                     Chats
                     {unreadMessagesCount > 0 && (
                       <span className="unread-badge">{unreadMessagesCount}</span>
-                    )}
-                     {initialUnreadMessagesCount > 0 && (
-                      <span className="unread-badge">{initialUnreadMessagesCount}</span>
                     )}
                   </Link>
                 </li>

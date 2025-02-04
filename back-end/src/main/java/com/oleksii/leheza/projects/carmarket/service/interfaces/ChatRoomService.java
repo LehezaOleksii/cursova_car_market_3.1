@@ -20,4 +20,6 @@ public interface ChatRoomService {
     List<UserChatName> getUserChatsByName(String id, String name);
 
     int findUnreadMessageCountForUser(long id);
+
+    UserChatName getUserChatNameById(String senderId, String recipientId);
 }
