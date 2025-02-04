@@ -3,6 +3,7 @@ package com.oleksii.leheza.projects.carmarket.controllers;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessage;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessageStatus;
+import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatMessageService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,9 @@ public class ChatWebSocketConnectionController {
         ChatMessage chatMessage = chatMessageService.createMessage(chatSendMessage);
         messagingTemplate.convertAndSendToUser(
                 chatSendMessage.getRecipientId(), "/messages", chatMessage);
+        UserChatName chatMessageHeader = chatRoomService.getUserChatNameById(chatSendMessage.getSenderId(), chatSendMessage.getRecipientId());
+        messagingTemplate.convertAndSendToUser(
+                chatSendMessage.getRecipientId(), "/messages/header", chatMessageHeader);
     }
 
     @MessageMapping("/chat/message/status")

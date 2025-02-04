@@ -72,4 +72,7 @@ public interface UserRepository extends
             "OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :name, '%'))")
     List<UserChatName> getUserChatNamesByName(@Param("name") String name);
 
+    @Query("SELECT new com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName(u.id, u.firstName, u.lastName, u.email, u.profileImageUrl) " +
+            "FROM User u WHERE u.id = :recipientId")
+    UserChatName getUserChatNameById(String recipientId);
 }

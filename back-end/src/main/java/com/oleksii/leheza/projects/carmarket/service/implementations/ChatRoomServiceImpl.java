@@ -23,39 +23,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final UserRepository userRepository;
     private final DtoMapper dtoMapper;
 
-//    @Override
-//    public Optional<String> getChatId(String senderId, String recipientId, boolean createIfNotExist) {
-//
-//        return chatRoomRepository
-//                .findBySenderIdAndRecipientId(senderId, recipientId)
-//                .map(ChatRoom::getChatId)
-//                .or(() -> {
-//                    if (!createIfNotExist) {
-//                        return Optional.empty();
-//                    }
-//                    var chatId =
-//                            String.format("%s_%s", senderId, recipientId);
-//
-//                    ChatRoom senderRecipient = ChatRoom
-//                            .builder()
-//                            .chatId(chatId)
-//                            .firstUserId(senderId)
-//                            .secondUserId(recipientId)
-//                            .build();
-//
-//                    ChatRoom recipientSender = ChatRoom
-//                            .builder()
-//                            .chatId(chatId)
-//                            .firstUserId(recipientId)
-//                            .secondUserId(senderId)
-//                            .build();
-//                    chatRoomRepository.save(senderRecipient);
-//                    chatRoomRepository.save(recipientSender);
-//
-//                    return Optional.of(chatId);
-//                });
-//    }
-
     @Override
     public void createChatRoom(String senderId, String recipientId) {
         ChatRoom chatRoom = ChatRoom.builder()
@@ -99,7 +66,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                         }
                     });
                 });
-
         userChats.forEach(userChat -> {
             Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(userId, String.valueOf(userChat.getId()));
             chatRoomOpt.ifPresent(chatRoom -> {
@@ -111,7 +77,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 userChat.setUnreadMessages(unreadMessagesCount);
             });
         });
-
         return userChats;
     }
 
@@ -141,5 +106,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                             .count();
                 })
                 .sum();
+    }
+
+    @Override
+    public UserChatName getUserChatNameById(String senderId, String recipientId) {
+        UserChatName userChat = userRepository.getUserChatNameById(senderId);
+        Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(recipientId, senderId);
+        chatRoomOpt.ifPresent(chatRoom -> {
+            if (chatRoom.getLastChatMessage().isPresent()) {
+                ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
+                userChat.setLastMessage(chatMessageMongo);
+            }
+        });
+        return userChat;
     }
 }

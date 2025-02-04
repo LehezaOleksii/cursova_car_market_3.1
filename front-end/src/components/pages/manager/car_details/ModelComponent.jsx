@@ -309,7 +309,6 @@ const ModelComponent = () => {
                 } else {
                     console.error("Failed to fetch updated engine data");
                 }
-
                 setSelectedEngineId(null);
             } else {
                 console.error("Failed to add engine");
