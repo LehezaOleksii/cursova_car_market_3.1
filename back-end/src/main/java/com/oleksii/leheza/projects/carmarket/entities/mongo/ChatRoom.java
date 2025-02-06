@@ -1,5 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.entities.mongo;
 
+import lombok.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
