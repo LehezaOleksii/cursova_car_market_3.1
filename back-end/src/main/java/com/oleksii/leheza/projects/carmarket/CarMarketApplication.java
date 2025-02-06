@@ -37,7 +37,9 @@ public class CarMarketApplication {
     @Bean
     CommandLineRunner runner() {
         return args -> {
-//            generateMainUsers(); TODO
+            if(userRepository.findAll().isEmpty()) {
+                generateMainUsers();
+            }
         };
     }
 

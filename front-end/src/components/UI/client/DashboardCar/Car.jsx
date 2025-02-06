@@ -9,8 +9,8 @@ const DashboardCar = ({ car }) => {
 
   const handleLikeToggle = async () => {
     const url = liked
-      ? `http://localhost:8080/vehicles/${car.id}/no_like`
-      : `http://localhost:8080/vehicles/${car.id}/like`;
+      ? `http://localhost:8080/vehicles/${car.id}/lile/false`
+      : `http://localhost:8080/vehicles/${car.id}/like/true`;
     
     const response = await fetch(url, {
       method: 'PUT',
@@ -29,7 +29,7 @@ const DashboardCar = ({ car }) => {
 
   const handleSendMessage = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/clients/id/vehicleId/${car.id}`, {
+      const response = await fetch(`http://localhost:8080/users/id/vehicleId/${car.id}`, {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + jwtStr

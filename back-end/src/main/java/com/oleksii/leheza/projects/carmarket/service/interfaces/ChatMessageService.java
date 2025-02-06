@@ -10,5 +10,5 @@ public interface ChatMessageService {
 
     ChatMessage createMessage(ChatSendMessage chatMessage);
 
-    ChatMessage changeMessageSatus(ChatSendMessageStatus chatSendMessageStatus);
+    ChatMessage changeMessageStatus(ChatSendMessageStatus chatSendMessageStatus);
 }

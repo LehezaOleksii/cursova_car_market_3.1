@@ -209,13 +209,12 @@ public class VehicleServiceImpl implements VehicleService {
     public Page<VehicleDashboardDto> getVehicleWithLikedStatus(Long userId, boolean isLiked, int page, int size) {
         List<Long> vehicleIds = userVehicleLikeRepository.findAllVehiclesIdsByUserIdAndLikedStatus(userId, isLiked);
         Pageable pageable = PageRequest.of(page, size);
-        Page<Vehicle> vehicles = vehicleRepository.findAllPostedVehiclesByIds(vehicleIds, pageable);
+        Page<Vehicle> vehicles = vehicleRepository.findAllPostedVehiclesByIds(vehicleIds, VehicleStatus.POSTED, pageable);
         return vehicles.map(vehicle -> {
             VehicleDashboardDto dto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
             dto.setUserLiked(isLiked);
             return dto;
         });
-
     }
 
     @Override

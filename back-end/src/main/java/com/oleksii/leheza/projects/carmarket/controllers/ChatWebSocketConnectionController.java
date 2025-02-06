@@ -35,7 +35,7 @@ public class ChatWebSocketConnectionController {
 
     @MessageMapping("/chat/message/status")
     public void processMessageStatus(@Payload ChatSendMessageStatus chatSendMessageStatus) {
-        ChatMessage chatMessage = chatMessageService.changeMessageSatus(chatSendMessageStatus);
+        ChatMessage chatMessage = chatMessageService.changeMessageStatus(chatSendMessageStatus);
         messagingTemplate.convertAndSendToUser(
                 chatSendMessageStatus.getSenderId(), "/messages", chatMessage);
     }

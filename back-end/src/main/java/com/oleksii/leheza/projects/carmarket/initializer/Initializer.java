@@ -1,5 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.initializer;
 
+import com.oleksii.leheza.projects.carmarket.repositories.sql.CityRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.VehicleBrandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -12,10 +14,16 @@ public class Initializer implements CommandLineRunner {
 
     private final CarDatasetParser carDatasetParser;
     private final CitiesInitializer citiesInitializer;
+    private final VehicleBrandRepository vehicleBrandRepository;
+    private final CityRepository cityRepository;
 
     @Override
     public void run(String... args) {
-//        carDatasetParser.parseDataset(); TODO
-//        citiesInitializer.initializeCities(CITY_NAME);
+        if (vehicleBrandRepository.findAll().isEmpty()) {
+            carDatasetParser.parseDataset();
+        }
+        if (cityRepository.findAll().isEmpty()) {
+            citiesInitializer.initializeCities(CITY_NAME);
+        }
     }
 }

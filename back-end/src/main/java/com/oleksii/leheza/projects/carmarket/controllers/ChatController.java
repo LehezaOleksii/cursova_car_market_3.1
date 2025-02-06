@@ -35,9 +35,9 @@ public class ChatController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/history")
-    public ResponseEntity<ChatHistory> retrieveChatHistory(@RequestParam String firstUserId,
-                                                           @RequestParam String secondUserId) {
+    @GetMapping("/history/firstUserId/{firstUserId}/secondUserId/{secondUserId}")
+    public ResponseEntity<ChatHistory> retrieveChatHistory(@PathVariable String firstUserId,
+                                                           @PathVariable String secondUserId) {
         return new ResponseEntity<>(chatRoomService.retrieveChatHistory(firstUserId, secondUserId), HttpStatus.OK);
     }
 
@@ -52,8 +52,8 @@ public class ChatController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/rooms")
-    public ResponseEntity<List<UserChatName>> getAllExistingChatsForUser(@RequestParam String id) {
+    @GetMapping("/rooms/userId/{id}")
+    public ResponseEntity<List<UserChatName>> getAllExistingChatsForUser(@PathVariable String id) {
         return new ResponseEntity<>(chatRoomService.getUserChats(id), HttpStatus.OK);
     }
 
@@ -68,8 +68,8 @@ public class ChatController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/users")
-    public ResponseEntity<List<UserChatName>> getChatsByUserName(@RequestParam String id,
+    @GetMapping("/users/id")
+    public ResponseEntity<List<UserChatName>> getChatsByUserName(@PathVariable String id,
                                                                  @RequestParam String name) {
         List<UserChatName> chats = chatRoomService.getUserChatsByName(id, name);
         return !chats.isEmpty() ? new ResponseEntity<>(chats, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);

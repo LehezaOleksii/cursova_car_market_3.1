@@ -5,7 +5,7 @@ const ApproveManager = ({ manager, removeManagerFromList}) => {
   const jwtStr = localStorage.getItem('jwtToken');
 
   const disapproveManager = async (managerId) => {
-    const url = `http://localhost:8080/admins/users/${managerId}/delete`;
+    const url = `http://localhost:8080/users/users/${managerId}/delete`;
     await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -17,7 +17,7 @@ const ApproveManager = ({ manager, removeManagerFromList}) => {
   };
 
   const approveManager = async (userId) => {
-    const url = `http://localhost:8080/admins/users/${userId}/approve`;
+    const url = `http://localhost:8080/users/users/${userId}/approve`;
     const response = await fetch(url, {
       method: 'PUT',
       headers: {
