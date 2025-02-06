@@ -6,14 +6,16 @@ import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessageStatus;
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatMessageService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@Tag(name = "Chats", description = "Methods related to chats web socket")
 public class ChatWebSocketConnectionController {
 
     private final SimpMessagingTemplate messagingTemplate;
@@ -35,7 +37,7 @@ public class ChatWebSocketConnectionController {
 
     @MessageMapping("/chat/message/status")
     public void processMessageStatus(@Payload ChatSendMessageStatus chatSendMessageStatus) {
-        ChatMessage chatMessage = chatMessageService.changeMessageSatus(chatSendMessageStatus);
+        ChatMessage chatMessage = chatMessageService.changeMessageStatus(chatSendMessageStatus);
         messagingTemplate.convertAndSendToUser(
                 chatSendMessageStatus.getSenderId(), "/messages", chatMessage);
     }

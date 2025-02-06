@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    //TODO DTOS
+
     void approveManager(Long userId);
 
     List<User> getUsersByRole(UserRole role);
@@ -20,12 +20,6 @@ public interface UserService extends UserDetailsService {
     void updateUserStatusByOtherUserById(Long userId, UserStatus status);
 
     UserUpdateDto update(UserUpdateDto user);
-
-    List<User> findAll();
-
-    User findById(Long userId);
-
-//    Client authorization(String email, String password);
 
     User findByEmail(String email);
 
@@ -43,11 +37,7 @@ public interface UserService extends UserDetailsService {
 
     String getUserRoleByEmail(String email);
 
-    String getFullUserNameById(String userId);
-
     String getUserIdByVehicleId(Long vehicleId);
-
-    String getUserEmailById(String id);
 
     boolean isUserHasHigherRole(Long otherUserId);
 

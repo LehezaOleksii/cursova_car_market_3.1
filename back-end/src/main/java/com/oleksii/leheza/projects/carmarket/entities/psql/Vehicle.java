@@ -12,7 +12,8 @@ import lombok.*;
 import java.time.Year;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Builder(toBuilder = true)
 @NoArgsConstructor
@@ -28,11 +29,11 @@ public class Vehicle {
     @Min(0)
     private int mileage;
     private GearBox gearBox;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     @ToString.Exclude
     private User user;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
     private VehicleBrand brand;
     @Enumerated(EnumType.ORDINAL)
     private VehicleStatus status;
@@ -44,15 +45,13 @@ public class Vehicle {
     private String description;
     @ManyToMany
     private List<Photo> photos;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_model_id")
     private VehicleModel vehicleModel;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "engine_id")
     private Engine engine;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private VehicleBodyType bodyType;
     private int views;
-//    @Column(nullable = false) TODO
-    private Long historyId;
 }

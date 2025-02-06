@@ -63,7 +63,7 @@ const ManagerUsers = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const url = `http://localhost:8080/clients/role`;
+        const url = `http://localhost:8080/users/role`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {

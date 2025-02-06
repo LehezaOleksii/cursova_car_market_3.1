@@ -11,7 +11,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/admins/managers`;
+      const url = `http://localhost:8080/users`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {

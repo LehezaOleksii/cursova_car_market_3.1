@@ -18,12 +18,15 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +36,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/vehicles")
+@Validated
 @RequiredArgsConstructor
+@Tag(name = "Vehicles", description = "Methods related to vehicles")
 public class VehicleController {
 
     private final VehicleService vehicleService;
@@ -88,7 +93,7 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @PostMapping("/brands")
-    public ResponseEntity<BrandDto> createVehicleBrand(@RequestBody BrandDto brandDto) {
+    public ResponseEntity<BrandDto> createVehicleBrand(@Valid @RequestBody BrandDto brandDto) {
         return new ResponseEntity<>(vehicleService.createBrand(brandDto), HttpStatus.OK);
     }
 
@@ -103,7 +108,7 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @PostMapping("/models")
-    public ResponseEntity<ModelDto> createVehicleModel(@RequestBody ModelDto modelDto) {
+    public ResponseEntity<ModelDto> createVehicleModel(@Valid @RequestBody ModelDto modelDto) {
         return new ResponseEntity<>(vehicleService.createModel(modelDto), HttpStatus.OK);
     }
 
@@ -695,30 +700,12 @@ public class VehicleController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @PutMapping("/{vehicleId}/like")
+    @PutMapping("/{vehicleId}/like/{isLike}")
     public ResponseEntity<?> setLikeToVehicle(@AuthenticationPrincipal String email,
+                                              @PathVariable Boolean isLike,
                                               @PathVariable Long vehicleId) {
         Long userId = userService.getUserIdByEmail(email);
-        vehicleService.setLikeStatus(userId, vehicleId, true);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Operation(summary = "Update an existing vehicle likes", description = "Update an existing vehicle likes.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Vehicle likes updated successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Vehicle is not found",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @PutMapping("/{vehicleId}/no_like")
-    public ResponseEntity<?> setNoLikeToVehicle(@AuthenticationPrincipal String email,
-                                                @PathVariable Long vehicleId) {
-        Long userId = userService.getUserIdByEmail(email);
-        vehicleService.setLikeStatus(userId, vehicleId, false);
+        vehicleService.setLikeStatus(userId, vehicleId, isLike);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -734,7 +721,7 @@ public class VehicleController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
-    @GetMapping("/params")
+    @GetMapping("/liked/filter")
     public ResponseEntity<Page<VehicleDashboardDto>> getUserLikedCars(@AuthenticationPrincipal String email,
                                                                       @RequestParam Boolean isLiked,
                                                                       @RequestParam(defaultValue = "0") int page,
@@ -757,7 +744,7 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<VehicleDashboardDto>> getUserLikedCars(@PathVariable Long userId) {
+    public ResponseEntity<List<VehicleDashboardDto>> getVehiclesByUserId (@PathVariable Long userId) {
         List<VehicleDashboardDto> vehicles = vehicleService.getVehiclesByUserId(userId);
         return new ResponseEntity<>(vehicles, vehicles != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }

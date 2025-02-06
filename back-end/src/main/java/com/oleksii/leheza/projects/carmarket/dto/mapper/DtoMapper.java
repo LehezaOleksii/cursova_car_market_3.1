@@ -9,7 +9,6 @@ import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
-import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessageMongo;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
 import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.enums.ChatMessageType;
@@ -223,7 +222,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageEntityToChatMessage(ChatMessageMongo chatMessageMongo, String recipientId) {
+    public com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageEntityToChatMessage(ChatRoom.ChatMessageMongo chatMessageMongo, String recipientId) {
         com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageChat = new com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage();
         chatMessageChat.setType(ChatMessageType.MESSAGE_FROM_USER);
         chatMessageChat.setMessage(ChatMessageDto.builder()
@@ -236,7 +235,7 @@ public class DtoMapper {
         return chatMessageChat;
     }
 
-    public ChatMessageDto chatMessageEntityToChatMessageDto(ChatMessageMongo chatMessageMongo, String recipientId) {
+    public ChatMessageDto chatMessageEntityToChatMessageDto(ChatRoom.ChatMessageMongo chatMessageMongo, String recipientId) {
         return ChatMessageDto.builder()
                 .id(chatMessageMongo.getId())
                 .recipientId(recipientId)
@@ -312,7 +311,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageEntityToChatSendMessageStatus(ChatMessageMongo chatMessageMongo, String recipientId) {
+    public com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageEntityToChatSendMessageStatus(ChatRoom.ChatMessageMongo chatMessageMongo, String recipientId) {
         com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage chatMessageChat = new com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessage();
         chatMessageChat.setType(ChatMessageType.MESSAGE_FROM_USER);
         chatMessageChat.setMessage(ChatSendMessageStatus.builder()

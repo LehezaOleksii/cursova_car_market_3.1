@@ -3,7 +3,6 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
-import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatMessageMongo;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
 import com.oleksii.leheza.projects.carmarket.enums.MessageStatus;
 import com.oleksii.leheza.projects.carmarket.repositories.mogo.ChatRoomRepository;
@@ -61,7 +60,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                     Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(userId, String.valueOf(userChat.getId()));
                     chatRoomOpt.ifPresent(chatRoom -> {
                         if (chatRoom.getLastChatMessage().isPresent()) {
-                            ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
+                            ChatRoom.ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
                             userChat.setLastMessage(chatMessageMongo);
                         }
                     });
@@ -88,7 +87,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                     Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(id, String.valueOf(userChat.getId()));
                     chatRoomOpt.ifPresent(chatRoom -> {
                         if (chatRoom.getLastChatMessage().isPresent()) {
-                            ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
+                            ChatRoom.ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
                             userChat.setLastMessage(chatMessageMongo);
                         }
                     });
@@ -114,7 +113,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         Optional<ChatRoom> chatRoomOpt = chatRoomRepository.findByFirstUserAndSecondUserId(recipientId, senderId);
         chatRoomOpt.ifPresent(chatRoom -> {
             if (chatRoom.getLastChatMessage().isPresent()) {
-                ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
+                ChatRoom.ChatMessageMongo chatMessageMongo = chatRoom.getLastChatMessage().get();
                 userChat.setLastMessage(chatMessageMongo);
             }
         });

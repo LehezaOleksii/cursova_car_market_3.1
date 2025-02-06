@@ -1,12 +1,11 @@
 package com.oleksii.leheza.projects.carmarket.dto.security;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
-@Builder
+@Getter
+@Setter
 @AllArgsConstructor
+@Builder
 public class AuthenticationResponse {
 
     private final Long userId;

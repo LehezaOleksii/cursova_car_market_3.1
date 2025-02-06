@@ -11,7 +11,7 @@ const ApproveManagersPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/admins/users/toapprove`;
+      const url = `http://localhost:8080/users/users/toapprove`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {

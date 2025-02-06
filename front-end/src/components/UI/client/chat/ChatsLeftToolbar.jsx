@@ -27,7 +27,7 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCoun
 
   const fetchChatRooms = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/chat/rooms?id=${id}`, {
+      const response = await fetch(`http://localhost:8080/chat/rooms/userId/${id}`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${jwtStr}` },
       });
@@ -155,7 +155,7 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCoun
 
   const searchExternalChats = async (name) => {
     try {
-      const response = await fetch(`http://localhost:8080/chat/users?id=${id}&name=${name}`, {
+      const response = await fetch(`http://localhost:8080/chat/users/${id}?name=${name}`, {
         method: 'GET',
         headers: { Authorization: `Bearer ${jwtStr}` },
       });

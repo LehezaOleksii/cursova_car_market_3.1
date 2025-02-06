@@ -40,7 +40,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/chat/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/swagger-ui/**",
+                                "/swagger-resources/*",
+                                "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider)

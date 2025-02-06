@@ -1,9 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.repositories.sql;
 
 import com.oleksii.leheza.projects.carmarket.entities.psql.UserVehicleLike;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -15,11 +13,6 @@ public interface UserVehicleLikeRepository extends JpaRepository<UserVehicleLike
 
     @Query("SELECT COUNT(uvl) FROM UserVehicleLike uvl WHERE uvl.vehicle.id = :vehicleId AND uvl.isLiked = TRUE")
     int getLikesByVehicleId(Long vehicleId);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE UserVehicleLike uvl SET uvl.isLiked = :isLike WHERE uvl.user.id = :userId AND uvl.vehicle.id = :vehicleId")
-    void setLike(Long userId, Long vehicleId, Boolean isLike);
 
     @Query("SELECT uvl FROM UserVehicleLike uvl WHERE uvl.vehicle.id = :vehicleId AND uvl.user.id = :userId")
     Optional<UserVehicleLike> findByUserIdAndVehicleId(Long userId, Long vehicleId);

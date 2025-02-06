@@ -83,7 +83,7 @@ const UpdateManager = () => {
   
   useEffect(() => {
     const fetchManagerData = async () => {
-      const url = `http://localhost:8080/admins/managers/${managerId}`;
+      const url = `http://localhost:8080/users/managers/${managerId}`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -100,7 +100,7 @@ const UpdateManager = () => {
   }, []); 
 
   const handleSave = async () => {
-      const url = `http://localhost:8080/admins/managers/${managerId}`;
+      const url = `http://localhost:8080/users/managers/${managerId}`;
       if(validateForm()){
         const manager = {
           firstName: managerData.firstName,

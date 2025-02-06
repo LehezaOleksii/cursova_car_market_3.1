@@ -48,7 +48,7 @@ const Cabinet = ({ Header, Footer }) => {
 
   useEffect(() => {
     const fetchClientData = async () => {
-      const url = `http://localhost:8080/clients/cabinet`;
+      const url = `http://localhost:8080/users/cabinet`;
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -66,7 +66,7 @@ const Cabinet = ({ Header, Footer }) => {
   }, [id, jwtStr]); 
 
   const handleSave = async () => {
-    const url = `http://localhost:8080/clients/cabinet`;
+    const url = `http://localhost:8080/users/cabinet`;
     if (validateForm()) {
       const client = {
         firstname: clientData.firstname,

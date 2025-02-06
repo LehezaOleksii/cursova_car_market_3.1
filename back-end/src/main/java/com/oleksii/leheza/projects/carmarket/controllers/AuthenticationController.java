@@ -11,9 +11,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +24,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Validated
 @RequiredArgsConstructor
+@Tag(name = "Authentication", description = "Authentication methods")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -38,7 +43,7 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
     }
 
@@ -52,7 +57,7 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return new ResponseEntity<>(authenticationService.register(registerRequest), HttpStatus.CREATED);
     }
 
@@ -67,7 +72,7 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping(path = "/confirm-email")
-    public ResponseEntity<?> confirmEmail(@RequestParam(required = true) String token) {
+    public ResponseEntity<?> confirmEmail(String token) {
         userService.confirmEmail(token);
         return new ResponseEntity<>(HttpStatus.OK);
     }

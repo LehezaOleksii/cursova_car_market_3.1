@@ -69,16 +69,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public User findById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User with id " + userId + " not found"));
-    }
-
-    @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User with email " + email + " not found"));
     }
@@ -131,18 +121,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getFullUserNameById(String userId) {
-        return userRepository.findFirstNameAndLastNameById(userId);
-    }
-
-    @Override
     public String getUserIdByVehicleId(Long vehicleId) {
         return userRepository.findUserIdByVehicleId(vehicleId);
-    }
-
-    @Override
-    public String getUserEmailById(String id) {
-        return userRepository.findEmailById(id);
     }
 
     @Override

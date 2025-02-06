@@ -9,7 +9,7 @@ const AdminManager = ({ manager,removeManagerFromList }) => {
   const jwtStr = localStorage.getItem('jwtToken');
 
   const removeManager = async (managerId) => {
-    const url = `http://localhost:8080/admins/managers/${managerId}/delete`;
+    const url = `http://localhost:8080/users/managers/${managerId}/delete`;
     await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -21,7 +21,7 @@ const AdminManager = ({ manager,removeManagerFromList }) => {
   };
 
   const UpdateManager = async (managerId) => {
-    const url = `http://localhost:8080/admins/managers/${managerId}`;
+    const url = `http://localhost:8080/users/managers/${managerId}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
