@@ -3,8 +3,10 @@ import CarStateFilter from "../fields/CarStateFilter";
 import Select from "react-select";
 import CarFilterField from "../fields/CarFilterField";
 import { Link } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import "./dashboard.css";
 
-const CarFilter = ({ setCars }) => {
+const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
 
   const [selectedRadio, setSelectedRadio] = useState("ALL");
 
@@ -23,11 +25,14 @@ const CarFilter = ({ setCars }) => {
   const [maxYear, setMaxYear] = useState("");
 
   const jwtStr = localStorage.getItem("jwtToken");
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleRadioChange = (value) => {
     setSelectedRadio(value);
   };
 
+  const page = parseInt(searchParams.get("page")) || 0;
+  const size = parseInt(searchParams.get("size")) || 1;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,6 +113,7 @@ const CarFilter = ({ setCars }) => {
     });
     if (response.ok) {
       const data = await response.json();
+      setTotalPages(data.totalPages || 0);
       setCars(data);
     } else {
       console.error("Failed to fetch cars:", response.status);
@@ -147,6 +153,9 @@ const CarFilter = ({ setCars }) => {
     if (maxYear) queryParams.append("toYear", maxYear);
     if (selectedRadio) queryParams.append("usageStatus", selectedRadio);
 
+    queryParams.append("page", page);
+    queryParams.append("size", size);
+
     try {
       setCars([]);
       queryParams.append("vehicleStatus", "POSTED");
@@ -158,13 +167,20 @@ const CarFilter = ({ setCars }) => {
           Authorization: "Bearer " + jwtStr,
         },
       });
+
+      if (!response.ok) {
+        throw new Error(`Error fetching cars: ${response.status}`);
+      }
+
       const data = await response.json();
       setCars(data.content || []);
+      setTotalPages(data.totalPages);
+      setCurrentPage(0);
+      setSearchParams({ page: 0, size });
     } catch (error) {
       console.error("Error fetching cars:", error);
     }
   };
-
 
   const handleClearFilter = () => {
     setSelectedBrand("");
@@ -172,16 +188,35 @@ const CarFilter = ({ setCars }) => {
     setSelectedRegion("");
     setSelectedBodyType("");
     handleRadioChange("ALL");
-    setMinYear("");
-    setMaxYear("");
+    setMinYear("From Year");
+    setMaxYear("To Year");
     setMinPrice("");
     setMaxPrice("");
     setPostedCars()
   };
 
+  const generateYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear; year >= 1900; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
+  const years = generateYears();
+
+  const getSelectedStyle = (value, placeholder) => {
+    return value === placeholder ? { color: "grey" } : {};
+  };
+
+  useEffect(() => {
+    setMinYear("From Year");
+    setMaxYear("To Year");
+  }, []);
+
   return (
-    <div className="card mt-3 mb-5 p-3">
-      <h5 className="card-title mb-2">Car Filter</h5>
+    <div className="card mt-3 mb-4 p-3 br16">
       <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -190,106 +225,203 @@ const CarFilter = ({ setCars }) => {
             onChange={setSelectedBrand}
             options={brands}
             placeholder="Select Brand"
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+              }),
+              dropdownIndicator: (base) => ({
+                ...base,
+                padding: '0 18px',
+              }),
+              menu: (base) => ({
+                ...base,
+                borderRadius: '12px',
+              }),
+              option: (base) => ({
+                ...base,
+                ':hover': {
+                  backgroundColor: '#f1f1f1',
+                },
+              }),
+            }}
           />
         </div>
-        <div className="col-md-6 mb-3">
-          <Select
-            value={selectedModel}
-            onChange={setSelectedModel}
-            options={models}
-            placeholder="Select Model"
-          />
-        </div>
-      </div>
-
-      <div className="row">
         <div className="col-md-6 mb-3">
           <Select
             value={selectedRegion}
             onChange={setSelectedRegion}
             options={regions}
             placeholder="Select Region"
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+              }),
+              dropdownIndicator: (base) => ({
+                ...base,
+                padding: '0 18px',
+              }),
+              menu: (base) => ({
+                ...base,
+                borderRadius: '12px',
+              }),
+              option: (base) => ({
+                ...base,
+                ':hover': {
+                  backgroundColor: '#f1f1f1',
+                },
+              }),
+            }}
           />
         </div>
+      </div>
+      <div className="row">
+        <div className="col-md-6 mb-3">
+          <Select
+            value={selectedModel}
+            onChange={setSelectedModel}
+            options={models}
+            placeholder="Select Model"
+            noOptionsMessage={() => "Choose brand before model"}
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderRadius: "12px",
+                transition: "box-shadow 0.3s ease",
+              }),
+              dropdownIndicator: (base) => ({
+                ...base,
+                padding: "0 18px",
+              }),
+              menu: (base) => ({
+                ...base,
+                borderRadius: "12px",
+              }),
+              option: (base) => ({
+                ...base,
+                ":hover": {
+                  backgroundColor: "#f1f1f1",
+                },
+              }),
+            }}
+          />
+        </div>
+        <div className="col-md-6 d-flex gap-3">
+          <div className="w-50">
+            <select
+              value={minYear}
+              onChange={(e) => setMinYear(e.target.value)}
+              className="form-select"
+              style={{
+                ...getSelectedStyle(minYear, "From Year"),  // Apply dynamic styles from the function
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+                padding: '6px 10px',  // Increased padding for more space
+                width: '100%',         // Ensure it takes the full width of the container
+              }}
+            >
+              <option value="From Year">From Year</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="w-50">
+            <select
+              value={maxYear}
+              onChange={(e) => setMaxYear(e.target.value)}
+              className="form-select"
+              style={{
+                ...getSelectedStyle(maxYear, "To Year"),
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+                padding: '6px 10px',
+                width: '100%',
+              }}
+            >
+              <option value="To Year">To Year</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className="row">
         <div className="col-md-6 mb-3">
           <Select
             value={selectedBodyType}
             onChange={setSelectedBodyType}
             options={bodyTypes}
             placeholder="Select Body Type"
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+              }),
+              dropdownIndicator: (base) => ({
+                ...base,
+                padding: '0 18px',
+              }),
+              menu: (base) => ({
+                ...base,
+                borderRadius: '12px',
+              }),
+              option: (base) => ({
+                ...base,
+                ':hover': {
+                  backgroundColor: '#f1f1f1',
+                },
+              }),
+            }}
           />
         </div>
-      </div>
-      <div className="row">
-        <div className="col-md-6">
-          <CarFilterField
-            type="number"
-            value={minYear}
-            onChange={(e) => setMinYear(e.target.value)}
-            placeholder="From Year"
-          />
-        </div>
-        <div className="col-md-6">
-          <CarFilterField
-            type="number"
-            value={maxYear}
-            onChange={(e) => setMaxYear(e.target.value)}
-            placeholder="To Year"
-          />
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-md-6">
+        <div className="col-md-6 d-flex gap-3">
           <CarFilterField
             type="number"
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
             placeholder="From Price"
           />
-        </div>
-        <div className="col-md-6">
           <CarFilterField
             type="number"
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="Max Price"
+            placeholder="To Price"
           />
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6 mx-auto d-flex justify-content-end align-items-center">
-          <div className="d-flex w-50">
-            <button
-              className="btn btn-primary w-100"
-              onClick={handleSearch}
+        <div className="col-md-6 d-flex align-items-center gap-4">
+          <button className="btn btn-primary w-50 br16" onClick={handleSearch}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              className="bi bi-search"
+              viewBox="0 0 18 18"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="currentColor"
-                className="bi bi-search"
-                viewBox="0 0 18 18"
-              >
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-              </svg>
-              Search
-            </button>
-          </div>
-        </div>
-        <div className="col-md-6 mx-auto d-flex align-items-center">
-          <Link
-            to={`/client/advanced_filter`}
-            className="btn btn-primary"
-            style={{ whiteSpace: 'nowrap' }}
-          >
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+            </svg>
+            Search
+          </button>
+          <Link to="/client/advanced_filter" className="btn btn-primary w-50 br16" style={{ whiteSpace: "nowrap" }}>
             Advanced Search
           </Link>
-          <button
-            className="btn btn-secondary ms-3"
-            onClick={handleClearFilter}
-          >
-            Clear
+        </div>
+        <div className="col-md-6 d-flex align-items-center justify-content-start">
+          <button className="btn btn-secondary w-25 br16" onClick={handleClearFilter}>
+            Clear filter
           </button>
         </div>
       </div>

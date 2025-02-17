@@ -316,7 +316,7 @@ const AdvancedFilter = () => {
   };
 
   return (
-    <div className="body">
+    <div className="body mb-4">
       <WrappedHeader />
       <div className="container mt-5 card w-50 mx-auto">
         <h4 className="text-center mt-4">Advanced Filter</h4>

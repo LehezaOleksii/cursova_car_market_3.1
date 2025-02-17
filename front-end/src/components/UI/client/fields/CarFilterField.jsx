@@ -9,6 +9,7 @@ const CarFilterField = ({ type, value, onChange, placeholder }) => {
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        style={{ borderRadius: "12px" }}
       />
     </div>
   );
