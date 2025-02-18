@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 import "./dashboard.css";
 
-const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
+const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) => {
 
   const [selectedRadio, setSelectedRadio] = useState("ALL");
 
@@ -141,7 +141,21 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
       return;
     }
 
-    const queryParams = new URLSearchParams();
+    const filters = {
+      brandName: selectedBrand?.value || "",
+      modelName: selectedModel?.value || "",
+      bodyType: selectedBodyType?.value || "",
+      region: selectedRegion?.value || "",
+      fromPrice: minPrice,
+      toPrice: maxPrice,
+      fromYear: minYear,
+      toYear: maxYear,
+      usageStatus: selectedRadio,
+    };
+
+    setFilterState(filters);
+
+    const queryParams = new URLSearchParams(filters);
 
     if (selectedBrand) queryParams.append("brandName", selectedBrand.value);
     if (selectedModel) queryParams.append("modelName", selectedModel.value);
@@ -192,6 +206,10 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
     setMaxYear("To Year");
     setMinPrice("");
     setMaxPrice("");
+    setFilterState({});
+    setSearchParams({ page: 0, size });
+    setTotalPages(0);
+    setCurrentPage(0);
     setPostedCars()
   };
 
@@ -216,7 +234,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
   }, []);
 
   return (
-    <div className="card mt-3 mb-4 p-3 br16">
+    <div className="card mt-3 mb-4 p-3 br16 box-shadow-12">
       <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -229,6 +247,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
               control: (base) => ({
                 ...base,
                 borderRadius: '12px',
+                boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
                 transition: 'box-shadow 0.3s ease',
               }),
               dropdownIndicator: (base) => ({
@@ -258,6 +277,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
               control: (base) => ({
                 ...base,
                 borderRadius: '12px',
+                boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
                 transition: 'box-shadow 0.3s ease',
               }),
               dropdownIndicator: (base) => ({
@@ -278,7 +298,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
           />
         </div>
       </div>
-      <div className="row">
+      <div className="row ">
         <div className="col-md-6 mb-3">
           <Select
             value={selectedModel}
@@ -290,6 +310,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
               control: (base) => ({
                 ...base,
                 borderRadius: "12px",
+                boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
                 transition: "box-shadow 0.3s ease",
               }),
               dropdownIndicator: (base) => ({
@@ -314,13 +335,13 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
             <select
               value={minYear}
               onChange={(e) => setMinYear(e.target.value)}
-              className="form-select"
+              className="form-select box-shadow-06"
               style={{
-                ...getSelectedStyle(minYear, "From Year"),  // Apply dynamic styles from the function
+                ...getSelectedStyle(minYear, "From Year"),
                 borderRadius: '12px',
                 transition: 'box-shadow 0.3s ease',
-                padding: '6px 10px',  // Increased padding for more space
-                width: '100%',         // Ensure it takes the full width of the container
+                padding: '6px 10px',
+                width: '100%',
               }}
             >
               <option value="From Year">From Year</option>
@@ -336,7 +357,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
             <select
               value={maxYear}
               onChange={(e) => setMaxYear(e.target.value)}
-              className="form-select"
+              className="form-select box-shadow-06"
               style={{
                 ...getSelectedStyle(maxYear, "To Year"),
                 borderRadius: '12px',
@@ -366,7 +387,8 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
               control: (base) => ({
                 ...base,
                 borderRadius: '12px',
-                transition: 'box-shadow 0.3s ease',
+                boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                transition: '0.3s ease',
               }),
               dropdownIndicator: (base) => ({
                 ...base,
@@ -402,7 +424,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
       </div>
       <div className="row">
         <div className="col-md-6 d-flex align-items-center gap-4">
-          <button className="btn btn-primary w-50 br16" onClick={handleSearch}>
+          <button className="btn btn-primary w-50 br16 box-shadow-12" onClick={handleSearch}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -415,12 +437,12 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage }) => {
             </svg>
             Search
           </button>
-          <Link to="/client/advanced_filter" className="btn btn-primary w-50 br16" style={{ whiteSpace: "nowrap" }}>
+          <Link to="/client/advanced_filter" className="btn btn-primary w-50 br16 box-shadow-12" style={{ whiteSpace: "nowrap" }}>
             Advanced Search
           </Link>
         </div>
         <div className="col-md-6 d-flex align-items-center justify-content-start">
-          <button className="btn btn-secondary w-25 br16" onClick={handleClearFilter}>
+          <button className="btn btn-secondary w-25 br16 box-shadow-12" onClick={handleClearFilter}>
             Clear filter
           </button>
         </div>

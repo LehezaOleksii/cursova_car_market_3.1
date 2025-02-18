@@ -86,7 +86,8 @@ public class VehicleServiceImpl implements VehicleService {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, vehicleStatus, page, size, sort);
+        criteria.setStatus(vehicleStatus.name());
+        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
         return vehiclesPage
                 .map(vehicle -> {
                     VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
@@ -385,7 +386,8 @@ public class VehicleServiceImpl implements VehicleService {
     public Page<VehicleModerationDto> filterVehiclesModeration(Map<String, String> params, int page, int size) {
         Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
         VehicleSearchCriteria criteria = dtoMapper.mapToVehicleSearchCriteria(params);
-        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, null, page, size, sort);
+        criteria.setStatus(params.get("status"));
+        Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
         return vehiclesPage
                 .map(dtoMapper::vehicleToVehicleModerationDto);
     }

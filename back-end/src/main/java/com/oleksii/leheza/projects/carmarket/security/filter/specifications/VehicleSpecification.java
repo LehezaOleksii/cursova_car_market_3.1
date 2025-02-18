@@ -27,7 +27,7 @@ public class VehicleSpecification {
 
     private final VehicleRepository vehicleRepository;
 
-    public Page<Vehicle> getVehiclesWithCriterias(VehicleSearchCriteria criterias, VehicleStatus vehicleStatus, int page, int size, Sort sort) {
+    public Page<Vehicle> getVehiclesWithCriterias(VehicleSearchCriteria criterias, int page, int size, Sort sort) {
         log.info("Start creating vehicle specifications");
         List<Specification<Vehicle>> specifications = new ArrayList<>();
 
@@ -63,11 +63,11 @@ public class VehicleSpecification {
             specifications.add(engineLike(criterias));
         }
 
-        if (criterias.getFromYear() != null && !criterias.getFromYear().isEmpty()) {
+        if (criterias.getFromYear() != null && !criterias.getFromYear().isEmpty() && isNumeric(criterias.getFromYear())) {
             specifications.add(fromYear(criterias));
         }
 
-        if (criterias.getToYear() != null && !criterias.getToYear().isEmpty()) {
+        if (criterias.getToYear() != null && !criterias.getToYear().isEmpty() && isNumeric(criterias.getToYear())) {
             specifications.add(toYear(criterias));
         }
 
@@ -182,5 +182,14 @@ public class VehicleSpecification {
     public Specification<Vehicle> vehicleStatusLike(VehicleStatus vehicleStatus) {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("status"), vehicleStatus);
+    }
+
+    private static boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

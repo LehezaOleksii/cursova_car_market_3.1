@@ -5,7 +5,6 @@ import CarFilterField from "../../UI/client/fields/CarFilterField";
 import CarState from "../../UI/client/fields/CarState";
 import {useNavigate } from "react-router-dom";
 
-
 const ManagerAddAuto = () => {
   const [selectedRadio, setSelectedRadio] = useState("NEW");
   const [photo, setCarPhoto] = useState(null);

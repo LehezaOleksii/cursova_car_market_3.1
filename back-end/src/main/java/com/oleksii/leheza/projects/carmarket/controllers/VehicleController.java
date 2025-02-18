@@ -551,7 +551,7 @@ public class VehicleController {
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<Page<VehicleModerationDto>> getVehicleModerationDtos(@RequestParam(defaultValue = "0") int page,
-                                                                                       @RequestParam(defaultValue = "10") int size) {
+                                                                               @RequestParam(defaultValue = "10") int size) {
         Page<VehicleModerationDto> vehicleDtos = vehicleService.findAll(page, size);
         return new ResponseEntity<>(vehicleDtos, vehicleDtos != null ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
@@ -663,10 +663,10 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/filter")
-    public ResponseEntity<Page<VehicleDashboardDto>> filterVehicles(@RequestParam Map<String, String> params,
-                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                    @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<VehicleDashboardDto>> filterVehicles(@RequestParam Map<String, String> params) {
         VehicleStatus vehicleStatus = VehicleStatus.valueOf(params.get("vehicleStatus"));
+        int page = Integer.parseInt(params.get("page"));
+        int size = Integer.parseInt(params.get("size"));
         return new ResponseEntity<>(vehicleService.filterVehicles(params, vehicleStatus, page, size), HttpStatus.OK);
     }
 
@@ -683,9 +683,9 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/management/filter")
-    public ResponseEntity<Page<VehicleModerationDto>> filterVehiclesWithStatus(@RequestParam Map<String, String> params,
-                                                                    @RequestParam(defaultValue = "0") int page,
-                                                                    @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<VehicleModerationDto>> filterVehiclesWithStatus(@RequestParam Map<String, String> params) {
+        int page = Integer.parseInt(params.get("page"));
+        int size = Integer.parseInt(params.get("size"));
         return new ResponseEntity<>(vehicleService.filterVehiclesModeration(params, page, size), HttpStatus.OK);
     }
 
@@ -744,7 +744,7 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<VehicleDashboardDto>> getVehiclesByUserId (@PathVariable Long userId) {
+    public ResponseEntity<List<VehicleDashboardDto>> getVehiclesByUserId(@PathVariable Long userId) {
         List<VehicleDashboardDto> vehicles = vehicleService.getVehiclesByUserId(userId);
         return new ResponseEntity<>(vehicles, vehicles != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }

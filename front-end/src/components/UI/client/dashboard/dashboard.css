@@ -1,8 +1,13 @@
-.br16 {
-    border-radius: 16px !important;
-    overflow: hidden;
+.box-shadow-06 {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
 }
 
 select option {
     color: black;
+}
+
+.box-shadow-12 { 
+    background: lightblue;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.12); 
 }

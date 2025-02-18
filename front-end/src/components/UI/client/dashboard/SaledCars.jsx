@@ -1,13 +1,14 @@
 import React from "react";
 import Car from "../DashboardCar/Car";
-const SaledCars = ({cars}) => {
+
+const SaledCars = ({ cars }) => {
   return (
-    <div> 
+    <div>
       {cars.length > 0 ? (
-        cars.map((car) => (
-          <Car key={car.id} car={car}/>
-        ))) 
-        : (<div></div>)}
+        cars.map((car) => <Car key={car.id} car={car} />)
+      ) : (
+        <div className="text-center mt-4">No cars found.</div>
+      )}
     </div>
   );
 };
