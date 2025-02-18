@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public class CarDatasetParser {
 
-    private static final String DATASET_PATH = "/test_vehicle_dataset.csv";
+    private static final String DATASET_PATH = "/vehicle_dataset.csv";
     private static final String DELIMITER = ";";
     private static final String YEAR_SEPARATOR = ",";
     private static final int BRAND_NAME_INDEX = 0;
