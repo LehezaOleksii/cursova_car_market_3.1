@@ -3,11 +3,24 @@
     border-radius: 16px;
 }
 
+.br16 {
+    border-radius: 16px !important;
+}
+
+.br24 {
+    border-radius: 24px !important;
+}
+
 select option {
     color: black;
 }
 
-.box-shadow-12 { 
+.box-shadow-12 {
     background: lightblue;
-    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.12); 
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.12);
+}
+
+.box-shadow-24 {
+    background: lightblue;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.24);
 }

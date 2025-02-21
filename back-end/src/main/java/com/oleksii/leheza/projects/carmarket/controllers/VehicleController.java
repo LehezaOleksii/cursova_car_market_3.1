@@ -2,6 +2,7 @@ package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.*;
+import com.oleksii.leheza.projects.carmarket.dto.view.DetailsVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -485,7 +486,7 @@ public class VehicleController {
     @Operation(summary = "Get vehicle by vehicle id", description = "Get a user vehicle oby vehicle id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User vehicle retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = UpdateVehicleDto.class))),
+                    content = @Content(schema = @Schema(implementation = DetailsVehicleDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "User vehicle are not found",
@@ -493,10 +494,10 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/{vehicleId}/info")
-    public ResponseEntity<UpdateVehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
-        return new ResponseEntity<>(vehicleService.getVehicleDtoInfoById(vehicleId), HttpStatus.OK);
+    public ResponseEntity<DetailsVehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
+        return new ResponseEntity<>(vehicleService.getDetailsVehicleDtoById(vehicleId), HttpStatus.OK);
     }
 
     @Operation(summary = "Approve an existing vehicle", description = "Approve an existing vehicle.")

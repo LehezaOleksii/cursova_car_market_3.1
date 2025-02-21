@@ -1,6 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.service.interfaces;
 
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserDetailsDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
@@ -42,4 +43,6 @@ public interface UserService extends UserDetailsService {
     boolean isUserHasHigherRole(Long otherUserId);
 
     Page<UserManagerDashboardDto> findAllUsersManagerDashboardDto(int page, int size);
+
+    UserDetailsDto getUserDetailsInfoByVehicleId(Long vehicleId);
 }

@@ -5,10 +5,7 @@ import com.oleksii.leheza.projects.carmarket.dto.chat.ChatMessageDto;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatSendMessageStatus;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.*;
-import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
-import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
-import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
-import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.*;
 import com.oleksii.leheza.projects.carmarket.entities.mongo.ChatRoom;
 import com.oleksii.leheza.projects.carmarket.entities.psql.*;
 import com.oleksii.leheza.projects.carmarket.enums.ChatMessageType;
@@ -188,6 +185,34 @@ public class DtoMapper {
                 .usageStatus(vehicle.getUsageStatus())
                 .likes(likes)
                 .views(String.valueOf(vehicle.getViews()))
+                .build();
+    }
+
+    public DetailsVehicleDto vehicleToDetailsVehicleDto(Vehicle vehicle) {
+        VehicleModel model = vehicle.getVehicleModel();
+        VehicleBrand brand = model.getVehicleBrand();
+        int likes = userVehicleLikeRepository.getLikesByVehicleId(vehicle.getId());
+        DetailsVehicleDto vehicleDashboardDto = new DetailsVehicleDto();
+        List<byte[]> photos = getBytePhotos(vehicle.getPhotos());
+        if (!photos.isEmpty()) {
+            vehicleDashboardDto.setPhotos(photos);
+        }
+        return vehicleDashboardDto.toBuilder()
+                .id(vehicle.getId())
+                .price(vehicle.getPrice())
+                .mileage(vehicle.getMileage())
+                .year(vehicle.getYear().getValue())
+                .brandName(brand.getBrandName())
+                .modelName(model.getModelName())
+                .gearbox(vehicle.getGearBox())
+                .region(vehicle.getRegion())
+                .bodyType(vehicle.getBodyType().getBodyTypeName())
+                .usageStatus(vehicle.getUsageStatus())
+                .description(vehicle.getDescription())
+                .engine(vehicle.getEngine().getName())
+                .likes(likes)
+                .views(String.valueOf(vehicle.getViews()))
+                .phoneNumber(vehicle.getPhoneNumber())
                 .build();
     }
 

@@ -2,6 +2,7 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserDetailsDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.EmailConfirmation;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
@@ -10,6 +11,7 @@ import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundException;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.EmailConfirmationRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
+import com.oleksii.leheza.projects.carmarket.repositories.sql.VehicleRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.UserSpecification;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
@@ -42,6 +44,7 @@ public class UserServiceImpl implements UserService {
     private final EmailConfirmationRepository emailConfirmationRepository;
     private final UserSpecification userSpecification;
     private final DtoMapper dtoMapper;
+    private final VehicleRepository vehicleRepository;
 
     @Override
     public void approveManager(Long userId) {
@@ -150,5 +153,13 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> usersPage = userRepository.findAll(pageable);
         return usersPage.map(dtoMapper::userToUserManagerDashboardDto);
+    }
+
+    @Override
+    public UserDetailsDto getUserDetailsInfoByVehicleId(Long vehicleId) {
+        if (vehicleRepository.findById(vehicleId).isEmpty()) {
+            throw new ResourceNotFoundException("Vehicle with id " + vehicleId + " not found");
+        }
+        return userRepository.findUserDetailsDtoByVehicleId(vehicleId);
     }
 }

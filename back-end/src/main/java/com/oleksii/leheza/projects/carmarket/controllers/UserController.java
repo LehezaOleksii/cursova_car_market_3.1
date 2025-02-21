@@ -2,6 +2,7 @@ package com.oleksii.leheza.projects.carmarket.controllers;
 
 import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserDetailsDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
@@ -206,5 +207,22 @@ public class UserController {
     public ResponseEntity<Response> getUserIdByVehicleId(@PathVariable Long vehicleId) {
         Response response = new Response(userService.getUserIdByVehicleId(vehicleId));
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get user id by vehicle id", description = "Get an user id by vehicle id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User id retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = Response.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User role are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/info/vehicleId/{vehicleId}")
+    public ResponseEntity<UserDetailsDto> getUserDataByVehicleId(@PathVariable Long vehicleId) {
+        return new ResponseEntity<>(userService.getUserDetailsInfoByVehicleId(vehicleId), HttpStatus.OK);
     }
 }

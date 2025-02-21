@@ -2,7 +2,7 @@ package com.oleksii.leheza.projects.carmarket.service.interfaces;
 
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.update.*;
-import com.oleksii.leheza.projects.carmarket.dto.update.EngineDto;
+import com.oleksii.leheza.projects.carmarket.dto.view.DetailsVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -27,7 +27,7 @@ public interface VehicleService {
 
     void saveVehicleWithModerationStatus(CreateVehicleDto vehicleDto, User user);
 
-    UpdateVehicleDto getVehicleDtoInfoById(Long vehicleId);
+    DetailsVehicleDto getDetailsVehicleDtoById(Long vehicleId);
 
     void updateVehicle(Long userId, UpdateVehicleDto vehicleDto, Long vehicleId);
 

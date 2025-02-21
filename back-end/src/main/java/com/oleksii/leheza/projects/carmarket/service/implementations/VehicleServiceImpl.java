@@ -3,6 +3,7 @@ package com.oleksii.leheza.projects.carmarket.service.implementations;
 import com.oleksii.leheza.projects.carmarket.dto.create.CreateVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.mapper.DtoMapper;
 import com.oleksii.leheza.projects.carmarket.dto.update.*;
+import com.oleksii.leheza.projects.carmarket.dto.view.DetailsVehicleDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleDashboardDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleGarageDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.VehicleModerationDto;
@@ -108,9 +109,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public UpdateVehicleDto getVehicleDtoInfoById(Long vehicleId) {
+    public DetailsVehicleDto getDetailsVehicleDtoById(Long vehicleId) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
+        Long userId = userRepository.getUserIdByEmail(userEmail)
+                .orElseThrow(()-> new ResourceNotFoundException("User with email "+userEmail+" not found while retrieving details vehicle"));
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
         if (vehicle.getStatus() != VehicleStatus.POSTED) {
             if (role.getOrder() <= UserRole.ROLE_MANAGER.getOrder()) {
@@ -118,7 +121,14 @@ public class VehicleServiceImpl implements VehicleService {
                 throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
             }
         }
-        return dtoMapper.vehicleToUpdateVehicleDto(vehicle);
+        DetailsVehicleDto detailsVehicleDto = dtoMapper.vehicleToDetailsVehicleDto(vehicle);
+        Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+        boolean isUserLiked = false;
+        if (userVehicleLike.isPresent()) {
+            isUserLiked = userVehicleLike.get().isLiked();
+        }
+        detailsVehicleDto.setUserLiked(isUserLiked);
+        return detailsVehicleDto;
     }
 
     @Override
@@ -213,7 +223,12 @@ public class VehicleServiceImpl implements VehicleService {
         Page<Vehicle> vehicles = vehicleRepository.findAllPostedVehiclesByIds(vehicleIds, VehicleStatus.POSTED, pageable);
         return vehicles.map(vehicle -> {
             VehicleDashboardDto dto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
-            dto.setUserLiked(isLiked);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = false;
+            if (userVehicleLike.isPresent()) {
+                isUserLiked = userVehicleLike.get().isLiked();
+            }
+            dto.setUserLiked(isUserLiked);
             return dto;
         });
     }

@@ -1,6 +1,7 @@
 package com.oleksii.leheza.projects.carmarket.repositories.sql;
 
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
+import com.oleksii.leheza.projects.carmarket.dto.view.UserDetailsDto;
 import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
@@ -75,4 +76,8 @@ public interface UserRepository extends
     @Query("SELECT new com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName(u.id, u.firstName, u.lastName, u.email, u.profileImageUrl) " +
             "FROM User u WHERE u.id = :recipientId")
     UserChatName getUserChatNameById(String recipientId);
+
+    @Query("SELECT new com.oleksii.leheza.projects.carmarket.dto.view.UserDetailsDto(u.id, u.firstName, u.lastName, u.email, u.profileImageUrl) " +
+            "FROM User u JOIN u.vehicles v WHERE v.id = :vehicleId")
+    UserDetailsDto findUserDetailsDtoByVehicleId(Long vehicleId);
 }

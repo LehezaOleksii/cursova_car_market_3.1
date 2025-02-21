@@ -30,7 +30,7 @@ public class CreateVehicleDto {
     private String phoneNumber;
     private VehicleBodyType bodyType;
     private UsageStatus usageStatus;
-    @Size(max = 250, message = "Description is too long. It must be less than 250 characters")
+    @Size(max = 1000, message = "Description is too long. It must be less than 1000 characters")
     private String description;
     private String engine;
     private List<byte[]> photos;

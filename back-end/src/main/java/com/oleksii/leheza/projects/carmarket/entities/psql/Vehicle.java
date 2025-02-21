@@ -41,7 +41,7 @@ public class Vehicle {
     private UsageStatus usageStatus;
     private String region;
     private String phoneNumber;
-    @Size(max = 250)
+    @Size(max = 1000)
     private String description;
     @ManyToMany
     private List<Photo> photos;
