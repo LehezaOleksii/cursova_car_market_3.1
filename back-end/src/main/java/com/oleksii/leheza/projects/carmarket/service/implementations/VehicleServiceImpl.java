@@ -71,7 +71,7 @@ public class VehicleServiceImpl implements VehicleService {
         Page<Vehicle> vehiclesPage = vehicleRepository.findAllByStatus(VehicleStatus.POSTED, pageable);
 
         return vehiclesPage.map(vehicle -> {
-            VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+            VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle, userId);
             Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
             boolean isUserLiked = userVehicleLike.map(UserVehicleLike::isLiked).orElse(false);
             vehicleDto.setUserLiked(isUserLiked);
@@ -91,7 +91,7 @@ public class VehicleServiceImpl implements VehicleService {
         Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
         return vehiclesPage
                 .map(vehicle -> {
-                    VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+                    VehicleDashboardDto vehicleDto = dtoMapper.vehicleToVehicleDashboardDto(vehicle, userId);
                     Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
                     boolean isUserLiked = userVehicleLike.isPresent() && userVehicleLike.get().isLiked();
                     vehicleDto.setUserLiked(isUserLiked);
@@ -113,7 +113,7 @@ public class VehicleServiceImpl implements VehicleService {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
         Long userId = userRepository.getUserIdByEmail(userEmail)
-                .orElseThrow(()-> new ResourceNotFoundException("User with email "+userEmail+" not found while retrieving details vehicle"));
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found while retrieving details vehicle"));
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
         if (vehicle.getStatus() != VehicleStatus.POSTED) {
             if (role.getOrder() <= UserRole.ROLE_MANAGER.getOrder()) {
@@ -222,7 +222,7 @@ public class VehicleServiceImpl implements VehicleService {
         Pageable pageable = PageRequest.of(page, size);
         Page<Vehicle> vehicles = vehicleRepository.findAllPostedVehiclesByIds(vehicleIds, VehicleStatus.POSTED, pageable);
         return vehicles.map(vehicle -> {
-            VehicleDashboardDto dto = dtoMapper.vehicleToVehicleDashboardDto(vehicle);
+            VehicleDashboardDto dto = dtoMapper.vehicleToVehicleDashboardDto(vehicle, userId);
             Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
             boolean isUserLiked = false;
             if (userVehicleLike.isPresent()) {
@@ -236,7 +236,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<VehicleDashboardDto> getVehiclesByUserId(Long userId) {
         return vehicleRepository.findByUserId(userId).stream()
-                .map(dtoMapper::vehicleToVehicleDashboardDto)
+                .map(vehicle-> dtoMapper.vehicleToVehicleDashboardDto(vehicle,userId))
                 .toList();
     }
 

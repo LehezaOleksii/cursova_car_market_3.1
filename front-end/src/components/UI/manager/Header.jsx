@@ -64,7 +64,7 @@ const Header = () => {
                 </li>
                 <li className="nav-item">
                   <Link to={`/cars?isLiked=true`} className="nav-link">
-                    Liked cars
+                  Favorite cars
                   </Link>
                 </li>
                 <li className="nav-item">

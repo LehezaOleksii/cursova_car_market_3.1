@@ -51,8 +51,8 @@ const Chats = () => {
               unreadMessages: data.unreadMessages || 0,
               lastMessage: data.lastMessage || null,
             };
-             handleSelectChat(newChat.id, newChat.name, newChat.profilePicture);
-             console.log(newChat.id, newChat.name, newChat.profilePicture);
+            handleSelectChat(newChat.id, newChat.name, newChat.profilePicture);
+            console.log(newChat.id, newChat.name, newChat.profilePicture);
           })
           .catch(error => console.error('Error fetching chat info:', error));
       } else {

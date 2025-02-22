@@ -69,7 +69,7 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
                   <Link to={`/advanced_filter`} className="nav-link">Filter</Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/cars?isLiked=true`} className="nav-link">Liked cars</Link>
+                  <Link to={`/cars?isLiked=true`} className="nav-link">Favorite cars</Link>
                 </li>
                 <li className="nav-item position-relative">
                   <Link to={`/chats`} className="nav-link">

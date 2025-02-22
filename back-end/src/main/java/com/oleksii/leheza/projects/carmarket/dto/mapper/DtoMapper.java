@@ -164,7 +164,7 @@ public class DtoMapper {
                 .build();
     }
 
-    public VehicleDashboardDto vehicleToVehicleDashboardDto(Vehicle vehicle) {
+    public VehicleDashboardDto vehicleToVehicleDashboardDto(Vehicle vehicle, Long userId) {
         VehicleModel model = vehicle.getVehicleModel();
         VehicleBrand brand = model.getVehicleBrand();
         int likes = userVehicleLikeRepository.getLikesByVehicleId(vehicle.getId());
@@ -175,15 +175,16 @@ public class DtoMapper {
         }
         return vehicleDashboardDto.toBuilder()
                 .id(vehicle.getId())
+                .userId(userId)
                 .brandName(brand.getBrandName())
                 .modelName(model.getModelName())
                 .price(vehicle.getPrice())
                 .mileage(vehicle.getMileage())
                 .year(vehicle.getYear().getValue())
                 .region(vehicle.getRegion())
-                .phoneNumber(vehicle.getPhoneNumber())
-                .usageStatus(vehicle.getUsageStatus())
                 .likes(likes)
+                .gearbox(vehicle.getGearBox().name())
+                .engine(vehicle.getEngine().getName())
                 .views(String.valueOf(vehicle.getViews()))
                 .build();
     }

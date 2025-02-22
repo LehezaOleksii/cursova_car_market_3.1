@@ -1,12 +1,12 @@
-
 import CarFilterField from "../../UI/client/fields/CarFilterField";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import WrappedHeader from "../../WrappedHeader";
 import WrappedFooter from "../../WrappedFooter";
 import CarState from "../../UI/client/fields/CarState";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
-
+import "../../UI/client/dashboard/dashboard.css";
+import "../client/dashboard_car_styles.css";
 
 const AddAuto = () => {
 
@@ -14,6 +14,7 @@ const AddAuto = () => {
   const [selectedRadio, setSelectedRadio] = useState("NEW");
   const [photos, setPhotos] = useState([]);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+  const thumbnailContainerRef = useRef(null);
 
   const handlePhotoChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
@@ -24,14 +25,51 @@ const AddAuto = () => {
     }
   };
 
+
   const nextPhoto = () => {
-    setCurrentPhotoIndex((prevIndex) => (prevIndex + 1) % photos.length);
+    setCurrentPhotoIndex((prevIndex) => {
+      const nextIndex = (prevIndex + 1) % photos.length;
+      scrollThumbnails(nextIndex, "right");
+      return nextIndex;
+    });
   };
-  
+
   const prevPhoto = () => {
-    setCurrentPhotoIndex((prevIndex) => (prevIndex - 1 + photos.length) % photos.length);
+    setCurrentPhotoIndex((prevIndex) => {
+      const prevIndexAdjusted = (prevIndex - 1 + photos.length) % photos.length;
+      scrollThumbnails(prevIndexAdjusted, "left");
+      return prevIndexAdjusted;
+    });
   };
-  
+
+  const handleThumbnailScroll = (index) => {
+    setCurrentPhotoIndex(index);
+    scrollThumbnails(index);
+  };
+
+  const scrollThumbnails = (index) => {
+    if (thumbnailContainerRef.current) {
+      const container = thumbnailContainerRef.current;
+      const thumbnail = container.children[index];
+
+      if (thumbnail) {
+        const containerWidth = container.clientWidth;
+        const thumbnailRect = thumbnail.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+
+        const isCentered =
+          thumbnailRect.left >= containerRect.left + containerWidth / 3 &&
+          thumbnailRect.right <= containerRect.right - containerWidth / 3;
+
+        if (!isCentered) {
+          container.scrollTo({
+            left: thumbnail.offsetLeft - containerWidth / 2 + thumbnail.clientWidth / 2,
+            behavior: "smooth",
+          });
+        }
+      }
+    }
+  };
 
   const navigate = useNavigate();
   const jwtStr = localStorage.getItem("jwtToken");
@@ -207,26 +245,26 @@ const AddAuto = () => {
   const handleSubmit = async () => {
     const yearNum = parseInt(year, 10);
 
-    if (!brandName || !modelName || !bodyType || !gearbox || !region || !engine || photos.length==0) {
+    if (!brandName || !modelName || !bodyType || !gearbox || !region || !engine || photos.length == 0) {
       alert("Please fill in all required fields: brand, model, body type, gearbox, region, engine, photos.");
       return;
     }
 
     if (!year || year < 1900 || year > new Date().getFullYear()) {
       alert("Please enter a valid year between 1900 and the current year.");
-    return;
+      return;
     }
 
     if (!mileage || isNaN(mileage) || mileage < 0) {
       alert("Please enter a valid mileage.");
-    return;
+      return;
     }
 
     const priceString = price.replace(/\D+/g, '');
 
     if (!priceString) {
       alert("Please enter a valid price.");
-    return;
+      return;
     }
 
     const phoneNumberTest = phoneNumber.replace(/\s+/g, '');
@@ -288,23 +326,32 @@ const AddAuto = () => {
   return (
     <div className="body">
       <WrappedHeader />
-      <div className="container mt-5">
+      <div className="container mt-5 mb-4">
         <div className="row">
-          <div className="col-md-6">
-            <div className="card-img" style={{ height: "350px", position: "relative", overflow: "hidden", borderRadius: "10px", border: "1px solid #ddd" }}>
+          <div className="col-md-7">
+            <label htmlFor="carPhotos" className="photo-wrapper br16">
               {photos.length > 0 ? (
-                <img
-                  src={URL.createObjectURL(photos[currentPhotoIndex])}
-                  alt="Car"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    borderRadius: "10px",
-                  }}
-                />
-              ) : (
                 <div
+                  className="photo-container"
+                  style={{
+                    transform: `translateX(-${currentPhotoIndex * 100}%)`,
+                  }}
+                >
+                  {photos.length > 0 ? (
+                    photos.map((photo, index) => (
+                      <img
+                        key={index}
+                        src={URL.createObjectURL(photo)}
+                        alt="Car"
+                        className="photo-image img"
+                      />
+                    ))
+                  ) : (
+                    <div className="add-photo-placeholder">Add Photo</div>
+                  )}
+                </div>
+              ) : (
+                <div className="photo-container"
                   style={{
                     height: "100%",
                     backgroundColor: "#ccc",
@@ -317,33 +364,44 @@ const AddAuto = () => {
                     borderRadius: "10px",
                   }}
                 >
-                  No Photo Available
+                  Click to add photos
                 </div>
               )}
-            </div>
-            <div className="d-flex justify-content-between mt-3">
-              <button onClick={prevPhoto} disabled={photos.length === 0} className="btn btn-secondary">
-                &lt; Previous
-              </button>
-              <button onClick={nextPhoto} disabled={photos.length === 0} className="btn btn-secondary">
-                Next &gt;
-              </button>
-            </div>
-            <div className="mt-3">
-              <label htmlFor="carPhotos" className="form-label">
-                Add car photos (max 20)
-              </label>
-              <input
-                type="file"
-                className="form-control"
-                id="carPhotos"
-                accept="image/*"
-                multiple
-                onChange={handlePhotoChange}
-              />
-            </div>
-          </div> 
-          <div className="col-md-6">
+              {photos.length > 0 && (
+                <>
+                  <button className="photo-nav-button left" onClick={prevPhoto}>
+                    &#10094;
+                  </button>
+                  <button className="photo-nav-button right" onClick={nextPhoto}>
+                    &#10095;
+                  </button>
+                </>
+              )}
+            </label>
+            <input
+              type="file"
+              id="carPhotos"
+              accept="image/*"
+              multiple
+              onChange={handlePhotoChange}
+              style={{ display: "none" }}
+            />
+
+            {photos.length > 1 && (
+              <div className="thumbnail-container" ref={thumbnailContainerRef}>
+                {photos.map((photo, index) => (
+                  <div
+                    key={index}
+                    className={`small-image-container ${currentPhotoIndex === index ? "active" : ""}`}
+                    onClick={() => handleThumbnailScroll(index)}
+                  >
+                    <img src={URL.createObjectURL(photo)} alt={`Thumbnail ${index + 1}`} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="col-md-5">
             <div className="card">
               <div className="card-body">
                 <h5 className="card-title">Add Auto</h5>
@@ -358,6 +416,28 @@ const AddAuto = () => {
                       onChange={setCarBrand}
                       options={brands}
                       placeholder="Select Brand"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'box-shadow 0.3s ease',
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          padding: '0 18px',
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          ':hover': {
+                            backgroundColor: '#f1f1f1',
+                          },
+                        }),
+                      }} 
                     />
                   </div>
                   <div className="col-md-6">
@@ -366,6 +446,28 @@ const AddAuto = () => {
                       onChange={setBodyType}
                       options={bodyTypes}
                       placeholder="Select Body Type"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'box-shadow 0.3s ease',
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          padding: '0 18px',
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          ':hover': {
+                            backgroundColor: '#f1f1f1',
+                          },
+                        }),
+                      }} 
                     />
                   </div>
                 </div>
@@ -376,6 +478,28 @@ const AddAuto = () => {
                       onChange={setCarModel}
                       options={models}
                       placeholder="Select Model"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'box-shadow 0.3s ease',
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          padding: '0 18px',
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          ':hover': {
+                            backgroundColor: '#f1f1f1',
+                          },
+                        }),
+                      }} 
                     />
                   </div>
                   <div className="col-md-6">
@@ -384,6 +508,28 @@ const AddAuto = () => {
                       onChange={setEngine}
                       options={engines}
                       placeholder="Select Engine"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'box-shadow 0.3s ease',
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          padding: '0 18px',
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          ':hover': {
+                            backgroundColor: '#f1f1f1',
+                          },
+                        }),
+                      }} 
                     />
                   </div>
                 </div>
@@ -394,6 +540,28 @@ const AddAuto = () => {
                       onChange={setGearbox}
                       options={gearboxes}
                       placeholder="Select Gearbox"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'box-shadow 0.3s ease',
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          padding: '0 18px',
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          ':hover': {
+                            backgroundColor: '#f1f1f1',
+                          },
+                        }),
+                      }} 
                     />
                   </div>
                   <div className="col-md-6">
@@ -415,6 +583,28 @@ const AddAuto = () => {
                       onChange={setRegion}
                       options={regions}
                       placeholder="Select Region"
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'box-shadow 0.3s ease',
+                        }),
+                        dropdownIndicator: (base) => ({
+                          ...base,
+                          padding: '0 18px',
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          borderRadius: '12px',
+                        }),
+                        option: (base) => ({
+                          ...base,
+                          ':hover': {
+                            backgroundColor: '#f1f1f1',
+                          },
+                        }),
+                      }} 
                     />
                   </div>
                   <div className="col-md-6">
@@ -432,7 +622,7 @@ const AddAuto = () => {
                       type="text"
                       value={phoneNumber}
                       onChange={handlePhoneNumberChange}
-                      placeholder="Phone Number"  
+                      placeholder="Phone Number"
                     />
                   </div>
                   <div className="col-md-6">
@@ -443,37 +633,35 @@ const AddAuto = () => {
                       value={mileage}
                       onChange={(e) => setMileage(e.target.value)}
                     />
-                  </div>
+                  </div> 
+                    <div className="card-body">
+                      <h5 className="card-title">Description</h5>
+                      <textarea
+                        className="form-control br16"
+                        rows="4"
+                        value={description}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value.length <= 1000) {
+                            setDescription(value);
+                          }
+                        }}
+                        placeholder="Enter car description..."
+                      />
+                      <small className="text-muted">
+                        {description.length}/1000 characters
+                      </small>
+                    </div> 
                 </div>
                 <button
                   type="submit"
-                  className="btn btn-primary"
+                  className="btn btn-primary br24"
                   onClick={handleSubmit}
                 >
                   Save Auto
                 </button>
               </div>
             </div>
-            <div className="card mt-3">
-            <div className="card-body">
-              <h5 className="card-title">Description</h5>
-              <textarea
-                className="form-control"
-                rows="4"
-                value={description}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value.length <= 1000) {
-                    setDescription(value);
-                  }
-                }}
-                placeholder="Enter car description..."
-              />
-              <small className="text-muted">
-                {description.length}/1000 characters
-              </small>
-            </div>
-          </div>
           </div>
         </div>
       </div>

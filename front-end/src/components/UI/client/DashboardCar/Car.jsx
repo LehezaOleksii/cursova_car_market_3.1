@@ -60,24 +60,8 @@ const DashboardCar = ({ car }) => {
   const priceInUAH = exchangeRate ? Number((car.price * exchangeRate).toFixed(0)) : null;
 
   const handleSendMessage = async () => {
-    try {
-      const response = await fetch(`http://localhost:8080/users/id/vehicleId/${car.id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + jwtStr
-        }
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        navigate(`/chat/${data.data}`);
-      } else {
-        console.error("Failed to fetch owner information.");
-      }
-    } catch (error) {
-      console.error("Error fetching owner information:", error);
-    }
-  };
+    navigate(`/chats?userId=${car.userId}`);
+  }
 
   return (
     <div className="card mb-4 box-shadow-12 br16">
@@ -144,7 +128,7 @@ const DashboardCar = ({ car }) => {
                 </p>
                 <p className="card-text car-field">
                   <img src={gearboxIcon} alt="icon" width="16" height="16" style={{ marginRight: "10px" }} />
-                  {`${car.gearbox}`}
+                  {`${car.gearbox.charAt(0).toUpperCase() + car.gearbox.slice(1).toLowerCase()}`}
                 </p>
               </div>
             </div>
@@ -171,7 +155,7 @@ const DashboardCar = ({ car }) => {
                 <Link to={`/car/${car.id}`} className="dropdown-item">
                   <button className="btn btn-primary me-2 box-shadow-12">Details</button>
                 </Link>
-                <div className="dropdown-item box-shadow-12 ">
+                <div className="dropdown-item box-shadow-12">
                   <button className="btn btn-secondary" onClick={handleSendMessage}>Send Message</button>
                 </div>
               </div>
