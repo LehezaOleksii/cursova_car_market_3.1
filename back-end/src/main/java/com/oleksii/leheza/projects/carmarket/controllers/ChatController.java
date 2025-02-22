@@ -4,6 +4,7 @@ import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ChatController {
 
     private final ChatRoomService chatRoomService;
+    private final UserService userService;
 
     @Operation(summary = "Retrieve chat by two users ids", description = "Retrieve Chat by two users ids.")
     @ApiResponses(value = {
@@ -64,7 +66,7 @@ public class ChatController {
     @Operation(summary = "Retrieve chat by two users ids", description = "Retrieve Chat by two users ids.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Retrieve messages history of two users",
-                    content = @Content(schema = @Schema(implementation = ChatHistory.class))),
+                    content = @Content(schema = @Schema(implementation = UserChatName.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "History is not found",
@@ -72,11 +74,29 @@ public class ChatController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @GetMapping("/users/id")
-    public ResponseEntity<List<UserChatName>> getChatsByUserName(@PathVariable String id,
+    @GetMapping("/users/{id}")
+    public ResponseEntity<List<UserChatName>> getChatsByUserName(@PathVariable String id,//TODO
                                                                  @RequestParam String name) {
         List<UserChatName> chats = chatRoomService.getUserChatsByName(id, name);
         return !chats.isEmpty() ? new ResponseEntity<>(chats, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Operation(summary = "Retrieve chat by user id", description = "Retrieve chat by user id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Retrieve messages history of two users",
+                    content = @Content(schema = @Schema(implementation = UserChatName.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "History is not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @GetMapping("/users/{id}/my-id/{myId}")
+    public ResponseEntity<UserChatName> getChatById(@PathVariable String id,
+                                                    @PathVariable String myId) {
+        UserChatName chat = chatRoomService.getUserChatNameById(id, myId);
+        return new ResponseEntity<>(chat, HttpStatus.OK);
     }
 
     @Operation(summary = "Retrieve unread message count for user", description = "Retrieve unread message count for user by its id.")

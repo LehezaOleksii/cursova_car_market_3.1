@@ -560,14 +560,14 @@ const ClientChangeAuto = () => {
                 value={description}
                 onChange={(e) => {
                   const value = e.target.value;
-                  if (value.length <= 250) {
+                  if (value.length <= 1000) {
                     setDescription(value);
                   }
                 }}
                 placeholder="Enter car description..."
               />
               <small className="text-muted">
-                {description.length}/250 characters
+                {description.length}/1000 characters
               </small>
             </div>
           </div>

@@ -55,7 +55,7 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCoun
         const content = parsedMessage.content;
         const timestamp = parsedMessage.timestamp;
         const recipientId = new Number(parsedMessage.recipientId);
-        
+
         setChats((prevChats) =>
           prevChats.map((chat) =>
             chat.id == recipientId
