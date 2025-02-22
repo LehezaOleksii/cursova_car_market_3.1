@@ -15,7 +15,7 @@ const WrappedHeader = () => {
   const addNotification = (messageData) => {
     const newNotification = {
       id: messageData.id,
-      senderName: `${messageData.firstName} ${messageData.lastName}`,
+      senderName: `${messageData.firstName || ''} ${messageData.lastName || ''}`.trim() || 'Unknown User',
       senderImage: messageData.profilePicture,
       messageContent: messageData.lastMessage.content,
       isFadingOut: false,
