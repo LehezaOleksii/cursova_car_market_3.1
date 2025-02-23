@@ -39,8 +39,16 @@ public class DtoMapper {
         VehicleModel model = vehicle.getVehicleModel();
         VehicleBrand brand = model.getVehicleBrand();
         int likes = userVehicleLikeRepository.getLikesByVehicleId(vehicle.getId());
-        return VehicleGarageDto.builder()
+        VehicleGarageDto vehicleGarageDto = new VehicleGarageDto();
+        List<Photo> vehiclePhotos = vehicle.getPhotos();
+        if (!vehiclePhotos.isEmpty()) {
+            vehicleGarageDto.setPhoto(vehiclePhotos.get(0).getPhoto());
+        }
+        return vehicleGarageDto.toBuilder()
                 .id(vehicle.getId())
+                .userId(vehicle.getUser().getId())
+                .gearbox(vehicle.getGearBox().name())
+                .engine(vehicle.getEngine().getName())
                 .brandName(brand.getBrandName())
                 .modelName(model.getModelName())
                 .price(vehicle.getPrice())
@@ -50,7 +58,6 @@ public class DtoMapper {
                 .phoneNumber(vehicle.getPhoneNumber())
                 .usageStatus(vehicle.getUsageStatus())
                 .status(vehicle.getStatus())
-                .photos(getBytePhotos(vehicle.getPhotos()))
                 .likes(String.valueOf(likes))
                 .views(String.valueOf(vehicle.getViews()))
                 .build();

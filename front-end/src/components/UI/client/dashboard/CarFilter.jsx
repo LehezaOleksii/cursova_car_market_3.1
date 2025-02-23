@@ -437,7 +437,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             </svg>
             Search
           </button>
-          <Link to="/client/advanced_filter" className="btn btn-primary w-50 br16 box-shadow-12" style={{ whiteSpace: "nowrap" }}>
+          <Link to="/advanced_filter" className="btn btn-primary w-50 br16 box-shadow-12" style={{ whiteSpace: "nowrap" }}>
             Advanced Search
           </Link>
         </div>

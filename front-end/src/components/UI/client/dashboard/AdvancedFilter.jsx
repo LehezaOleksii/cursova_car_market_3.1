@@ -48,7 +48,7 @@ const AdvancedFilter = () => {
   const handleRadioChange = (value) => {
     setSelectedRadio(value);
   };
-  
+
   const getPageAndSizeFromUrl = () => {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 0;
@@ -59,7 +59,7 @@ const AdvancedFilter = () => {
   const handlePageChange = (page) => {
     const { size } = getPageAndSizeFromUrl();
     if (page < 0 || page >= totalPages) return;
-  
+
     setCurrentPage(page);
     navigate(`?page=${page}&size=${size}`);
     fetchData(page, size);
@@ -67,7 +67,7 @@ const AdvancedFilter = () => {
 
   const fetchData = async (page = 0, size = 5) => {
     const queryParams = new URLSearchParams();
-  
+
     if (selectedBrand) queryParams.append("brandName", selectedBrand.value);
     if (selectedModel) queryParams.append("modelName", selectedModel.value);
     if (selectedBodyType) queryParams.append("bodyType", selectedBodyType.value);
@@ -81,13 +81,13 @@ const AdvancedFilter = () => {
     if (minMileage) queryParams.append("fromMileage", minMileage);
     if (maxMileage) queryParams.append("toMileage", maxMileage);
     if (selectedRadio) queryParams.append("usageStatus", selectedRadio);
-  
+
     queryParams.append("vehicleStatus", "POSTED");
     queryParams.append("page", page);
     queryParams.append("size", size);
-  
+
     setLoading(true);
-  
+
     try {
       const response = await fetch(`http://localhost:8080/vehicles/filter?${queryParams.toString()}`, {
         method: "GET",
@@ -105,7 +105,7 @@ const AdvancedFilter = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -217,34 +217,34 @@ const AdvancedFilter = () => {
       alert("Price values must be positive.");
       return;
     }
-  
+
     if (parseFloat(minPrice) > parseFloat(maxPrice)) {
       alert("Min price cannot be greater than max price.");
       return;
     }
-  
+
     if (parseFloat(minYear) < 0 || parseFloat(maxYear) < 0) {
       alert("Year values must be positive.");
       return;
     }
-  
+
     if (parseFloat(minYear) > parseFloat(maxYear)) {
       alert("Min year cannot be greater than max year.");
       return;
     }
-  
+
     if (parseFloat(minMileage) < 0 || parseFloat(maxMileage) < 0) {
       alert("Mileage values must be positive.");
       return;
     }
-  
+
     if (parseFloat(minMileage) > parseFloat(maxMileage)) {
       alert("Min mileage cannot be greater than max mileage.");
       return;
     }
-  
+
     const queryParams = new URLSearchParams();
-  
+
     if (selectedBrand) queryParams.append("brandName", selectedBrand.value);
     if (selectedModel) queryParams.append("modelName", selectedModel.value);
     if (selectedBodyType) queryParams.append("bodyType", selectedBodyType.value);
@@ -258,13 +258,15 @@ const AdvancedFilter = () => {
     if (minMileage) queryParams.append("fromMileage", minMileage);
     if (maxMileage) queryParams.append("toMileage", maxMileage);
     if (selectedRadio) queryParams.append("usageStatus", selectedRadio);
-    
+
     queryParams.append("vehicleStatus", "POSTED");
-    queryParams.append("page", currentPage);
+    queryParams.append("page", 0);
     queryParams.append("size", pageSize);
-  
+
     setLoading(true);
-  
+    setCurrentPage(0);
+    handlePageChange(0);
+
     try {
       setCars([]);
       const response = await fetch(`http://localhost:8080/vehicles/filter?${queryParams.toString()}`, {
@@ -315,10 +317,25 @@ const AdvancedFilter = () => {
     }
   };
 
+  const getSelectedStyle = (value, placeholder) => {
+    return value === placeholder ? { color: "grey" } : {};
+  };
+
+  const generateYears = () => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear; year >= 1900; year--) {
+      years.push(year);
+    }
+    return years;
+  };
+
+  const years = generateYears();
+
   return (
     <div className="body mb-4">
       <WrappedHeader />
-      <div className="container mt-5 card w-50 mx-auto">
+      <div className="container mt-5 card w-50 mx-auto br24 box-shadow-12">
         <h4 className="text-center mt-4">Advanced Filter</h4>
         <div className="row">
           <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
@@ -329,6 +346,28 @@ const AdvancedFilter = () => {
               onChange={setSelectedBrand}
               options={brands}
               placeholder="Select Brand"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -338,6 +377,28 @@ const AdvancedFilter = () => {
               onChange={setSelectedModel}
               options={models}
               placeholder="Select Model"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
         </div>
@@ -349,6 +410,28 @@ const AdvancedFilter = () => {
               onChange={setSelectedBodyType}
               options={bodyTypes}
               placeholder="Select Body Type"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -358,6 +441,28 @@ const AdvancedFilter = () => {
               onChange={setSelectedEngine}
               options={engines}
               placeholder="Select Engine"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
         </div>
@@ -369,6 +474,28 @@ const AdvancedFilter = () => {
               onChange={setSelectedGearbox}
               options={gearboxes}
               placeholder="Select Gearbox"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -378,6 +505,28 @@ const AdvancedFilter = () => {
               onChange={setSelectedRegion}
               options={regions}
               placeholder="Select Region"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
         </div>
@@ -389,6 +538,28 @@ const AdvancedFilter = () => {
               value={minPrice}
               onChange={(e) => setMinPrice(e.target.value)}
               placeholder="Min Price"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -398,27 +569,75 @@ const AdvancedFilter = () => {
               value={maxPrice}
               onChange={(e) => setMaxPrice(e.target.value)}
               placeholder="Max Price"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
         </div>
         <div className="row">
-          <div className="col-md-6">
+          <div className="col-md-6 mb-3">
             <div className="h6"> Min Year</div>
-            <CarFilterField
-              type="number"
+            <select
               value={minYear}
               onChange={(e) => setMinYear(e.target.value)}
-              placeholder="From Year"
-            />
+              className="form-select box-shadow-06"
+              style={{
+                ...getSelectedStyle(minYear, "From Year"),
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+                padding: '6px 10px',
+                width: '100%',
+              }}
+            >
+              <option value="From Year">From Year</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-6 mb-3">
             <div className="h6"> Max Year</div>
-            <CarFilterField
-              type="number"
+            <select
               value={maxYear}
               onChange={(e) => setMaxYear(e.target.value)}
-              placeholder="To Year"
-            />
+              className="form-select box-shadow-06"
+              style={{
+                ...getSelectedStyle(maxYear, "To Year"),
+                borderRadius: '12px',
+                transition: 'box-shadow 0.3s ease',
+                padding: '6px 10px',
+                width: '100%',
+              }}
+            >
+              <option value="To Year">To Year</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
         <div className="row">
@@ -429,6 +648,28 @@ const AdvancedFilter = () => {
               value={minMileage}
               onChange={(e) => setMinMileage(e.target.value)}
               placeholder="Min Mileage"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
           <div className="col-md-6">
@@ -438,25 +679,45 @@ const AdvancedFilter = () => {
               value={maxMileage}
               onChange={(e) => setMaxMileage(e.target.value)}
               placeholder="Max Mileage"
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
             />
           </div>
         </div>
-        <div className="row mt-3">
-          <div className="col-md-6 text-start mb-3">
-            <button
-              className="btn btn-primary btn-md w-100"
-              onClick={handleSearch}
-            >
-              Search
-            </button>
-          </div>
-          <div className="col-md-5 text-end">
-            <button
-              className="btn btn-secondary btn-md w-75 ms-3"
-              onClick={handleClearFilter}
-            >
-              Clear
-            </button>
+        <div className="row mt-1 mb-3">
+          <div className="row mt-3">
+            <div className="col-md-3 d-flex justify-content-center">
+            </div>
+            <div className="col-md-6 d-flex justify-content-center">
+              <button className="btn btn-primary btn-md w-100 br24 box-shadow-12" onClick={handleSearch}>
+                Search
+              </button>
+            </div>
+            <div className="col-md-3 d-flex justify-content-end">
+              <button className="btn btn-secondary btn-md w-75 br24 box-shadow-12" onClick={handleClearFilter}>
+                Clear
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -466,32 +727,32 @@ const AdvancedFilter = () => {
             <SaledCars cars={cars} />
           </div>
           <div className="d-flex justify-content-center mt-4">
-        <button
-          className="btn btn-outline-primary mx-1"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={isPreviousDisabled}
-        >
-          &lt; Previous
-        </button>
+            <button
+              className="btn btn-outline-primary mx-1"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={isPreviousDisabled}
+            >
+              &lt; Previous
+            </button>
 
-        {[...Array(totalPages).keys()].map((page) => (
-          <button
-            key={page}
-            className={`btn ${page === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
-            onClick={() => handlePageChange(page)}
-          >
-            {page + 1}
-          </button>
-        ))}
+            {[...Array(totalPages).keys()].map((page) => (
+              <button
+                key={page}
+                className={`btn ${page === currentPage ? 'btn-primary' : 'btn-outline-primary'} mx-1`}
+                onClick={() => handlePageChange(page)}
+              >
+                {page + 1}
+              </button>
+            ))}
 
-        <button
-          className="btn btn-outline-primary mx-1"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={isNextDisabled}
-        >
-          Next &gt;
-        </button>
-      </div>
+            <button
+              className="btn btn-outline-primary mx-1"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={isNextDisabled}
+            >
+              Next &gt;
+            </button>
+          </div>
         </>
       ) : (
         <div className="text-center mt-4">No cars found.</div>

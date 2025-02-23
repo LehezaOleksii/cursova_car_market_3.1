@@ -32,7 +32,7 @@ const MyCars = () => {
   return (
     <div>
       <WrappedHeader />
-      <div  className="dashboard">
+      <div  className="dashboard mt-4">
       {cars.map((car) => (
         <MyCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
       ))}

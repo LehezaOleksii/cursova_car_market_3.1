@@ -2,18 +2,19 @@ package com.oleksii.leheza.projects.carmarket.dto.view;
 
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.List;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class VehicleGarageDto {
 
     private Long id;
+    private Long userId;
+    private String gearbox;
+    private String engine;
     private int year;
     private int price;
     private int mileage;
@@ -26,5 +27,7 @@ public class VehicleGarageDto {
     private String likes;
     private String views;
     private boolean isUserLiked;
-    private List<byte[]> photos;
+    private byte[] photo;
+
+
 }
