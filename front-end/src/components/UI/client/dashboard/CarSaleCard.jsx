@@ -172,7 +172,7 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                   )}
                 </span>
               </p> <div>
-                <Link to={`/client/change_auto/${car.id}`} className="btn btn-primary me-2 br24">
+                <Link to={`/change_auto/${car.id}`} className="btn btn-primary me-2 br24">
                   Change Car Information
                 </Link>
                 <button className="btn btn-danger br24" onClick={() => setShowConfirm(true)}>

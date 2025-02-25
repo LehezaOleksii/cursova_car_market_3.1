@@ -25,7 +25,6 @@ const AddAuto = () => {
     }
   };
 
-
   const nextPhoto = () => {
     setCurrentPhotoIndex((prevIndex) => {
       const nextIndex = (prevIndex + 1) % photos.length;
@@ -273,6 +272,7 @@ const AddAuto = () => {
       alert("Please enter a valid Ukrainian phone number.");
       return;
     }
+    
     const base64Photos = await convertImagesToBase64(photos);
 
     const car = {
@@ -386,7 +386,6 @@ const AddAuto = () => {
               onChange={handlePhotoChange}
               style={{ display: "none" }}
             />
-
             {photos.length > 1 && (
               <div className="thumbnail-container" ref={thumbnailContainerRef}>
                 {photos.map((photo, index) => (
@@ -437,7 +436,7 @@ const AddAuto = () => {
                             backgroundColor: '#f1f1f1',
                           },
                         }),
-                      }} 
+                      }}
                     />
                   </div>
                   <div className="col-md-6">
@@ -467,7 +466,7 @@ const AddAuto = () => {
                             backgroundColor: '#f1f1f1',
                           },
                         }),
-                      }} 
+                      }}
                     />
                   </div>
                 </div>
@@ -476,60 +475,72 @@ const AddAuto = () => {
                     <Select
                       value={modelName}
                       onChange={setCarModel}
-                      options={models}
+                      options={
+                        models.length > 0
+                          ? models
+                          : [{ label: "Select Brand Before Selecting Model", value: "", isDisabled: true }]
+                      }
                       placeholder="Select Model"
                       styles={{
                         control: (base) => ({
                           ...base,
-                          borderRadius: '12px',
-                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
-                          transition: 'box-shadow 0.3s ease',
+                          borderRadius: "12px",
+                          boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.06)",
+                          transition: "box-shadow 0.3s ease",
                         }),
                         dropdownIndicator: (base) => ({
                           ...base,
-                          padding: '0 18px',
+                          padding: "0 18px",
                         }),
                         menu: (base) => ({
                           ...base,
-                          borderRadius: '12px',
+                          borderRadius: "12px",
                         }),
-                        option: (base) => ({
+                        option: (base, { isDisabled }) => ({
                           ...base,
-                          ':hover': {
-                            backgroundColor: '#f1f1f1',
+                          color: isDisabled ? "" : base.color,
+                          backgroundColor: isDisabled ? "transparent" : base.backgroundColor,
+                          ":hover": {
+                            backgroundColor: !isDisabled ? "#f1f1f1" : "transparent",
                           },
                         }),
-                      }} 
+                      }}
                     />
                   </div>
                   <div className="col-md-6">
                     <Select
                       value={engine}
                       onChange={setEngine}
-                      options={engines}
+                      options={
+                        engines.length > 0
+                          ? engines
+                          : [{ label: "Select Model Before Selecting Engine", value: "", isDisabled: true }]
+                      }
                       placeholder="Select Engine"
                       styles={{
                         control: (base) => ({
                           ...base,
-                          borderRadius: '12px',
-                          boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
-                          transition: 'box-shadow 0.3s ease',
+                          borderRadius: "12px",
+                          boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.06)",
+                          transition: "box-shadow 0.3s ease",
                         }),
                         dropdownIndicator: (base) => ({
                           ...base,
-                          padding: '0 18px',
+                          padding: "0 18px",
                         }),
                         menu: (base) => ({
                           ...base,
-                          borderRadius: '12px',
+                          borderRadius: "12px",
                         }),
-                        option: (base) => ({
+                        option: (base, { isDisabled }) => ({
                           ...base,
-                          ':hover': {
-                            backgroundColor: '#f1f1f1',
+                          color: isDisabled ? "" : base.color,
+                          backgroundColor: isDisabled ? "transparent" : base.backgroundColor,
+                          ":hover": {
+                            backgroundColor: !isDisabled ? "#f1f1f1" : "transparent",
                           },
                         }),
-                      }} 
+                      }}
                     />
                   </div>
                 </div>
@@ -561,7 +572,7 @@ const AddAuto = () => {
                             backgroundColor: '#f1f1f1',
                           },
                         }),
-                      }} 
+                      }}
                     />
                   </div>
                   <div className="col-md-6">
@@ -604,7 +615,7 @@ const AddAuto = () => {
                             backgroundColor: '#f1f1f1',
                           },
                         }),
-                      }} 
+                      }}
                     />
                   </div>
                   <div className="col-md-6">
@@ -633,25 +644,25 @@ const AddAuto = () => {
                       value={mileage}
                       onChange={(e) => setMileage(e.target.value)}
                     />
-                  </div> 
-                    <div className="card-body">
-                      <h5 className="card-title">Description</h5>
-                      <textarea
-                        className="form-control br16"
-                        rows="4"
-                        value={description}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          if (value.length <= 1000) {
-                            setDescription(value);
-                          }
-                        }}
-                        placeholder="Enter car description..."
-                      />
-                      <small className="text-muted">
-                        {description.length}/1000 characters
-                      </small>
-                    </div> 
+                  </div>
+                  <div className="card-body">
+                    <h5 className="card-title">Description</h5>
+                    <textarea
+                      className="form-control br16"
+                      rows="4"
+                      value={description}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (value.length <= 1000) {
+                          setDescription(value);
+                        }
+                      }}
+                      placeholder="Enter car description..."
+                    />
+                    <small className="text-muted">
+                      {description.length}/1000 (max characters)
+                    </small>
+                  </div>
                 </div>
                 <button
                   type="submit"
