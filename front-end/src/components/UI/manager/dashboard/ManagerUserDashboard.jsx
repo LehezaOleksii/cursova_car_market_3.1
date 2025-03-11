@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SaledCars from "../../client/dashboard/SaledCars";
 import "./ManagerUserDashboard.css";
+import MyCar from "../../client/AddAuto/MyCar";
 
 const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
   const [profilePicture, setProfilePicture] = useState("");
@@ -46,7 +47,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
   };
 
   const sendMessage = () => {
-    navigate(`/chats?recipientId=${user.id}`);
+    navigate(`/chats?userId=${user.id}`);
   };
 
   const viewUsersCars = async () => {
@@ -101,7 +102,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
     getRoleFormNumber(currentRole) > getRoleFormNumber(user.userRole);
 
   return (
-    <div className="card mb-3">
+    <div className="card  br16 box-shadow-12 mb-4" style={{ paddingRight: '15px' }}>
       <div className="row g-0">
         <div className="col-md-1">
           <div
@@ -135,10 +136,10 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
         <div className="col-md-6">
           <div className="card-body">
             <div className="d-flex justify-content-center align-items-center">
-              <span className="card-text text-center col-md-3">
+              <span className="card-text text-center col-md-3 truncate">
                 {user.firstName} {user.lastName}
               </span>
-              <span className="card-text text-center col-md-5">
+              <span className="card-text text-center col-md-5 truncate">
                 {user.email || "No Email"}
               </span>
               <span className="card-text text-center col-md-2">
@@ -153,59 +154,73 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
         <div className="col-md-5 d-flex align-items-center justify-content-end">
           <div className="col-12 d-flex justify-content-center">
             <div className="col-3 mx-2">
-              <button className="btn btn-primary w-100" onClick={viewUsersCars}>
+              <button className="btn btn-primary w-100 br16" onClick={viewUsersCars}>
                 {showCars && !isAnimating ? "Hide cars" : "View cars"}
               </button>
             </div>
             <div className="col-4 mx-2">
-              <button className="btn btn-primary w-100" onClick={sendMessage}>
+              <button className="btn btn-primary w-100 br16" onClick={sendMessage}>
                 Send message
               </button>
             </div>
-            <div className="col-3 mx-2">
+            <div className="col-4 mx-2">
               {isEnableToChangeStatus() ? (
                 user.status === "BLOCKED" ? (
                   <button
-                    className="btn btn-primary w-100"
+                    className="btn btn-primary w-100 br16"
                     onClick={() => changeUserStatus("ACTIVE")}
                   >
                     Unblock
                   </button>
                 ) : user.status === "INACTIVE" ? (
                   <button
-                    className="btn btn-success w-100"
+                    className="btn btn-success w-100 br16"
                     onClick={() => changeUserStatus("ACTIVE")}
                   >
-                    Activate
+                    Activate email
                   </button>
                 ) : (
                   <button
-                    className="btn btn-danger w-100"
+                    className="btn btn-danger w-100 br16"
                     onClick={() => changeUserStatus("BLOCKED")}
                   >
                     Block
                   </button>
                 )
               ) : user.status === "BLOCKED" ? (
-                <button className="btn btn-secondary w-100" disabled>
+                <button className="btn btn-secondary w-100 br16" disabled>
                   Unblock
                 </button>
               ) : user.status === "INACTIVE" ? (
-                <button className="btn btn-secondary w-100" disabled>
-                  Activate
+                <button className="btn btn-secondary w-100 br16" disabled>
+                  Activate email
                 </button>
               ) : (
-                <button className="btn btn-secondary w-100" disabled>
+                <button className="btn btn-secondary w-100 br16" disabled>
                   Block
                 </button>
               )}
             </div>
           </div>
         </div>
-        <div
-          className={`saled-cars ${isAnimating ? "hiding" : showCars ? "visible" : "hidden"}`}>
-          {showCars && <SaledCars cars={cars} />}
-        </div>
+        
+        {
+          cars.length > 0 ? (
+            cars.map((car) => (
+              <div
+              className={`saled-cars ${isAnimating ? "hiding" : showCars ? "visible" : "hidden"}`}
+              style={{ paddingLeft: '20px', paddingRight: '5px'}}
+            >
+              {showCars && <MyCar car={car}/>}
+            </div>
+            ))
+          ) : (
+            <div
+              className={` saled-cars ${isAnimating ? "hiding" : showCars ? "visible" : "hidden"}`} style={{ marginTop: '0px' }}>
+              {showCars && <SaledCars cars={cars} />}
+            </div>
+          )
+        }
       </div>
     </div>
   );

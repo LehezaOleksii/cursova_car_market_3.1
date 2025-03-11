@@ -113,10 +113,10 @@ const DashboardCar = ({ car }) => {
                   {`${car.mileage.toLocaleString("en-US").replace(/,/g, " ")} km`}
                 </p>
                 <p className="card-text car-field">
-                  <img src={canisterIcon
-                  } alt="icon" width="18" height="18" style={{ marginRight: "10px" }} />
-                  {`${car.engine}`}
+                  <img src={canisterIcon} alt="icon" width="18" height="18" style={{ marginRight: "10px" }} />
+                  {car.engine.length > 20 ? `${car.engine.substring(0, 20)}` : car.engine}
                 </p>
+
               </div>
               <div className="col-md-6">
                 <p className="card-text car-field">

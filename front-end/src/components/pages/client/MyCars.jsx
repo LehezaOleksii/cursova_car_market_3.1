@@ -17,7 +17,7 @@ const MyCars = () => {
           'Authorization': 'Bearer ' + jwtStr
         },
         credentials: "include",
-      });      
+      });
       const data = await response.json();
       setCars(data);
     };
@@ -32,10 +32,16 @@ const MyCars = () => {
   return (
     <div>
       <WrappedHeader />
-      <div  className="dashboard mt-4">
-      {cars.map((car) => (
-        <MyCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
-      ))}
+      <div className="dashboard mt-4">
+        {cars.length === 0 ? (
+          <div className="no-cars-message">
+            <div className="text-center">You don't have any cars.</div>
+          </div>
+        ) : (
+          cars.map((car) => (
+            <MyCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
+          ))
+        )}
       </div>
       <WrappedFooter />
     </div>

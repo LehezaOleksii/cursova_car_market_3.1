@@ -1,4 +1,5 @@
 import React from "react"; 
+import "./CarStateFilter.css"; // Import the custom CSS
 
 const CarStateFilter = ({ selectedRadio, onRadioChange }) => {
   const handleRadioChange = (event) => {
@@ -19,7 +20,7 @@ const CarStateFilter = ({ selectedRadio, onRadioChange }) => {
           onChange={handleRadioChange}
           value="ALL"
         />
-        <label className="btn btn-outline-primary" htmlFor="btnradio1">
+        <label className={`btn btn-outline-primary ${selectedRadio === "ALL" ? "selected-radio" : ""}`} htmlFor="btnradio1">
           All
         </label>
 
@@ -33,7 +34,7 @@ const CarStateFilter = ({ selectedRadio, onRadioChange }) => {
           onChange={handleRadioChange}
           value="NEW"
         />
-        <label className="btn btn-outline-primary" htmlFor="btnradio2">
+        <label className={`btn btn-outline-primary ${selectedRadio === "NEW" ? "selected-radio" : ""}`} htmlFor="btnradio2">
           New
         </label>
 
@@ -47,7 +48,7 @@ const CarStateFilter = ({ selectedRadio, onRadioChange }) => {
           onChange={handleRadioChange}
           value="USED"
         />
-        <label className="btn btn-outline-primary" htmlFor="btnradio3">
+        <label className={`btn btn-outline-primary ${selectedRadio === "USED" ? "selected-radio" : ""}`} htmlFor="btnradio3">
           Used
         </label>
       </div>

@@ -43,7 +43,7 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
       setCurrentPage(0);
       setTotalPages(results.totalPages || 1);
     } catch (error) {
-      setUsers( []);
+      setUsers([]);
       setTotalPages(1);
       setCurrentPage(0);
       console.error("Error occurred while fetching search results:", error);
@@ -51,10 +51,11 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
   };
 
   return (
-    <div className="card mb-4 mt-4">
+    <div className="card mb-4 mt-4 br24 box-shadow-12">
       <div className="card-header">
-        <h5 className="card-title">Filter Users</h5>
+        <h5 className="card-title text-center">Filter Users</h5>
       </div>
+
       <div className="card-body">
         <form onSubmit={handleSubmit}>
           <div className="row">
@@ -68,7 +69,14 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
                 onChange={handleChange}
                 className="form-control"
                 placeholder="Enter name"
+                style={{
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                  padding: '6px 18px',
+                }}
               />
+
             </div>
             <div className="col-md-3 mb-3">
               <label htmlFor="email" className="form-label">Filter by Email</label>
@@ -80,6 +88,12 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
                 onChange={handleChange}
                 className="form-control"
                 placeholder="Enter email"
+                style={{
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                  padding: '6px 18px',
+                }}
               />
             </div>
             <div className="col-md-3 mb-3">
@@ -90,11 +104,17 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
                 value={filter.status}
                 onChange={handleChange}
                 className="form-select"
+                style={{
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                  padding: '6px 18px',
+                }}
               >
                 <option value="ALL">All Users</option>
-                <option value={UserStatus.ACTIVE}>{UserStatus.ACTIVE}</option>
-                <option value={UserStatus.INACTIVE}>{UserStatus.INACTIVE}</option>
-                <option value={UserStatus.BLOCKED}>{UserStatus.BLOCKED}</option>
+                <option value={UserStatus.ACTIVE}>Active</option>
+                <option value={UserStatus.INACTIVE}>Inactive</option>
+                <option value={UserStatus.BLOCKED}>Blocked</option>
               </select>
             </div>
             <div className="col-md-3 mb-3">
@@ -105,16 +125,22 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
                 value={filter.role}
                 onChange={handleChange}
                 className="form-select"
+                style={{
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                  padding: '6px 18px',
+                }}
               >
                 <option value="ALL">All Users</option>
-                <option value={UserRole.CLIENT}>{UserRole.CLIENT}</option>
-                <option value={UserRole.MANAGER}>{UserRole.MANAGER}</option>
-                <option value={UserRole.ADMIN}>{UserRole.ADMIN}</option>
+                <option value={UserRole.CLIENT}>Clinet</option>
+                <option value={UserRole.MANAGER}>Manager</option>
+                <option value={UserRole.ADMIN}>Admin</option>
               </select>
             </div>
           </div>
           <div className="d-flex justify-content-center mb-2 mt-2">
-            <button type="submit" className="btn btn-primary" style={{ width: "300px" }}>
+            <button type="submit" className="btn btn-primary br24 box-shadow-12" style={{ width: "300px" }}>
               Search
             </button>
           </div>

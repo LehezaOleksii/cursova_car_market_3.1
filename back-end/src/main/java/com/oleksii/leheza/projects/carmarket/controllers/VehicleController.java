@@ -753,7 +753,7 @@ public class VehicleController {
     @Operation(summary = "Get all users cars by user id", description = "Get all users cars by user id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Vehicles retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = VehicleDashboardDto.class))),
+                    content = @Content(schema = @Schema(implementation = VehicleGarageDto.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "204", description = "Vehicles are not found",
@@ -763,8 +763,8 @@ public class VehicleController {
     })
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<VehicleDashboardDto>> getVehiclesByUserId(@PathVariable Long userId) {
-        List<VehicleDashboardDto> vehicles = vehicleService.getVehiclesByUserId(userId);
+    public ResponseEntity<List<VehicleGarageDto>> getVehiclesByUserId(@PathVariable Long userId) {
+        List<VehicleGarageDto> vehicles = vehicleService.getVehiclesByUserId(userId);
         return new ResponseEntity<>(vehicles, vehicles != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 }

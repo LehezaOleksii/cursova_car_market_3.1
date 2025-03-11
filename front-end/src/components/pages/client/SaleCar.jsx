@@ -67,21 +67,6 @@ const SaleCar = () => {
       }
     }
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        await fetchCar();
-      } catch (error) {
-        console.error("Error fetching vehicle:", error);
-        setCar(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [jwtStr, carId]);
 
   useEffect(() => {
     if (car?.price) {
@@ -258,8 +243,8 @@ const SaleCar = () => {
               </div>
             </div>
             <div className="col-4">
-              <div className="sticky-top">
-                <div className="card br16 box-shadow-12">
+            <div className="sticky-top" style={{ position: 'sticky', top: 0, zIndex: 0 }}>
+            <div className="card br16 box-shadow-12">
                   <div className="card-body pb-0">
                     <div className="card-header-details">
                       <div class="card-header-details">
@@ -361,18 +346,21 @@ const SaleCar = () => {
                 </div>
                 <div className="card card-body mt-3 br16 box-shadow-12">
                   <div className="d-flex align-items-center">
-                    {user.profileImageUrl && (
-                      <img
-                        className="rounded-circle"
-                        src={`data:image/png;base64,${user.profileImageUrl}`}
-                        style={{
-                          objectFit: "cover",
-                          width: "48px",
-                          height: "48px",
-                          marginRight: "10px"
-                        }}
-                      />
-                    )}
+                    <img
+                      className="rounded-circle"
+                      src={
+                        user.profileImageUrl
+                          ? `data:image/png;base64,${user.profileImageUrl}`
+                          : "https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png"
+                      }
+                      alt="Profile"
+                      style={{
+                        objectFit: "cover",
+                        width: "48px",
+                        height: "48px",
+                        marginRight: "10px",
+                      }}
+                    />
                     <div className="d-flex flex-column">
                       <span className="fw-bold">{user.firstName} {user.lastName}</span>
                       <span className="text-gray">Seller</span>
@@ -394,7 +382,7 @@ const SaleCar = () => {
                       <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                     </svg>
                     Region: {car.region}</p>
-                    <button className="br24" onClick={handleClick}>
+                  <button className="br24" onClick={handleClick}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-chat-right-text" viewBox="0 0 16 16">
                       <path d="M2 1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h9.586a2 2 0 0 1 1.414.586l2 2V2a1 1 0 0 0-1-1zm12-1a2 2 0 0 1 2 2v12.793a.5.5 0 0 1-.854.353l-2.853-2.853a1 1 0 0 0-.707-.293H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2z" />
                       <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />

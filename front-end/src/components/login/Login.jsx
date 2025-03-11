@@ -4,10 +4,10 @@ import axios from 'axios';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
-
   const handleLogin = async () => {
-    try {      
+    try {
       const response = await axios.post('/auth/authenticate', { email, password }, {
         headers: {
           'Content-Type': 'application/json',
@@ -18,6 +18,7 @@ const Login = () => {
       localStorage.setItem('jwtToken', jwt);
       localStorage.setItem('role', role);
       localStorage.setItem('id', userId);
+  
       switch (role) {
         case 'ROLE_CLIENT':
           window.location.href = '/dashboard';
@@ -33,9 +34,16 @@ const Login = () => {
           break;
       }
     } catch (err) {
-      setError('Invalid username or password');
+      if (err.response && err.response.status === 401) {
+        // If status code is 401, display specific error message
+        setError('Your account is not activated. Please verify your email account.');
+      } else {
+        // General error handling for other errors
+        setError('Invalid username or password');
+      }
     }
   };
+  
 
   return (
     <div className="container">
@@ -78,7 +86,8 @@ const Login = () => {
                     type="checkbox"
                     className="form-check-input"
                     id="rememberMe"
-                    name="remember-me"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                   />
                   <label htmlFor="rememberMe" className="form-check-label">Remember Me</label>
                 </div>
@@ -87,7 +96,9 @@ const Login = () => {
                 </div>
               </div>
               <div className="d-grid mb-3">
-                <button onClick={handleLogin} className="btn btn-primary btn-pill" style={{ borderRadius: '25px' }}>Login</button>
+                <button onClick={handleLogin} className="btn btn-primary btn-pill" style={{ borderRadius: '25px' }}>
+                  Login
+                </button>
               </div>
               {error && <p className="text-danger">{error}</p>}
             </div>

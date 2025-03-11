@@ -361,7 +361,7 @@ const ClientChangeAuto = () => {
             setCarModel(data.modelName || null);
             setRegion(data.region || "");
             setYear(data.year || "");
-            setMileage(data.mileage || "");
+            setMileage(data.mileage || "0");
             setPrice(data.price || "");
             setGearbox(data.gearbox || null);
             setPhoneNumber(data.phoneNumber || "");

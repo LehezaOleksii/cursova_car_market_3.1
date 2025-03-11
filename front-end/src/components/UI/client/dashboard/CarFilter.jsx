@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import CarStateFilter from "../fields/CarStateFilter";
 import Select from "react-select";
 import CarFilterField from "../fields/CarFilterField";
-import { Link } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import "./dashboard.css";
 
 const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) => {
-
+  const navigate = useNavigate();
   const [selectedRadio, setSelectedRadio] = useState("ALL");
 
   const [brands, setBrands] = useState([]);
@@ -305,7 +305,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             onChange={setSelectedModel}
             options={models}
             placeholder="Select Model"
-            noOptionsMessage={() => "Choose brand before model"}
+            noOptionsMessage={() => "Select brand before model"}
             styles={{
               control: (base) => ({
                 ...base,
@@ -424,7 +424,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
       </div>
       <div className="row">
         <div className="col-md-6 d-flex align-items-center gap-4">
-          <button className="btn btn-primary w-50 br16 box-shadow-12" onClick={handleSearch}>
+          <button className="btn-blue-color btn-primary w-50 br16 box-shadow-12" onClick={handleSearch}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -437,9 +437,12 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             </svg>
             Search
           </button>
-          <Link to="/advanced_filter" className="btn btn-primary w-50 br16 box-shadow-12" style={{ whiteSpace: "nowrap" }}>
+          <button
+            onClick={() => navigate('/advanced_filter')}
+            className="btn-primary btn-blue-color w-50 br16 box-shadow-12"
+          >
             Advanced Search
-          </Link>
+          </button>
         </div>
         <div className="col-md-6 d-flex align-items-center justify-content-start">
           <button className="btn btn-secondary w-25 br16 box-shadow-12" onClick={handleClearFilter}>

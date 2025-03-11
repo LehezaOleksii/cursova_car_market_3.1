@@ -12,6 +12,7 @@ import AddAuto from "./components/pages/client/AddAuto";
 import MyCars from "./components/pages/client/MyCars";
 import ClientChangeAuto from "./components/pages/client/ClientChangeAuto";
 import AdvancedFilter from "./components/UI/client/dashboard/AdvancedFilter";
+import { Navigate } from "react-router-dom";
 
 import ChangeAuto from "./components/pages/manager/ChangeAuto";
 import ManagerDashboard from "./components/pages/manager/ManagerDashboard";
@@ -41,6 +42,7 @@ import OtpVerification from "./components/login/OtpVerification";
 import ChangePassword from "./components/login/ChangePassword";
 import SignupSuccess from "./components/login/SignupSuccess";
 import ConfirmEmail from "./components/login/ConfirmEmail";
+import ChangeEmailSuccess from "./components/login/ChangeEmailSuccess";
 
 const App = () => {
 
@@ -63,6 +65,7 @@ const App = () => {
       <Route path="/forgot-password-otp" element={<OtpVerification />} />
       <Route path="/change-password" element={<ChangePassword />} />
       <Route path="/signup-success" element={<SignupSuccess />} />
+      <Route path="/change-email-success" element={<ChangeEmailSuccess />} />
       <Route path="/confirm-email" element={<ConfirmEmail />} />
       <Route path="/signout" element={wrapPrivateRoute(<SignOut />)} />
 
@@ -71,8 +74,8 @@ const App = () => {
       <Route path="/car/:carId" element={wrapPrivateRoute(<SaleCar />, isLoggedIn, 'saleCar', 'ROLE_CLIENT')} />
       <Route path="/cabinet" element={wrapPrivateRoute(<ClientCabinet />, isLoggedIn, 'cabinet', 'ROLE_CLIENT')} />
       <Route path="/add_auto" element={wrapPrivateRoute(<AddAuto />, isLoggedIn, 'addAuto', 'ROLE_CLIENT')} />
-      <Route path="/change_auto/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto', 'ROLE_CLIENT')} />
-      <Route path="/my_autos" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars', 'ROLE_CLIENT')} />
+      <Route path="/change_car/:carId" element={wrapPrivateRoute(<ClientChangeAuto />, isLoggedIn, 'clientChangeAuto', 'ROLE_CLIENT')} />
+      <Route path="/my_cars" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars', 'ROLE_CLIENT')} />
       <Route path="/advanced_filter" element={wrapPrivateRoute(<AdvancedFilter />, isLoggedIn, 'advanced_filter', 'ROLE_CLIENT')} />
       <Route path="/cars" element={wrapPrivateRoute(<LikedCars />, isLoggedIn, 'LikedCars', 'ROLE_CLIENT')} />
 
@@ -89,7 +92,7 @@ const App = () => {
 
       {/* chat */}
       <Route path="/chats" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chats', 'ROLE_CLIENT')} />
-      {/* <Route path="/chat/:recipientId" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chat', 'ROLE_CLIENT')} /> */}
+      <Route path="*" element={<Navigate to="/login" />} />
 
     </Routes>
   );

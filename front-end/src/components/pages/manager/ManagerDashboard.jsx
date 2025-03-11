@@ -7,7 +7,7 @@ const ManagerDashboard = () => {
   return (
     <div >
       <WrappedHeader />
-      <div className="dashboard">
+      <div className="manager-dashboard">
       <ManagerUsers />
       </div>
       <WrappedFooter />

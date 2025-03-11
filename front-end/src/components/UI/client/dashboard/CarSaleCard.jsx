@@ -77,6 +77,10 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
     return car.status === "POSTED" ? "bg-success text-white" : "bg-warning text-white";
   };
 
+  const handleNavigate = () => {
+    navigate(`/change_car/${car.id}`);
+  };
+
   return (
     <div className="card mb-4 box-shadow-12 br16">
       <div className="row g-0 mt-3">
@@ -172,9 +176,9 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                   )}
                 </span>
               </p> <div>
-                <Link to={`/change_auto/${car.id}`} className="btn btn-primary me-2 br24">
+                <button onClick={handleNavigate} className="  btn-color-blue me-2 br24" style={{padding:"7px"}}>
                   Change Car Information
-                </Link>
+                </button>
                 <button className="btn btn-danger br24" onClick={() => setShowConfirm(true)}>
                   Remove Car
                 </button>
@@ -226,8 +230,6 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
           </div>
         </div>
       )}
-
-      {/* Overlay to close modal when clicking outside */}
       {showConfirm && (
         <div
           className="modal-backdrop fade show"

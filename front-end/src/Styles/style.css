@@ -10,6 +10,12 @@
   margin-right: auto;
 }
 
+.manager-dashboard {
+  width: 65%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .signin {
   width: 60%;
   margin-left: auto;

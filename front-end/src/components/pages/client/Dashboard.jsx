@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [filterState, setFilterState] = useState({});
-  const pageSize = 5;
+  const pageSize = 10;
   const location = useLocation();
   const jwtStr = localStorage.getItem("jwtToken");
   const [searchParams, setSearchParams] = useSearchParams();

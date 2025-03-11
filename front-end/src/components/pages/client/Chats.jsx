@@ -94,31 +94,36 @@ const Chats = () => {
 
   return (
     <div>
-      <WrappedHeader unreadMessagesCount={unreadMessagesCount} />
-      <div className="chat-container">
-        <ChatsLeftToolbar
-          chats={chats}
-          setChats={setChats}
-          onSelectChat={handleSelectChat}
-          setUnreadMessagesCount={setUnreadMessagesCount}
-          updateLastMessage={updateLastMessage}
-        />
-        {recipientId ? (
-          <ChatWindow
-            senderId={senderId}
-            recipientId={recipientId}
-            recipientName={recipientName}
-            senderName={senderName}
-            recipientProfileImg={profileImgUrl}
-            setChats={setChats}
-            updateLastMessage={updateLastMessage}
-          />
-        ) : (
-          <div className="chat-window">
-            <h3>Select a chat to start messaging</h3>
-          </div>
-        )}
+<div>
+  <WrappedHeader unreadMessagesCount={unreadMessagesCount}/>
+  <div className="chat-container">
+    <div className="chats-left-toolbar">
+      <ChatsLeftToolbar
+        chats={chats}
+        setChats={setChats}
+        onSelectChat={handleSelectChat}
+        setUnreadMessagesCount={setUnreadMessagesCount}
+        updateLastMessage={updateLastMessage}
+      />
+    </div>
+    {recipientId ? (
+      <ChatWindow
+        senderId={senderId}
+        recipientId={recipientId}
+        recipientName={recipientName}
+        senderName={senderName}
+        recipientProfileImg={profileImgUrl}
+        setChats={setChats}
+        updateLastMessage={updateLastMessage}
+      />
+    ) : (
+      <div className="chat-window">
+        <h3>Select a chat to start messaging</h3>
       </div>
+    )}
+  </div>
+</div>
+
     </div>
   );
 };

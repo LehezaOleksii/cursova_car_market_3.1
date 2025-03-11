@@ -7,7 +7,7 @@ const SaledCars = ({ cars }) => {
       {cars.length > 0 ? (
         cars.map((car) => <Car key={car.id} car={car} />)
       ) : (
-        <div className="text-center mt-4">No cars found.</div>
+        <div className="mb-3 text-center">No cars found.</div>
       )}
     </div>
   );

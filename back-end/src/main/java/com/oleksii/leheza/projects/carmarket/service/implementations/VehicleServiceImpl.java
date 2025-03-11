@@ -15,6 +15,7 @@ import com.oleksii.leheza.projects.carmarket.exceptions.ResourceNotFoundExceptio
 import com.oleksii.leheza.projects.carmarket.repositories.sql.*;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.VehicleSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.VehicleSpecification;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,7 @@ public class VehicleServiceImpl implements VehicleService {
     private final UserVehicleLikeRepository userVehicleLikeRepository;
     private final UserRepository userRepository;
     private final VehicleBrandRepository brandRepository;
+    private final UserService userService;
 
     @Override
     public void deleteVehicleById(Long vehicleId) {
@@ -135,10 +137,13 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public void updateVehicle(Long userId, UpdateVehicleDto vehicleDto, Long vehicleId) {
-        if (vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
-            if (vehicleDto.getUserId() != null) {
+        Long anotherUserId = Long.valueOf(userRepository.findUserIdByVehicleId(vehicleId));
+        if (vehicleRepository.isUserHasVehicle(userId, vehicleId) || userService.isUserHasHigherRole(anotherUserId)) {
+            if (vehicleDto.getId() != null) {
+                Long ownerId = Long.valueOf(userService.getUserIdByVehicleId(vehicleId));
+                vehicleDto.setUserId(ownerId);
                 Vehicle vehicle = vehicleRepository.save(dtoMapper.updateVehicleDtoToVehicle(vehicleDto, getPhotosList(vehicleDto.getPhotos())));
-                User user = userRepository.findById(vehicleDto.getUserId())
+                User user = userRepository.findById(ownerId)
                         .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                 vehicle.setUser(user);
             }
@@ -236,9 +241,9 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public List<VehicleDashboardDto> getVehiclesByUserId(Long userId) {
+    public List<VehicleGarageDto> getVehiclesByUserId(Long userId) {
         return vehicleRepository.findByUserId(userId).stream()
-                .map(vehicle -> dtoMapper.vehicleToVehicleDashboardDto(vehicle, userId))
+                .map(dtoMapper::vehicleToVehicleGarageDto)
                 .toList();
     }
 
@@ -414,14 +419,17 @@ public class VehicleServiceImpl implements VehicleService {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail)
                 .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found while retrieving details vehicle"));
-        if (!vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
-            log.warn("User with id: " + userId + " has not permission to access vehicle with id: " + vehicleId);
-            throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User with id: " + userId + " has not permission to access vehicle with id: " + vehicleId);
+        Long anotherUserId = Long.valueOf(userRepository.findUserIdByVehicleId(vehicleId));
+        if (!userService.isUserHasHigherRole(anotherUserId)) {
+            if (!vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
+                log.warn("User with id: " + userId + " has not permission to access vehicle with id: " + vehicleId);
+                throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User with id: " + userId + " has not permission to access vehicle with id: " + vehicleId);
+            }
         }
         UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
         if (vehicle.getStatus() != VehicleStatus.POSTED) {
-            if (role.getOrder() <= UserRole.ROLE_MANAGER.getOrder()) {
+            if (role.getOrder() < UserRole.ROLE_MANAGER.getOrder()) {
                 log.warn("User has not enough permissions");
                 throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
             }

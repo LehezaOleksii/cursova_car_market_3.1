@@ -44,8 +44,6 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
       },
     });
     const data = await response.json();
-    
-    // Update unread messages count using the function
     setUnreadMessagesCount(data.data);
   };
 
@@ -63,7 +61,7 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
                   <Link to={`/add_auto`} className="nav-link">Sale car</Link>
                 </li>
                 <li className="nav-item">
-                  <Link to={`/my_autos`} className="nav-link">My cars</Link>
+                  <Link to={`/my_cars`} className="nav-link">My cars</Link>
                 </li>
                 <li className="nav-item">
                   <Link to={`/advanced_filter`} className="nav-link">Filter</Link>

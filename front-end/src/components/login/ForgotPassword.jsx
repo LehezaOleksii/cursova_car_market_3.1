@@ -18,7 +18,9 @@ const ForgotPassword = () => {
                     'Content-Type': 'application/json',
                 },
             });
-
+            if (response.status === 204) {
+                setError('User with this email does not exist.');
+            }
             if (response.status === 200) {
                 setError('');
                 navigate('/forgot-password-otp', { state: { email } });
@@ -56,7 +58,7 @@ const ForgotPassword = () => {
                                 </div>
                                 <div className="d-grid mb-2">
                                     <button type="submit" className="btn btn-primary" disabled={loading}>
-                                    {loading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Sign Up'}
+                                    {loading ? <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> : 'Confirm'}
                                     </button>
                                 </div>
                             </form>

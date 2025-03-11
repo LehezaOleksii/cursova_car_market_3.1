@@ -7,7 +7,7 @@ const ManagerUsers = () => {
   const [role, setRole] = useState();
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [pageSize] = useState(5);
+  const [pageSize] = useState(10);
   const jwtStr = localStorage.getItem('jwtToken');
 
   const [filter, setFilter] = useState({
@@ -124,7 +124,7 @@ const ManagerUsers = () => {
       ))}
       <nav aria-label="User pagination">
         <ul className="pagination justify-content-center mt-4">
-          <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
+          <li className={`page-item box-shadow-12 ${currentPage === 0 ? 'disabled' : ''}`}>
             <button
               className="page-link"
               onClick={() => handlePageChange(currentPage - 1)}
@@ -132,12 +132,12 @@ const ManagerUsers = () => {
               Previous
             </button>
           </li>
-          <li className="page-item disabled">
+          <li className="page-item disabled box-shadow-12">
             <span className="page-link">
               Page {currentPage + 1} of {totalPages}
             </span>
           </li>
-          <li className={`page-item ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
+          <li className={`page-item box-shadow-12 ${currentPage === totalPages - 1 ? 'disabled' : ''}`}>
             <button
               className="page-link"
               onClick={() => handlePageChange(currentPage + 1)}

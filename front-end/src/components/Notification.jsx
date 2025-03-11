@@ -7,7 +7,8 @@ const Notification = ({ senderName, senderImage, messageContent, onClose, isFadi
     <div className={`notification ${isFadingOut ? "fade-out" : ""}`}>
       <div className="notification-image">
         {senderImage ? (
-          <img src={senderImage} alt="Sender" />
+          <img  className="    blue-border"
+          src={`data:image/png;base64,${senderImage}`} alt="Sender" />
         ) : (
           <div className="initials profile-picture blue-border">{getInitials(senderName)}</div>
         )}

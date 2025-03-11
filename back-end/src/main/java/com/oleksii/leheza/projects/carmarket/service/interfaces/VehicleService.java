@@ -50,7 +50,7 @@ public interface VehicleService {
 
     Page<VehicleDashboardDto> getVehicleWithLikedStatus(Long userId, boolean isLiked, int page, int size);
 
-    List<VehicleDashboardDto> getVehiclesByUserId(Long userId);
+    List<VehicleGarageDto> getVehiclesByUserId(Long userId);
 
     List<BrandDto> getVehicleBrandDtos();
 
