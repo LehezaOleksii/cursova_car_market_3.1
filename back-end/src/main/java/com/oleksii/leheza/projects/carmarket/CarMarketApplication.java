@@ -67,19 +67,12 @@ public class CarMarketApplication {
     }
 
     private void generateMainUsers() {
-        String adminEmail = "admin@gmail.com";
         String password = "password";
-        userRepository.save(User.builder()
-                .email(adminEmail)
-                .password(passwordEncoder().encode(password))
-                .userRole(UserRole.ROLE_ADMIN)
-                .status(UserStatus.ACTIVE)
-                .build());
         String userEmail = "user@gmail.com";
         userRepository.save(User.builder()
                 .email(userEmail)
                 .password(passwordEncoder().encode(password))
-                .userRole(UserRole.ROLE_ADMIN)
+                .userRole(UserRole.ROLE_MANAGER)
                 .status(UserStatus.ACTIVE)
                 .build());
         String managerEmail = "manager@gmail.com";

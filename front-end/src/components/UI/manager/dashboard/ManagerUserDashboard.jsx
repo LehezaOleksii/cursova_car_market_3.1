@@ -14,8 +14,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
 
   const roleMapping = {
     ROLE_CLIENT: "Client",
-    ROLE_MANAGER: "Manager",
-    ROLE_ADMIN: "Admin",
+    ROLE_MANAGER: "Manager"
   };
 
   const statusMapping = {
@@ -91,8 +90,6 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
         return 1;
       case "ROLE_MANAGER":
         return 2;
-      case "ROLE_ADMIN":
-        return 3;
       default:
         return 0;
     }

@@ -53,8 +53,6 @@ const WrappedHeader = () => {
     <div>
       {role === "ROLE_CLIENT" && <ClientHeader unreadMessagesCount={unreadMessagesCount} setUnreadMessagesCount={setUnreadMessagesCount} />}
       {role === "ROLE_MANAGER" && <ManagerHeader unreadMessagesCount={unreadMessagesCount} setUnreadMessagesCount={setUnreadMessagesCount} />}
-      {role === "ROLE_ADMIN" && <AdminHeader unreadMessagesCount={unreadMessagesCount} setUnreadMessagesCount={setUnreadMessagesCount} />}
-
       <div className="notification-container">
         {notifications.map((notification) => (
           <Notification

@@ -10,8 +10,7 @@ const UserStatus = {
 
 const UserRole = {
   CLIENT: "ROLE_CLIENT",
-  MANAGER: "ROLE_MANAGER",
-  ADMIN: "ROLE_ADMIN",
+  MANAGER: "ROLE_MANAGER"
 };
 
 const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter, pageSize, currentPage }) => {
@@ -135,7 +134,6 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
                 <option value="ALL">All Users</option>
                 <option value={UserRole.CLIENT}>Clinet</option>
                 <option value={UserRole.MANAGER}>Manager</option>
-                <option value={UserRole.ADMIN}>Admin</option>
               </select>
             </div>
           </div>

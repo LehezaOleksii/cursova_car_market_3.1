@@ -3,8 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const roleHierarchy = {
   "ROLE_CLIENT": 1,
-  "ROLE_MANAGER": 2,
-  "ROLE_ADMIN": 3,
+  "ROLE_MANAGER": 2
 };
 
 const PrivateRoute = ({ children, redirect, requiredRole }) => {

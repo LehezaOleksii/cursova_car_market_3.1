@@ -26,9 +26,6 @@ const Login = () => {
         case 'ROLE_MANAGER':
           window.location.href = '/dashboard';
           break;
-        case 'ROLE_ADMIN':
-          window.location.href = '/dashboard';
-          break;
         default:
           window.location.href = '/login';
           break;

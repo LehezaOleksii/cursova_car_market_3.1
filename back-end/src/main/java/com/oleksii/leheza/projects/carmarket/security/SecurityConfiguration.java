@@ -34,9 +34,8 @@ public class SecurityConfiguration {
                 .userDetailsService(userService)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/clients/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
-                        .requestMatchers("/managers/**").hasAnyRole("MANAGER", "ADMIN")
-                        .requestMatchers("/admins/**").hasRole("ADMIN")
+                        .requestMatchers("/clients/**").hasAnyRole("CLIENT", "MANAGER")
+                        .requestMatchers("/managers/**").hasAnyRole("MANAGER")
                         .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()

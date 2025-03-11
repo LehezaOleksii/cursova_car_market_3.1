@@ -76,7 +76,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/brands")
     public ResponseEntity<List<String>> getVehicleBrandNames() {
         List<String> brands = vehicleService.getVehicleBrandNames();
@@ -92,7 +92,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PostMapping("/brands")
     public ResponseEntity<BrandDto> createVehicleBrand(@Valid @RequestBody BrandDto brandDto) {
         return new ResponseEntity<>(vehicleService.createBrand(brandDto), HttpStatus.OK);
@@ -107,7 +107,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PostMapping("/models")
     public ResponseEntity<ModelDto> createVehicleModel(@Valid @RequestBody ModelDto modelDto) {
         return new ResponseEntity<>(vehicleService.createModel(modelDto), HttpStatus.OK);
@@ -122,7 +122,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PostMapping("/engines")
     public ResponseEntity<EngineDto> createEngine(@RequestBody EngineDto engineDto) {
         return new ResponseEntity<>(vehicleService.createEngine(engineDto), HttpStatus.OK);
@@ -137,7 +137,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PostMapping("/body-types")
     public ResponseEntity<BodyTypeDto> createBodyType(@RequestBody BodyTypeDto bodyTypeDto) {
         return new ResponseEntity<>(vehicleService.createBodyType(bodyTypeDto), HttpStatus.OK);
@@ -154,7 +154,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @GetMapping("/brands/dtos")
     public ResponseEntity<List<BrandDto>> getVehicleBrandDtos() {
         List<BrandDto> brandsDtos = vehicleService.getVehicleBrandDtos();
@@ -172,7 +172,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @GetMapping("/engines/dtos")
     public ResponseEntity<List<EngineDto>> getVehicleEngineDtos() {
         List<EngineDto> engineDtos = vehicleService.getVehicleEngineDtos();
@@ -190,7 +190,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PutMapping("/brands")
     public ResponseEntity<?> changeVehicleBrand(@RequestBody BrandDto brandDto) {
         vehicleService.updateVehicleBrandName(brandDto);
@@ -208,7 +208,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PutMapping("/body-types")
     public ResponseEntity<?> changeBodyType(@RequestBody BodyTypeDto bodyTypeDto) {
         vehicleService.updateVehicleBodyType(bodyTypeDto);
@@ -225,7 +225,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PutMapping("/models")
     public ResponseEntity<?> updateVehicleModel(@RequestBody ModelDto modelDto) {
         vehicleService.updateVehicleModel(modelDto);
@@ -242,7 +242,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PutMapping("/engines")
     public ResponseEntity<?> updateVehicleEngine(@RequestBody EngineDto engineDto) {
         vehicleService.updateVehicleEngine(engineDto);
@@ -259,7 +259,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @PutMapping("/models/{modelId}/engines")
     public ResponseEntity<?> addEngineToModel(@PathVariable Long modelId,
                                               @RequestBody Long engineId) {
@@ -278,7 +278,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @DeleteMapping("/models/{modelId}/engines/{engineId}")
     public ResponseEntity<?> deleteEngineForModel(@PathVariable Long modelId,
                                                   @PathVariable Long engineId) {
@@ -297,7 +297,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @DeleteMapping("/models/{modelId}")
     public ResponseEntity<?> deleteModel(@PathVariable Long modelId) {
         vehicleService.deleteModel(modelId);
@@ -315,7 +315,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @DeleteMapping("/body-types/{bodyTypeId}")
     public ResponseEntity<?> deleteBodyType(@PathVariable Long bodyTypeId) {
         vehicleService.deleteBodyType(bodyTypeId);
@@ -333,7 +333,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @DeleteMapping("/brands/{brandId}")
     public ResponseEntity<?> deleteVehicleBrandName(@PathVariable Long brandId) {
         vehicleService.deleteBrandById(brandId);
@@ -351,7 +351,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @DeleteMapping("/engines/{engineId}")
     public ResponseEntity<?> deleteVehicleEngine(@PathVariable Long engineId) {
         vehicleService.deleteEngineById(engineId);
@@ -369,7 +369,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @GetMapping("/models/dtos")
     public ResponseEntity<List<ModelDto>> getVehicleModelsDtos() {
         List<ModelDto> modelDtos = vehicleService.getVehicleModelDtos();
@@ -387,7 +387,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole ('ROLE_MANAGER')")
     @GetMapping("/body-types/dtos")
     public ResponseEntity<List<BodyTypeDto>> getVehicleBodyTypesDtos() {
         List<BodyTypeDto> bodyTypes = vehicleService.getVehicleBodyTypesDtos();
@@ -405,6 +405,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
+    @PreAuthorize("hasAnyRole ('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/body-types")
     public ResponseEntity<List<String>> getVehicleBodyTypeNames() {
         List<String> bodyTypes = vehicleService.getBodyTypeNames();
@@ -422,6 +423,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
+    @PreAuthorize("hasAnyRole ('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/engines")
     public ResponseEntity<List<EngineDto>> getVehicleEngine() {
         List<EngineDto> engines = vehicleService.getEngines();
@@ -441,6 +443,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
+    @PreAuthorize("hasAnyRole ('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/brands/models/{vehicleModelName}/engines")
     public ResponseEntity<List<String>> getVehicleEnginesNames(@PathVariable String vehicleModelName) {
         List<String> engines = vehicleService.getVehicleEngineNames(vehicleModelName);
@@ -458,6 +461,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
+    @PreAuthorize("hasAnyRole ('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/gearboxes")
     public ResponseEntity<List<GearBox>> getGearBoxes() {
         return new ResponseEntity<>(Arrays.asList(GearBox.values()), HttpStatus.OK);
@@ -476,7 +480,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/garage")
     public ResponseEntity<List<VehicleGarageDto>> userVehicles(@AuthenticationPrincipal String email) {
         List<VehicleGarageDto> vehicles = vehicleService.getVehiclesByUserEmail(email);
@@ -494,7 +498,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/{vehicleId}/info")
     public ResponseEntity<DetailsVehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
         return new ResponseEntity<>(vehicleService.getDetailsVehicleDtoById(vehicleId), HttpStatus.OK);
@@ -511,7 +515,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER')")
     @GetMapping("/{vehicleId}/update_info")
     public ResponseEntity<UpdateVehicleDto> getVehicleInfoToUpdate(@PathVariable Long vehicleId) {
         return new ResponseEntity<>(vehicleService.getUpdateVehicleDtoById(vehicleId), HttpStatus.OK);
@@ -527,7 +531,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/{vehicleId}/approve")
     public ResponseEntity<?> approveVehicle(@PathVariable Long vehicleId) {
         vehicleService.updateVehicleStatus(vehicleId, VehicleStatus.POSTED);
@@ -546,7 +550,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/{vehicleId}/disapprove")
     public ResponseEntity<?> disapproveVehicle(@PathVariable Long vehicleId) {
         Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
@@ -566,7 +570,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping
     public ResponseEntity<Page<VehicleModerationDto>> getVehicleModerationDtos(@RequestParam(defaultValue = "0") int page,
                                                                                @RequestParam(defaultValue = "10") int size) {
@@ -584,7 +588,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @DeleteMapping("/{vehicleId}")
     public ResponseEntity<?> removeVehicleByVehicleId(@PathVariable Long vehicleId) {
         vehicleService.deleteVehicleById(vehicleId);
@@ -599,7 +603,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @PostMapping
     public ResponseEntity<?> postVehicle(@AuthenticationPrincipal String email,
                                          @RequestBody CreateVehicleDto vehicleDto) {
@@ -620,7 +624,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @PutMapping("{vehicleId}")
     public ResponseEntity<?> changeVehicleById(@AuthenticationPrincipal String email,
                                                @PathVariable Long vehicleId,
@@ -644,7 +648,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/posted")
     public ResponseEntity<Page<VehicleDashboardDto>> getAllPostedVehicles(@RequestParam(defaultValue = "0") int page,
                                                                           @RequestParam(defaultValue = "10") int size) {
@@ -662,7 +666,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @DeleteMapping("/{vehicleId}/delete")
     public ResponseEntity<?> deleteVehicleById(@PathVariable Long vehicleId) {
         vehicleService.deleteVehicleById(vehicleId);
@@ -680,7 +684,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/filter")
     public ResponseEntity<Page<VehicleDashboardDto>> filterVehicles(@RequestParam Map<String, String> params) {
         VehicleStatus vehicleStatus = VehicleStatus.valueOf(params.get("vehicleStatus"));
@@ -700,7 +704,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
     @GetMapping("/management/filter")
     public ResponseEntity<Page<VehicleModerationDto>> filterVehiclesWithStatus(@RequestParam Map<String, String> params) {
         int page = Integer.parseInt(params.get("page"));
@@ -718,7 +722,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @PutMapping("/{vehicleId}/like/{isLike}")
     public ResponseEntity<?> setLikeToVehicle(@AuthenticationPrincipal String email,
                                               @PathVariable Boolean isLike,
@@ -739,7 +743,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/liked/filter")
     public ResponseEntity<Page<VehicleDashboardDto>> getUserLikedCars(@AuthenticationPrincipal String email,
                                                                       @RequestParam Boolean isLiked,
@@ -761,7 +765,7 @@ public class VehicleController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<VehicleGarageDto>> getVehiclesByUserId(@PathVariable Long userId) {
         List<VehicleGarageDto> vehicles = vehicleService.getVehiclesByUserId(userId);
