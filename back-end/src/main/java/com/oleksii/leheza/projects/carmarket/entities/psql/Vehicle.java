@@ -27,7 +27,7 @@ public class Vehicle {
     @Min(0)
     private int price;
     @Min(0)
-    private int mileage;
+    private long mileage;
     private GearBox gearBox;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
@@ -53,5 +53,11 @@ public class Vehicle {
     private Engine engine;
     @ManyToOne(fetch = FetchType.LAZY)
     private VehicleBodyType bodyType;
+    @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserVehicleLike> userVehicleLikes;
     private int views;
+
+    public void incrementViews() {
+        views++;
+    }
 }

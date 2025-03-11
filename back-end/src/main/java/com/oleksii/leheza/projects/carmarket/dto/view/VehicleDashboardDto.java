@@ -13,7 +13,7 @@ public class VehicleDashboardDto {
     private Long userId;
     private int year;
     private int price;
-    private int mileage;
+    private long mileage;
     private String brandName;
     private String modelName;
     private String region;

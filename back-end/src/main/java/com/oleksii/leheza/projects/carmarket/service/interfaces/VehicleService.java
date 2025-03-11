@@ -93,4 +93,6 @@ public interface VehicleService {
     Page<VehicleModerationDto> findAll(int page, int size);
 
     Page<VehicleModerationDto> filterVehiclesModeration(Map<String, String> params, int page, int size);
+
+    UpdateVehicleDto getUpdateVehicleDtoById(Long vehicleId);
 }

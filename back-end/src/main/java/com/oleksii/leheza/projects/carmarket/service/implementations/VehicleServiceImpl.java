@@ -128,6 +128,8 @@ public class VehicleServiceImpl implements VehicleService {
             isUserLiked = userVehicleLike.get().isLiked();
         }
         detailsVehicleDto.setUserLiked(isUserLiked);
+        vehicle.incrementViews();
+        vehicleRepository.save(vehicle);
         return detailsVehicleDto;
     }
 
@@ -236,7 +238,7 @@ public class VehicleServiceImpl implements VehicleService {
     @Override
     public List<VehicleDashboardDto> getVehiclesByUserId(Long userId) {
         return vehicleRepository.findByUserId(userId).stream()
-                .map(vehicle-> dtoMapper.vehicleToVehicleDashboardDto(vehicle,userId))
+                .map(vehicle -> dtoMapper.vehicleToVehicleDashboardDto(vehicle, userId))
                 .toList();
     }
 
@@ -405,6 +407,26 @@ public class VehicleServiceImpl implements VehicleService {
         Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
         return vehiclesPage
                 .map(dtoMapper::vehicleToVehicleModerationDto);
+    }
+
+    @Override
+    public UpdateVehicleDto getUpdateVehicleDtoById(Long vehicleId) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userRepository.getUserIdByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found while retrieving details vehicle"));
+        if (!vehicleRepository.isUserHasVehicle(userId, vehicleId)) {
+            log.warn("User with id: " + userId + " has not permission to access vehicle with id: " + vehicleId);
+            throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User with id: " + userId + " has not permission to access vehicle with id: " + vehicleId);
+        }
+        UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
+        Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
+        if (vehicle.getStatus() != VehicleStatus.POSTED) {
+            if (role.getOrder() <= UserRole.ROLE_MANAGER.getOrder()) {
+                log.warn("User has not enough permissions");
+                throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
+            }
+        }
+        return dtoMapper.vehicleToUpdateVehicleDto(vehicle);
     }
 
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {

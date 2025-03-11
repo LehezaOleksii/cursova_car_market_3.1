@@ -37,7 +37,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/clients/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
                         .requestMatchers("/managers/**").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers("/admins/**").hasRole("ADMIN")
-                        .requestMatchers("/chat/**").hasAnyRole("CLIENT", "MANAGER", "ADMIN")
+                        .requestMatchers("/chat/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**",

@@ -21,7 +21,7 @@ public class UpdateVehicleDto {
     @Min(0)
     private int price;
     @Min(0)
-    private int mileage;
+    private long mileage;
     @Size(min = 1, max = 255, message = "Brand name must be from 1 to 255 characters")
     private String brandName;
     @Size(min = 1, max = 50, message = "Vehicle model must be from 1 to 50 characters")

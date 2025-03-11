@@ -15,5 +15,6 @@ public class UserUpdateDto {
     private String firstname;
     @Size(min = 1, max = 100, message = "Last name must be between 1 and 100 characters")
     private String lastname;
+    private String email;
     private byte[] profileImageUrl;
 }

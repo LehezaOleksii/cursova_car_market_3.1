@@ -42,7 +42,7 @@ const ClientChangeAuto = () => {
 
   const nextPhoto = () => {
     setCurrentPhotoIndex((prevIndex) => {
-      const nextIndex = (prevIndex + 1) % car.photos.length;
+      const nextIndex = (prevIndex + 1) % photos.length;
       scrollThumbnails(nextIndex, "right");
       return nextIndex;
     });
@@ -50,7 +50,7 @@ const ClientChangeAuto = () => {
 
   const prevPhoto = () => {
     setCurrentPhotoIndex((prevIndex) => {
-      const prevIndexAdjusted = (prevIndex - 1 + car.photos.length) % car.photos.length;
+      const prevIndexAdjusted = (prevIndex - 1 + photos.length) % photos.length;
       scrollThumbnails(prevIndexAdjusted, "left");
       return prevIndexAdjusted;
     });
@@ -230,7 +230,6 @@ const ClientChangeAuto = () => {
 
   const handleSubmit = async () => {
     const yearNum = parseInt(year, 10);
-    console.log(brandName + " " + modelName + " " + gearbox + " " + bodyType + " " + region + " " + engine + " " + photos);
     if (!brandName || !modelName || !bodyType || !gearbox || !region || !engine || photos.length == 0) {
       alert("Please fill in all required fields: brand, model, body type, gearbox, region, engine, photos.");
       return;
@@ -249,35 +248,36 @@ const ClientChangeAuto = () => {
     var priceString;
 
     if (price && typeof price === "string") {
-       priceString = price.replace(/\D+/g, '');
+      priceString = price.replace(/\D+/g, '');
     } else {
-        priceString = price;
-    } 
-
-    const phoneNumberTest = phoneNumber.replace(/\s+/g, '');
-
-    if (!phoneNumberTest || !/^(\+38)?(0\d{9})$/.test(phoneNumberTest)) {
-      alert("Please enter a valid Ukrainian phone number.");
+      priceString = price;
+    }
+    if (!mileage || mileage > 9000000) {
+      alert("Please enter a valid mileage. Mileage should be less than 9 000 000.");
       return;
     }
-    const base64Photos = await convertImagesToBase64(photos);
-    setPhotos(base64Photos);
+    if (! priceString ||  priceString > 2000000) {
+      alert("Please enter a valid price. Price should be less than 2 000 000.");
+      return;
+    }
+    const base64Photos = await Promise.all(photos.map(convertImagesToBase64));
+
     const car = {
       id: carId,
       userId: userId,
       photos: base64Photos,
-      brandName: brandName,
-      modelName: modelName,
-      region: region,
+      brandName,
+      modelName,
+      region,
       year: yearNum,
-      mileage: mileage,
+      mileage,
       price: priceString,
-      gearbox: gearbox?.value,
-      phoneNumber: phoneNumber,
-      bodyType: bodyType,
-      engine: engine,
+      gearbox,
+      phoneNumber,
+      bodyType,
+      engine,
       usageStatus: selectedRadio,
-      description: description
+      description,
     };
 
     try {
@@ -293,37 +293,58 @@ const ClientChangeAuto = () => {
       if (response.ok) {
         navigate(`/dashboard`);
       } else {
-        console.error("Error adding car:", response.statusText);
+        console.error("Error updating car:", response.statusText);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const convertImagesToBase64 = (images) => {
-    const promises = images.map((image) => {
-      if (!(image instanceof Blob)) {
-        console.error("Invalid image format:", image);
-        return Promise.resolve(null);
-      }
-  
-      return new Promise((resolve, reject) => {
+  const convertImagesToBase64 = async (image) => {
+    return new Promise((resolve, reject) => {
+      if (typeof image === "string" && (image.startsWith("/9j/") || image.startsWith("iVBORw0K"))) {
+        resolve(image);
+      } else if (image instanceof Blob || image instanceof File) {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = reject;
+        reader.onload = () => {
+          const base64String = reader.result.split(",")[1];
+          resolve(base64String);
+        };
+        reader.onerror = () => {
+          console.error("Error reading image:", image);
+          reject(null);
+        };
         reader.readAsDataURL(image);
-      });
+      } else {
+        console.error("Invalid image format:", image);
+        reject(null);
+      }
     });
-  
-    return Promise.all(promises);
   };
-  
+
+  const promises = photos.map((image) => convertImagesToBase64(image));
+
+  Promise.all(promises)
+    .then((byteArrays) => {
+      fetch(`http://localhost:8080/vehicles/${carId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ photos: byteArrays.map((arr) => Array.from(arr)) }),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log("Success:", data))
+        .catch((error) => console.error("Error sending photos:", error));
+    })
+    .catch((error) => console.error("Error converting images:", error));
+
 
   useEffect(() => {
     const fetchCarData = async () => {
       if (carId) {
         try {
-          const url = `http://localhost:8080/vehicles/${carId}/info`;
+          const url = `http://localhost:8080/vehicles/${carId}/update_info`;
           const response = await fetch(url, {
             method: 'GET',
             headers: {
@@ -360,53 +381,190 @@ const ClientChangeAuto = () => {
     fetchCarData();
   }, [carId, jwtStr]);
 
+  const handlePhotoChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length + photos.length <= 20) {
+      setPhotos((prevPhotos) => [...prevPhotos, ...selectedFiles]);
+    } else {
+      alert("You can only upload up to 20 photos.");
+    }
+  };
+
+  const handleDeletePhoto = (indexToRemove) => {
+    setPhotos((prevPhotos) => prevPhotos.filter((_, index) => index !== indexToRemove));
+  };
+
   return (
     <div className="body">
       <WrappedHeader />
       <div className="container mt-5 mb-4">
         <div className="row">
           <div className="col-md-7">
-            <div className="photo-wrapper br16">
+            <label htmlFor="carPhotos" className="photo-wrapper br16">
+              {photos.length > 0 ? (
+                <div
+                  className="photo-container"
+                  style={{
+                    transform: `translateX(-${currentPhotoIndex * 100}%)`,
+                  }}
+                >
+                  {photos.length > 0 ? (
+                    photos.map((photo, index) => {
+                      const photoSrc =
+                        typeof photo === "string"
+                          ? `data:image/jpeg;base64,${photo}`
+                          : URL.createObjectURL(photo);
+
+                      return (
+                        <img key={index} src={photoSrc} alt="Car" className="photo-image img" />
+                      );
+                    })
+                  ) : (
+                    <div className="add-photo-placeholder">Add Photo</div>
+                  )}
+
+                </div>
+              ) : (
+                <div className="photo-container"
+                  style={{
+                    height: "100%",
+                    backgroundColor: "#ccc",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    color: "#666",
+                    fontSize: "18px",
+                    fontWeight: "bold",
+                    borderRadius: "10px",
+                  }}
+                >
+                  Click to add photos
+                </div>
+              )}
+              {photos.length > 0 && (
+                <>
+                  <button className="photo-nav-button left" onClick={prevPhoto}>
+                    &#10094;
+                  </button>
+                  <button className="photo-nav-button right" onClick={nextPhoto}>
+                    &#10095;
+                  </button>
+                </>
+              )}
+            </label>
+            <input
+              type="file"
+              id="carPhotos"
+              accept="image/*"
+              multiple
+              onChange={handlePhotoChange}
+              style={{ display: "none" }}
+            />
+            <div
+              className="thumbnail-container"
+              ref={thumbnailContainerRef}
+              style={{
+                display: "flex",
+                overflowX: "auto",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <style>
+                {`
+      .thumbnail-container::-webkit-scrollbar {
+        display: none; /* Hides scrollbar in Chrome, Safari, and Edge */
+      }
+    `}
+              </style>
+
               <div
-                className="photo-container"
+                className="small-image-container add-photo-btn"
+                onClick={() => document.getElementById("carPhotos").click()}
                 style={{
-                  transform: `translateX(-${currentPhotoIndex * 100}%)`,
+                  position: "relative",
+                  minWidth: "100px",
+                  height: "100px",
+                  margin: "5px",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                  backgroundColor: "#ddd",
+                  cursor: "pointer",
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#666",
                 }}
               >
-                {car?.photos?.map((photo, index) => (
-                  <img
+                +
+              </div>
+
+              {photos.map((photo, index) => {
+                const photoSrc =
+                  typeof photo === "string"
+                    ? `data:image/jpeg;base64,${photo}`
+                    : URL.createObjectURL(photo);
+
+                return (
+                  <div
                     key={index}
-                    src={`data:image/jpeg;base64,${photo}`}
-                    alt="Car"
-                    className="photo-image img"
-                  />
-                ))}
-              </div>
-              <button className="photo-nav-button left" onClick={prevPhoto}>
-                &#10094;
-              </button>
-              <button className="photo-nav-button right" onClick={nextPhoto}>
-                &#10095;
-              </button>
-            </div>
-            {car && car.photos && car.photos.length > 1 && (
-              <div>
-                <div
-                  className="thumbnail-container"
-                  ref={thumbnailContainerRef}
-                >
-                  {car.photos.map((photo, index) => (
-                    <div
-                      key={index}
-                      className={`small-image-container ${currentPhotoIndex === index ? "active" : ""}`}
-                      onClick={() => handleThumbnailScroll(index)}
+                    className={`small-image-container ${currentPhotoIndex === index ? "active" : ""}`}
+                    onClick={() => handleThumbnailScroll(index)}
+                    style={{
+                      position: "relative",
+                      minWidth: "100px",
+                      height: "100px",
+                      margin: "5px",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                      backgroundColor: "#f8f8f8",
+                    }}
+                  >
+                    <img
+                      src={photoSrc}
+                      alt={`Thumbnail ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <button
+                      className="delete-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeletePhoto(index);
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px",
+                        background: "rgba(255, 0, 0, 0.5)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                        cursor: "pointer",
+                        textAlign: "center",
+                        fontSize: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     >
-                      <img src={`data:image/jpeg;base64,${photo}`} alt={`Thumbnail ${index + 1}`} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                      🗑️
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
           <div className="col-md-5">
             <div className="card  br24 box-shadow-12">

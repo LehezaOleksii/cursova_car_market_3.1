@@ -153,7 +153,8 @@ public class UserController {
 
     @Operation(summary = "Update an existing client", description = "Update an existing client.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Client updated successfully"),
+            @ApiResponse(responseCode = "200", description = "Client updated successfully",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Client is not found",
@@ -165,12 +166,18 @@ public class UserController {
     })
     @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
     @PutMapping("/cabinet")
-    public ResponseEntity<?> saveUserInfo(@AuthenticationPrincipal String email,
-                                          @Valid @RequestBody UserUpdateDto userUpdateDto) {
+    public ResponseEntity<Response> saveUserInfo(@AuthenticationPrincipal String email,
+                                                 @Valid @RequestBody UserUpdateDto userUpdateDto) {
+        boolean isEmailChanged = !userUpdateDto.getEmail().equals(email);
+        if (isEmailChanged) {
+            if (userService.existByEmail(userUpdateDto.getEmail())) {
+                return new ResponseEntity<>(new Response("This email already taken."), HttpStatus.CONFLICT);
+            }
+        }
         Long id = userService.getUserIdByEmail(email);
         userUpdateDto.setId(id);
         userService.update(userUpdateDto);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new Response(String.valueOf(isEmailChanged)), HttpStatus.OK);
     }
 
     @Operation(summary = "Get user role", description = "Get user role.")

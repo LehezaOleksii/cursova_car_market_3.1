@@ -1,5 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.controllers;
 
+import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.security.AuthenticationRequest;
 import com.oleksii.leheza.projects.carmarket.dto.security.AuthenticationResponse;
 import com.oleksii.leheza.projects.carmarket.dto.security.RegisterRequest;
@@ -53,11 +54,16 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = AuthenticationResponse.class))),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "409", description = "Email taken",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping("/signup")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
+        if (userService.existByEmail(registerRequest.getEmail())) {
+            return new ResponseEntity<>(new Response("This email already taken."), HttpStatus.CONFLICT);
+        }
         return new ResponseEntity<>(authenticationService.register(registerRequest), HttpStatus.CREATED);
     }
 

@@ -483,7 +483,7 @@ public class VehicleController {
         return new ResponseEntity<>(vehicles, vehicles != null ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
 
-    @Operation(summary = "Get vehicle by vehicle id", description = "Get a user vehicle oby vehicle id.")
+    @Operation(summary = "Get vehicle by vehicle id", description = "Get a user vehicle by vehicle id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User vehicle retrieved successfully",
                     content = @Content(schema = @Schema(implementation = DetailsVehicleDto.class))),
@@ -498,6 +498,23 @@ public class VehicleController {
     @GetMapping("/{vehicleId}/info")
     public ResponseEntity<DetailsVehicleDto> getVehicleInfo(@PathVariable Long vehicleId) {
         return new ResponseEntity<>(vehicleService.getDetailsVehicleDtoById(vehicleId), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Get vehicle by vehicle id", description = "Get a user vehicle by vehicle id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User vehicle retrieved successfully",
+                    content = @Content(schema = @Schema(implementation = UpdateVehicleDto.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "User vehicle are not found",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+    })
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT','ROLE_MANAGER', 'ROLE_ADMIN')")
+    @GetMapping("/{vehicleId}/update_info")
+    public ResponseEntity<UpdateVehicleDto> getVehicleInfoToUpdate(@PathVariable Long vehicleId) {
+        return new ResponseEntity<>(vehicleService.getUpdateVehicleDtoById(vehicleId), HttpStatus.OK);
     }
 
     @Operation(summary = "Approve an existing vehicle", description = "Approve an existing vehicle.")
@@ -610,6 +627,7 @@ public class VehicleController {
                                                @RequestBody UpdateVehicleDto vehicleDto) {
         Long userId = userService.getUserIdByEmail(email);
         vehicleService.updateVehicle(userId, vehicleDto, vehicleId);
+        vehicleService.updateVehicleStatus(vehicleId, VehicleStatus.ON_MODERATION);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -254,6 +254,11 @@ const AddAuto = () => {
       return;
     }
 
+    if (!mileage || mileage > 9000000) {
+      alert("Please enter a valid mileage. Mileage should be less than 9 000 000.");
+      return;
+    }
+
     if (!mileage || isNaN(mileage) || mileage < 0) {
       alert("Please enter a valid mileage.");
       return;
@@ -265,6 +270,11 @@ const AddAuto = () => {
       alert("Please enter a valid price.");
       return;
     }
+    
+    if (! priceString.replace(/\D/g, "") ||  priceString.replace(/\D/g, "") > 2000000) {
+      alert("Please enter a valid price. Price should be less than 2 000 000.");
+      return;
+    }
 
     const phoneNumberTest = phoneNumber.replace(/\s+/g, '');
 
@@ -272,8 +282,8 @@ const AddAuto = () => {
       alert("Please enter a valid Ukrainian phone number.");
       return;
     }
-    
-    const base64Photos = await convertImagesToBase64(photos);
+
+    const base64Photos = await Promise.all(photos.map(convertImagesToBase64));
 
     const car = {
       photos: base64Photos,
@@ -311,16 +321,30 @@ const AddAuto = () => {
     }
   };
 
-  const convertImagesToBase64 = (images) => {
-    const promises = images.map((image) => {
-      return new Promise((resolve, reject) => {
+  const convertImagesToBase64 = async (image) => {
+    return new Promise((resolve, reject) => {
+      if (typeof image === "string" && (image.startsWith("/9j/") || image.startsWith("iVBORw0K"))) {
+        resolve(image);
+      } else if (image instanceof Blob || image instanceof File) {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = reject;
+        reader.onload = () => {
+          const base64String = reader.result.split(",")[1];
+          resolve(base64String);
+        };
+        reader.onerror = () => {
+          console.error("Error reading image:", image);
+          reject(null);
+        };
         reader.readAsDataURL(image);
-      });
+      } else {
+        console.error("Invalid image format:", image);
+        reject(null);
+      }
     });
-    return Promise.all(promises);
+  };
+
+  const handleDeletePhoto = (indexToRemove) => {
+    setPhotos((prevPhotos) => prevPhotos.filter((_, index) => index !== indexToRemove));
   };
 
   return (
@@ -328,7 +352,7 @@ const AddAuto = () => {
       <WrappedHeader />
       <div className="container mt-5 mb-4">
         <div className="row">
-          <div className="col-md-7">
+        <div className="col-md-7">
             <label htmlFor="carPhotos" className="photo-wrapper br16">
               {photos.length > 0 ? (
                 <div
@@ -338,17 +362,20 @@ const AddAuto = () => {
                   }}
                 >
                   {photos.length > 0 ? (
-                    photos.map((photo, index) => (
-                      <img
-                        key={index}
-                        src={URL.createObjectURL(photo)}
-                        alt="Car"
-                        className="photo-image img"
-                      />
-                    ))
+                    photos.map((photo, index) => {
+                      const photoSrc =
+                        typeof photo === "string"
+                          ? `data:image/jpeg;base64,${photo}`
+                          : URL.createObjectURL(photo);
+
+                      return (
+                        <img key={index} src={photoSrc} alt="Car" className="photo-image img" />
+                      );
+                    })
                   ) : (
                     <div className="add-photo-placeholder">Add Photo</div>
                   )}
+
                 </div>
               ) : (
                 <div className="photo-container"
@@ -386,22 +413,114 @@ const AddAuto = () => {
               onChange={handlePhotoChange}
               style={{ display: "none" }}
             />
-            {photos.length > 1 && (
-              <div className="thumbnail-container" ref={thumbnailContainerRef}>
-                {photos.map((photo, index) => (
+            <div
+              className="thumbnail-container"
+              ref={thumbnailContainerRef}
+              style={{
+                display: "flex",
+                overflowX: "auto",
+                whiteSpace: "nowrap",
+              }}
+            >
+              <style>
+                {`
+      .thumbnail-container::-webkit-scrollbar {
+        display: none; /* Hides scrollbar in Chrome, Safari, and Edge */
+      }
+    `}
+              </style>
+
+              <div
+                className="small-image-container add-photo-btn"
+                onClick={() => document.getElementById("carPhotos").click()}
+                style={{
+                  position: "relative",
+                  minWidth: "100px",
+                  height: "100px",
+                  margin: "5px",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                  backgroundColor: "#ddd",
+                  cursor: "pointer",
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  color: "#666",
+                }}
+              >
+                +
+              </div>
+
+              {photos.map((photo, index) => {
+                const photoSrc =
+                  typeof photo === "string"
+                    ? `data:image/jpeg;base64,${photo}`
+                    : URL.createObjectURL(photo);
+
+                return (
                   <div
                     key={index}
                     className={`small-image-container ${currentPhotoIndex === index ? "active" : ""}`}
                     onClick={() => handleThumbnailScroll(index)}
+                    style={{
+                      position: "relative",
+                      minWidth: "100px",
+                      height: "100px",
+                      margin: "5px",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                      backgroundColor: "#f8f8f8",
+                    }}
                   >
-                    <img src={URL.createObjectURL(photo)} alt={`Thumbnail ${index + 1}`} />
+                    <img
+                      src={photoSrc}
+                      alt={`Thumbnail ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <button
+                      className="delete-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeletePhoto(index);
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: "5px",
+                        right: "5px",
+                        background: "rgba(255, 0, 0, 0.5)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "50%",
+                        width: "30px",
+                        height: "30px",
+                        cursor: "pointer",
+                        textAlign: "center",
+                        fontSize: "16px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      🗑️
+                    </button>
                   </div>
-                ))}
-              </div>
-            )}
+                );
+              })}
+            </div>
           </div>
           <div className="col-md-5">
-            <div className="card">
+            <div className="card br24">
               <div className="card-body">
                 <h5 className="card-title">Add Auto</h5>
                 <CarState

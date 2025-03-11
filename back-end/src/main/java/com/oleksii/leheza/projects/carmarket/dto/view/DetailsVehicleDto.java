@@ -16,7 +16,7 @@ public class DetailsVehicleDto {
     private Long id;
     private int year;
     private int price;
-    private int mileage;
+    private long mileage;
     private String brandName;
     private String modelName;
     private GearBox gearbox;

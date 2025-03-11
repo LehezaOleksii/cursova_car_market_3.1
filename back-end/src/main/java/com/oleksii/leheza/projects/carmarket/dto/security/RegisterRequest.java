@@ -10,9 +10,9 @@ import lombok.Data;
 public class RegisterRequest {
 
     @Size(min = 1, max = 100, message = "First name must be between 1 and 100 characters")
-    private String firstname;
+    private String firstName;
     @Size(min = 1, max = 100, message = "Last name must be between 1 and 100 characters")
-    private String lastname;
+    private String lastName;
     @NotBlank
     @Email(message = "Invalid email format")
     private String email;

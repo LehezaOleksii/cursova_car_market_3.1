@@ -31,6 +31,7 @@ const ApproveCarPage = () => {
       },
       credentials: "include",
     });
+    
     const data = await responseVehiclesOnModeration.json();
     setCars(data.content);
     setTotalPages(data.totalPages);

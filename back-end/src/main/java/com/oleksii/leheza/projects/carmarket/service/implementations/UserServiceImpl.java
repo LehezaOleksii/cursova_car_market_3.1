@@ -14,6 +14,7 @@ import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.VehicleRepository;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.security.filter.specifications.UserSpecification;
+import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private final UserSpecification userSpecification;
     private final DtoMapper dtoMapper;
     private final VehicleRepository vehicleRepository;
+    private final EmailService emailService;
 
     @Override
     public void approveManager(Long userId) {
@@ -66,7 +68,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserUpdateDto update(UserUpdateDto userUpdate) {
         User user = userRepository.findById(userUpdate.getId()).orElseThrow(() -> new ResourceNotFoundException("User does not found"));
-        user = user.toBuilder().firstName(userUpdate.getFirstname()).lastName(userUpdate.getLastname()).profileImageUrl(userUpdate.getProfileImageUrl()).build();
+        boolean isUserUpdateEmail = !userUpdate.getEmail().equals(user.getEmail());
+        user = user.toBuilder()
+                .id(userUpdate.getId())
+                .firstName(userUpdate.getFirstname())
+                .lastName(userUpdate.getLastname())
+                .profileImageUrl(userUpdate.getProfileImageUrl())
+                .email(userUpdate.getEmail())
+                .build();
+        if (isUserUpdateEmail) {
+            emailService.sendUpdateConformationEmail(userUpdate.getEmail(), user);
+            user.setStatus(UserStatus.INACTIVE);
+        }
         userRepository.save(user);
         return userUpdate;
     }
@@ -79,7 +92,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserUpdateDto getUserUpdateDtoById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
-        return UserUpdateDto.builder().id(id).lastname(user.getLastName()).firstname(user.getFirstName()).profileImageUrl(user.getProfileImageUrl()).build();
+        return UserUpdateDto.builder()
+                .id(id)
+                .lastname(user.getLastName())
+                .firstname(user.getFirstName())
+                .email(user.getEmail())
+                .profileImageUrl(user.getProfileImageUrl())
+                .build();
     }
 
     @Override
