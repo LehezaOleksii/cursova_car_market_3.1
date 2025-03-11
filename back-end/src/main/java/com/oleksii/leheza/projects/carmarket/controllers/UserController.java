@@ -4,8 +4,6 @@ import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.update.UserUpdateDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserDetailsDto;
 import com.oleksii.leheza.projects.carmarket.dto.view.UserManagerDashboardDto;
-import com.oleksii.leheza.projects.carmarket.entities.psql.User;
-import com.oleksii.leheza.projects.carmarket.enums.UserRole;
 import com.oleksii.leheza.projects.carmarket.enums.UserStatus;
 import com.oleksii.leheza.projects.carmarket.security.filter.filters.UserSearchCriteria;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
@@ -23,8 +21,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -44,7 +40,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @GetMapping()
     public ResponseEntity<Page<UserManagerDashboardDto>> getUsers(
             @RequestParam(defaultValue = "0") int page,
@@ -65,7 +61,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/{userId}/status/{userStatus}")
     public ResponseEntity<?> changeUserStatus(@PathVariable Long userId,
                                               @PathVariable UserStatus userStatus) {
@@ -88,7 +84,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/filter")
     public ResponseEntity<Page<UserManagerDashboardDto>> filterUsers(@RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "10") int size,
@@ -96,43 +92,6 @@ public class UserController {
         Page<UserManagerDashboardDto> users = userService.getUsersWithFilter(page, size, filterRequest);
         return new ResponseEntity<>(users, !users.isEmpty() ? HttpStatus.OK : HttpStatus.NO_CONTENT);
     }
-
-
-    @Operation(summary = "Get all managers", description = "Get a list of all managers.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Managers retrieved successfully",
-                    content = @Content(schema = @Schema(implementation = User.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    @GetMapping("/managers")
-    public ResponseEntity<List<User>> getManagers() {
-        return new ResponseEntity<>(userService.getUsersByRole(UserRole.ROLE_MANAGER), HttpStatus.OK);
-    }
-
-    @Operation(summary = "Update an existing manager", description = "Update an existing manager.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Manager updated successfully",
-                    content = @Content(schema = @Schema(implementation = Void.class))),
-            @ApiResponse(responseCode = "400", description = "Bad request",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Manager is not found",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "409", description = "Manager duplicate",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-    })
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
-    @PutMapping("/users/{userId}/approve")
-    public ResponseEntity<?> updateUserStatusToManager(@PathVariable Long userId) {
-        userService.approveManager(userId);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
 
     @Operation(summary = "Get user data", description = "Get user data by email.")
     @ApiResponses(value = {
@@ -144,7 +103,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/cabinet")
     public ResponseEntity<UserUpdateDto> getUserDataByEmail(@AuthenticationPrincipal String email) {
         Long id = userService.getUserIdByEmail(email);
@@ -164,7 +123,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @PutMapping("/cabinet")
     public ResponseEntity<Response> saveUserInfo(@AuthenticationPrincipal String email,
                                                  @Valid @RequestBody UserUpdateDto userUpdateDto) {
@@ -191,7 +150,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/role")
     public ResponseEntity<Response> getUserRole(@AuthenticationPrincipal String email) {
         Response response = new Response(userService.getUserRoleByEmail(email));
@@ -209,7 +168,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/id/vehicleId/{vehicleId}")
     public ResponseEntity<Response> getUserIdByVehicleId(@PathVariable Long vehicleId) {
         Response response = new Response(userService.getUserIdByVehicleId(vehicleId));
@@ -227,7 +186,7 @@ public class UserController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
-    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENT', 'ROLE_MANAGER')")
     @GetMapping("/info/vehicleId/{vehicleId}")
     public ResponseEntity<UserDetailsDto> getUserDataByVehicleId(@PathVariable Long vehicleId) {
         return new ResponseEntity<>(userService.getUserDetailsInfoByVehicleId(vehicleId), HttpStatus.OK);
