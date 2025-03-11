@@ -4,6 +4,7 @@ import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.security.AuthenticationRequest;
 import com.oleksii.leheza.projects.carmarket.dto.security.AuthenticationResponse;
 import com.oleksii.leheza.projects.carmarket.dto.security.RegisterRequest;
+import com.oleksii.leheza.projects.carmarket.entities.psql.User;
 import com.oleksii.leheza.projects.carmarket.security.AuthenticationService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.OtpService;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
@@ -44,8 +45,13 @@ public class AuthenticationController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
-        return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+    public ResponseEntity<?> authenticate(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+        User user = userService.findByEmail(authenticationRequest.getEmail());
+        if (user.isAccountNonExpired() && user.isAccountNonLocked() && user.isEnabled()) {
+            return ResponseEntity.ok(authenticationService.authenticate(authenticationRequest));
+        } else {
+            return new ResponseEntity<>(new Response("User is not enable") ,HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @Operation(summary = "Register a user", description = "Register a user with login and password.")

@@ -19,6 +19,15 @@ const Signup = () => {
       setError('Last name must be between 1 and 100 characters.');
       return false;
     }
+
+    if (!/^[a-zA-Z]+$/.test(firstName)) {
+      setError("First name should contain only letters.");
+      return false;
+    }
+    if (!/^[a-zA-Z]+$/.test(lastName)) {
+      setError("Last name should contain only letters.");
+      return false;
+    }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please provide a valid email address.');
@@ -76,12 +85,23 @@ const Signup = () => {
         },
       });
 
-      if (response.status === 201) {
+      console.log("1111111111111111");
+      console.log(response);
+
+      if (response.status === 409) {
+        setError(response.data);
+      } else if (response.status === 201) {
         window.location.href = '/signup-success';
       }
     } catch (err) {
-      setError('Failed to create account. Please try again.');
-    } finally {
+      if (err.response && err.response.status === 409) {
+        setError(err.response.data.message || "This email already taken.");
+      } else {
+        console.log(err);
+        setError("Failed to create account. Please try again.");
+      }
+    }
+    finally {
       setLoading(false);
     }
   };
