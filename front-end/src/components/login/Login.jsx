@@ -2,10 +2,21 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('manager@gmail.com');
+  const [password, setPassword] = useState('12345678_Password');
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
+
+  const handleEmailChange = (e) => {
+    const emailValue = e.target.value;
+    setEmail(emailValue);
+    if (emailValue === 'client@gmail.com' || emailValue === 'manager@gmail.com') {
+      setPassword('12345678_Password');
+    } else {
+      setPassword('');
+    }
+  };
+
   const handleLogin = async () => {
     try {
       const response = await axios.post('/auth/authenticate', { email, password }, {
@@ -34,15 +45,12 @@ const Login = () => {
       }
     } catch (err) {
       if (err.response && err.response.status === 401) {
-        // If status code is 401, display specific error message
         setError('Your account is not activated. Please verify your email account.');
       } else {
-        // General error handling for other errors
         setError('Invalid username or password');
       }
     }
   };
-
 
   return (
     <div className="container">
@@ -57,20 +65,25 @@ const Login = () => {
                 <label htmlFor="email" className="form-label">Email</label>
                 <input
                   type="email"
-                  className="form-control"
+                  className="form-control box-shadow-06"
                   id="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={handleEmailChange}
                   placeholder="Enter your email"
                   required
                   style={{ borderRadius: '25px' }}
+                  list="emailSuggestions"
                 />
+                <datalist id="emailSuggestions">
+                  <option value="client@gmail.com" />
+                  <option value="manager@gmail.com" />
+                </datalist>
               </div>
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">Password</label>
                 <input
                   type="password"
-                  className="form-control"
+                  className="form-control box-shadow-06"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -95,7 +108,7 @@ const Login = () => {
                 </div>
               </div>
               <div className="d-grid mb-3">
-                <button onClick={handleLogin} className="btn btn-primary btn-pill" style={{ borderRadius: '25px' }}>
+                <button onClick={handleLogin} className="btn btn-primary btn-pill box-shadow-12" style={{ borderRadius: '25px' }}>
                   Login
                 </button>
               </div>
