@@ -12,10 +12,12 @@ import com.oleksii.leheza.projects.carmarket.repositories.sql.EmailConfirmationR
 import com.oleksii.leheza.projects.carmarket.repositories.sql.OtpRepository;
 import com.oleksii.leheza.projects.carmarket.repositories.sql.UserRepository;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.EmailService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,7 @@ public class EmailServiceImpl implements EmailService {
     private static final String NEW_USER_ACCOUNT_VERIFICATION_SUBJECT = "New User Account Verification";
     private static final String UPDATE_USER_ACCOUNT_VERIFICATION_SUBJECT = "Update User Account Verification";
     private static final String VEHICLE_APPROVED_STATUS_MESSAGE = "Vehicle Approved Status";
+    private static final String CREATE_NEW_PASSWORD = "Write this number at the application";
     private final JavaMailSender mailSender;
     private final UserRepository userRepository;
     private final OtpRepository otpRepository;
@@ -37,14 +40,23 @@ public class EmailServiceImpl implements EmailService {
     public void sendCreateAccountConformationEmailRequest(String to, String token) {
         try {
             log.info("Start sending confirmation request to user {}", to);
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
-            simpleMailMessage.setTo(USER_EMAIL);//TODO prod input "to" variable
-            simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION_SUBJECT);
-            simpleMailMessage.setText(getCreateUserEmailMessage("http://localhost:3000", token));//TODO change path
-            mailSender.send(simpleMailMessage);
-            log.info("Email ");
-        } catch (SmtpException e) {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+            messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
+            messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
+            messageHelper.setSubject(NEW_USER_ACCOUNT_VERIFICATION_SUBJECT);
+            String confirmLink = getCreateUserEmailMessage("http://localhost:3000", token);//TODO change path
+            String emailContent = String.format(
+                    "Dear user,<br><br>" +
+                            "Please click the following link to confirm your account:<br>" +
+                            "<a href=\"%s\">Confirm your account</a><br><br>" +
+                            "Thank you!",
+                    confirmLink
+            );
+            messageHelper.setText(emailContent, true);
+            mailSender.send(mimeMessage);
+            log.info("Email sent successfully to user {}", to);
+        } catch (SmtpException | MessagingException e) {
             throw new SmtpException("Could not send OTP to user " + to);
         }
     }
@@ -53,44 +65,55 @@ public class EmailServiceImpl implements EmailService {
     public void sendUpdateAccountConformationEmailRequest(String to, String token) {
         try {
             log.info("Start sending confirmation request to user {}", to);
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
-            simpleMailMessage.setTo(USER_EMAIL);//TODO prod input "to" variable
-            simpleMailMessage.setSubject(UPDATE_USER_ACCOUNT_VERIFICATION_SUBJECT);
-            simpleMailMessage.setText(getUpdateUserEmailMessage("http://localhost:3000", token));//TODO change path
-            mailSender.send(simpleMailMessage);
-            log.info("Email ");
-        } catch (SmtpException e) {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+            messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
+            messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
+            messageHelper.setSubject(UPDATE_USER_ACCOUNT_VERIFICATION_SUBJECT);
+            String confirmLink = getUpdateUserEmailMessage("http://localhost:3000", token);//TODO change path
+            String emailContent = String.format(
+                    "Dear user,<br><br>" +
+                            "Please click the following link to confirm your new email:<br>" +
+                            "<a href=\"%s\">Confirm your email</a><br><br>" +
+                            "Thank you!",
+                    confirmLink
+            );
+            messageHelper.setText(emailContent, true);
+            mailSender.send(mimeMessage);
+            log.info("Email sent successfully to user {}", to);
+        } catch (SmtpException | MessagingException e) {
             throw new SmtpException("Could not send OTP to user " + to);
         }
     }
 
     private String getCreateUserEmailMessage(String host, String token) {
-        return "Your new account has been created. Please click the link below to verify your account. \n\n" +
-                getVerificationUrl(host, token) + "\n\nThe support Team";
+        return getVerificationUrl(host, token);
     }
 
     private String getUpdateUserEmailMessage(String host, String token) {
-        return "Your account email has been updated. Please click the link below to verify your account. \n\n" +
-                getVerificationUrl(host, token) + "\n\nThe support Team";
+        return getVerificationUrl(host, token);
     }
 
     @Async
     @Override
     public void sendOTP(String email) {
         try {
-            log.info("Start sending OTP to user {}", email);
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
-            simpleMailMessage.setTo(USER_EMAIL);//TODO prod input to variable
-            simpleMailMessage.setSubject(NEW_USER_ACCOUNT_VERIFICATION_SUBJECT);
+            log.info("Start sending otp to user {}", email);
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+            messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
+            messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
+            messageHelper.setSubject(CREATE_NEW_PASSWORD);
             OtpToken otp = new OtpToken(userRepository.findByEmailIgnoreCase(email)
                     .orElseThrow(() -> new ResourceNotFoundException("user with email " + email + " does not found")));
             otpRepository.save(otp);
-            simpleMailMessage.setText(Integer.toString(otp.getPassword()));
-            mailSender.send(simpleMailMessage);
+            String emailContent = String.format(
+                    "Write this number to the application<br><br>" +
+                            Integer.toString(otp.getPassword()) + "<br><br>\n" + "Thank you!");
+            messageHelper.setText(emailContent, true);
+            mailSender.send(mimeMessage);
             log.info("Sent OTP to user {}", email);
-        } catch (SmtpException e) {
+        } catch (SmtpException | MessagingException e) {
             throw new SmtpException("Could not send OTP to user " + email);
         }
     }
@@ -99,16 +122,21 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendVehicleApproveStatus(Vehicle vehicle, String email, VehicleApproveStatus status) {
         try {
-            log.info("Start sending vehicle approve message {}", email);
-            SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            simpleMailMessage.setFrom(USER_EMAIL);//TODO prod input "from" variable
-            simpleMailMessage.setTo(USER_EMAIL);//TODO prod input to variable
-            simpleMailMessage.setSubject(VEHICLE_APPROVED_STATUS_MESSAGE);
-            simpleMailMessage.setText("Your vehicle ("+ vehicle.getBrand().getBrandName()+" "+ vehicle.getVehicleModel().getModelName()+") was " + status.name());
-            mailSender.send(simpleMailMessage);
+            log.info("Start sending vehicle approve message to user {}", email);
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
+            messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
+            messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
+            messageHelper.setSubject(VEHICLE_APPROVED_STATUS_MESSAGE);
+            OtpToken otp = new OtpToken(userRepository.findByEmailIgnoreCase(email)
+                    .orElseThrow(() -> new ResourceNotFoundException("user with email " + email + " does not found")));
+            otpRepository.save(otp);
+            String emailContent = String.format("Your vehicle (" + vehicle.getVehicleModel().getModelName() + ") was " + status.name());
+            messageHelper.setText(emailContent, true);
+            mailSender.send(mimeMessage);
             log.info("Sent vehicle approve message {}", email);
-        } catch (SmtpException e) {
-            throw new SmtpException("Could not send vehicle approve message " + email);
+        } catch (SmtpException | MessagingException e) {
+            throw new SmtpException("Could not send OTP to user " + email);
         }
     }
 
