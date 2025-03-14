@@ -54,7 +54,7 @@ public class CarDatasetParser {
                 String modelName = data[MODEL_NAME_INDEX].trim();
                 if (!brandName.isEmpty() && !modelName.isEmpty() && !bodyStyle.isEmpty()) {
                     VehicleBrand brand = saveBrand(brandName);
-                    VehicleBodyType vehicleBodyType = saveBodyStyle(bodyStyle);
+                    VehicleBodyType vehicleBodyType = saveBodyType(bodyStyle);
                     Engine engine = saveEngine(parseEngine(data));
                     VehicleModel vehicleModel = new VehicleModel(modelName, fromYear, toYear, vehicleBodyType, brand);
                     vehicleModel.addEngine(engine);
@@ -76,11 +76,11 @@ public class CarDatasetParser {
                 });
     }
 
-    private VehicleBodyType saveBodyStyle(String bodyStyle) {
+    private VehicleBodyType saveBodyType(String bodyType) {
         return vehicleBodyTypeRepository
-                .findByBodyTypeName(bodyStyle)
+                .findByBodyTypeName(bodyType)
                 .orElseGet(() -> {
-                    VehicleBodyType newBodyType = new VehicleBodyType(bodyStyle);
+                    VehicleBodyType newBodyType = new VehicleBodyType(bodyType);
                     vehicleBodyTypeRepository.save(newBodyType);
                     return newBodyType;
                 });

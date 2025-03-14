@@ -6,8 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 @Getter
 public enum UserRole implements GrantedAuthority {
 
-    ROLE_MANAGER(2),
-    ROLE_CLIENT(3);
+    ROLE_MANAGER(1),
+    ROLE_CLIENT(2);
 
     private final int order;
 

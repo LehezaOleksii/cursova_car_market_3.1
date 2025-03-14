@@ -39,4 +39,14 @@ public interface VehicleRepository extends
 
     @Query("SELECT v FROM Vehicle v WHERE v.user.id = :userId")
     List<Vehicle> findByUserId(Long userId);
+
+    @Query("SELECT COUNT (v) FROM Vehicle v where v.status=:vehicleStatus")
+    long countByStatus(VehicleStatus vehicleStatus);
+
+    @Query("""
+    SELECT v FROM Vehicle v 
+    ORDER BY CASE WHEN v.status = :status THEN 1 ELSE 2 END, v.status DESC
+""")
+    Page<Vehicle> findByStatusFirst(@Param("status") VehicleStatus status, Pageable pageable);
+
 }

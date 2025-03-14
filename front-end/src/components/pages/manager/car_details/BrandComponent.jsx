@@ -130,10 +130,10 @@ const BrandComponent = () => {
     };
 
     return (
-        <div className="car-details-list mt-4 bg-light">
-            <h3>Available Brands</h3>
+        <div className="car-details-list mt-4 bg-light br24 box-shadow-12">
+            <h3>Brands</h3>
             <button
-                className="car-details-button"
+                className="car-details-button mb-2 br24 box-shadow-12"
                 onClick={() => setShowCreateMenu(!showCreateMenu)}
             >
                 {showCreateMenu ? "Hide Create brand menu" : "Show Create brand menu"}
@@ -145,8 +145,9 @@ const BrandComponent = () => {
                         placeholder="New brand name"
                         value={newBrandName}
                         onChange={(e) => setNewBrandName(e.target.value)}
+                        className="mb-2"
                     />
-                    <button className="car-details-button" onClick={handleCreateBrand}>
+                    <button className="car-details-button mt-2 mb-3 br24 box-shadow-12" onClick={handleCreateBrand}>
                         Create Brand
                     </button>
                 </div>
@@ -158,13 +159,13 @@ const BrandComponent = () => {
                             <span className="car-details-name">{brand.name}</span>
                             <div className="d-flex ml-auto">
                                 <button
-                                    className="car-details-button"
+                                    className="car-details-button br24 box-shadow-12" style={{ width: "75px", marginRight: "15px" }}
                                     onClick={() => handleEditBrand(brand)}
                                 >
                                     {editingBrand === brand.id ? "Cancel" : "Edit"}
                                 </button>
                                 <button
-                                    className="delete-button car-details-button"
+                                    className="delete-button car-details-button br24 box-shadow-12" style={{ width: "75px" }}
                                     onClick={() => handleDeleteBrand(brand)}
                                 >
                                     Delete
@@ -178,7 +179,7 @@ const BrandComponent = () => {
                                 value={editedBrandName}
                                 onChange={(e) => setEditedBrandName(e.target.value)}
                             />
-                            <button className="car-details-button mt-2" onClick={handleSaveBrand}>
+                            <button className="car-details-button mt-2 br24 box-shadow-12" onClick={handleSaveBrand} style={{ width: "75px" }}>
                                 Save
                             </button>
                         </div>

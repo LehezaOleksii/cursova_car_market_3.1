@@ -22,6 +22,15 @@ public interface VehicleModelRepository extends JpaRepository<VehicleModel, Long
     @Transactional
     @Modifying
     @Query(value = "DELETE FROM vehicle_models_engines WHERE vehicle_model_id = :modelId AND engines_id = :engineId", nativeQuery = true)
-    void deleteEngineFromModel(@Param("modelId") Long modelId, @Param("engineId") Long engineId);
+    void unassignEngineFromModel(@Param("modelId") Long modelId, @Param("engineId") Long engineId);
 
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM vehicle_models_engines WHERE engines_id = :engineId AND vehicle_model_id IN (SELECT id FROM vehicle_models WHERE model_name IN (:modelNames))", nativeQuery = true)
+    void unassignEngineFromModels(@Param("engineId") Long engineId, @Param("modelNames") List<String> modelNames);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Vehicle v WHERE v.engine.id = :engineId")
+    void unassignEngineFromVehicles(Long engineId);
 }

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import CarStateFilter from "./CarStateFilter";
 import Select from "react-select";
 import CarFilterField from "../../client/fields/CarFilterField";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-const CarFilter = ({ setCars }) => {
+const CarFilter = ({ setCars, page, size }) => {
+  const navigate = useNavigate();
 
   const [selectedRadio, setSelectedRadio] = useState("ALL");
 
@@ -27,7 +28,6 @@ const CarFilter = ({ setCars }) => {
   const handleRadioChange = (value) => {
     setSelectedRadio(value);
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -96,24 +96,6 @@ const CarFilter = ({ setCars }) => {
     }
   }, [selectedBrand, jwtStr]);
 
-  const setPostedCars = async () => {
-    const url = `http://localhost:8080/vehicles/management/filter`;
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        credentials: 'include',
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + jwtStr
-      }
-    });
-    if (response.ok) {
-      const data = await response.json();
-      setCars(data);
-    } else {
-      console.error("Failed to fetch cars:", response.status);
-    }
-  };
-
   const handleSearch = async () => {
     if (parseFloat(minPrice) < 0 || parseFloat(maxPrice) < 0) {
       alert("Price values must be positive.");
@@ -135,35 +117,52 @@ const CarFilter = ({ setCars }) => {
       return;
     }
 
+    let routeUrl = `/cars/managment`;
+
     const queryParams = new URLSearchParams();
 
     if (selectedBrand) queryParams.append("brandName", selectedBrand.value);
     if (selectedModel) queryParams.append("modelName", selectedModel.value);
     if (selectedBodyType) queryParams.append("bodyType", selectedBodyType.value);
     if (selectedRegion) queryParams.append("region", selectedRegion.value);
-    if (minPrice) queryParams.append("fromPrice", minPrice);
-    if (maxPrice) queryParams.append("toPrice", maxPrice);
-    if (minYear) queryParams.append("fromYear", minYear);
-    if (maxYear) queryParams.append("toYear", maxYear);
+    if (minPrice) queryParams.append("minPrice", minPrice);
+    if (maxPrice) queryParams.append("maxPrice", maxPrice);
+    if (minYear) queryParams.append("minYear", minYear);
+    if (maxYear) queryParams.append("maxYear", maxYear);
     queryParams.append("status", selectedRadio);
+    queryParams.append("page", 0);
+    queryParams.append("size", size);
+
+    navigate(`${routeUrl}?${queryParams.toString()}`);
+  };
+
+
+  const setPostedCars = async () => {
+    let routeUrl = `http://localhost:8080/vehicles/management/filter`;
+    const queryParams = new URLSearchParams();
+    queryParams.append("page", page);
+    queryParams.append("size", size);
+    const fullUrl = `${routeUrl}?${queryParams.toString()}`;
 
     try {
-      setCars([]);
-      const url = `http://localhost:8080/vehicles/management/filter?${queryParams.toString()}`;
-      const response = await fetch(url, {
-        method: "GET",
+      const response = await fetch(fullUrl, {
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + jwtStr,
-        },
+          credentials: 'include',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+        }
       });
-      const data = await response.json();
-      setCars(data.content || []);
+      if (response.ok) {
+        const data = await response.json();
+        setCars(data.content);
+      } else {
+        console.error("Failed to fetch cars:", response.status);
+      }
     } catch (error) {
       console.error("Error fetching cars:", error);
     }
   };
-
 
   const handleClearFilter = () => {
     setSelectedBrand("");
@@ -176,90 +175,197 @@ const CarFilter = ({ setCars }) => {
     setMinPrice("");
     setMaxPrice("");
     setPostedCars()
+    const routeUrl = `/cars/managment`;
+    navigate(`${routeUrl}`);
   };
 
   return (
-    <div className="card mt-3 mb-5 p-3">
-      <h5 className="card-title mb-2">Car Filter</h5>
-      <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <Select
-            value={selectedBrand}
-            onChange={setSelectedBrand}
-            options={brands}
-            placeholder="Select Brand"
-          />
+    <div className="card mb-3 br24 box-shadow-12 col-8 mx-auto">
+      <div className="card-header">
+        <h5 className="card-title text-center">Car Filter</h5>
+      </div>
+      <div className="p-3">
+        <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
+        <div className="row">
+          <div className="col-md-6 mb-3">
+            <Select
+              value={selectedBrand}
+              onChange={setSelectedBrand}
+              options={brands}
+              placeholder="Select Brand"
+              menuPortalTarget={document.body}
+              menuShouldScrollIntoView={false}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
+            />
+          </div>
+          <div className="col-md-6 mb-3">
+            <Select
+              value={selectedModel}
+              onChange={setSelectedModel}
+              placeholder="Select Model"
+              menuPortalTarget={document.body}
+              menuShouldScrollIntoView={false}
+              options={
+                models.length > 0
+                  ? models
+                  : [{ label: "Select Brand Before Selecting Model", value: "", isDisabled: true }]
+              }
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: "12px",
+                  boxShadow: "5px 5px 10px rgba(0, 0, 0, 0.06)",
+                  transition: "box-shadow 0.3s ease",
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: "0 18px",
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: "12px",
+                }),
+                option: (base, { isDisabled }) => ({
+                  ...base,
+                  color: isDisabled ? "" : base.color,
+                  backgroundColor: isDisabled ? "transparent" : base.backgroundColor,
+                  ":hover": {
+                    backgroundColor: !isDisabled ? "#f1f1f1" : "transparent",
+                  },
+                }),
+              }}
+            />
+          </div>
         </div>
-        <div className="col-md-6 mb-3">
-          <Select
-            value={selectedModel}
-            onChange={setSelectedModel}
-            options={models}
-            placeholder="Select Model"
-          />
+        <div className="row">
+          <div className="col-md-6 mb-3">
+            <Select
+              value={selectedRegion}
+              onChange={setSelectedRegion}
+              options={regions}
+              placeholder="Select Region"
+              menuPortalTarget={document.body}
+              menuShouldScrollIntoView={false}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
+            />
+          </div>
+          <div className="col-md-6 mb-3">
+            <Select
+              value={selectedBodyType}
+              onChange={setSelectedBodyType}
+              options={bodyTypes}
+              placeholder="Select Body Type"
+              menuPortalTarget={document.body}
+              menuShouldScrollIntoView={false}
+              styles={{
+                control: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                  boxShadow: '5px 5px 10px rgba(0, 0, 0, 0.06)',
+                  transition: 'box-shadow 0.3s ease',
+                }),
+                dropdownIndicator: (base) => ({
+                  ...base,
+                  padding: '0 18px',
+                }),
+                menu: (base) => ({
+                  ...base,
+                  borderRadius: '12px',
+                }),
+                option: (base) => ({
+                  ...base,
+                  ':hover': {
+                    backgroundColor: '#f1f1f1',
+                  },
+                }),
+              }}
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <CarFilterField
+              type="number"
+              value={minYear}
+              onChange={(e) => setMinYear(e.target.value)}
+              placeholder="From Year"
+            />
+          </div>
+          <div className="col-md-6">
+            <CarFilterField
+              type="number"
+              value={maxYear}
+              onChange={(e) => setMaxYear(e.target.value)}
+              placeholder="To Year"
+            />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            <CarFilterField
+              type="number"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              placeholder="From Price"
+            />
+          </div>
+          <div className="col-md-6">
+            <CarFilterField
+              type="number"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              placeholder="Max Price"
+            />
+          </div>
         </div>
       </div>
-
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <Select
-            value={selectedRegion}
-            onChange={setSelectedRegion}
-            options={regions}
-            placeholder="Select Region"
-          />
-        </div>
-        <div className="col-md-6 mb-3">
-          <Select
-            value={selectedBodyType}
-            onChange={setSelectedBodyType}
-            options={bodyTypes}
-            placeholder="Select Body Type"
-          />
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-md-6">
-          <CarFilterField
-            type="number"
-            value={minYear}
-            onChange={(e) => setMinYear(e.target.value)}
-            placeholder="From Year"
-          />
-        </div>
-        <div className="col-md-6">
-          <CarFilterField
-            type="number"
-            value={maxYear}
-            onChange={(e) => setMaxYear(e.target.value)}
-            placeholder="To Year"
-          />
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-md-6">
-          <CarFilterField
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            placeholder="From Price"
-          />
-        </div>
-        <div className="col-md-6">
-          <CarFilterField
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="Max Price"
-          />
-        </div>
-      </div>
-      <div className="row">
+      <div className="row mb-4">
         <div className="col-md-6 mx-auto d-flex justify-content-end align-items-center">
           <div className="d-flex w-50">
             <button
-              className="btn btn-primary w-100"
+              className="btn btn-primary w-100 br16 box-shadow-12"
               onClick={handleSearch}
             >
               <svg
@@ -277,15 +383,8 @@ const CarFilter = ({ setCars }) => {
           </div>
         </div>
         <div className="col-md-6 mx-auto d-flex align-items-center">
-          <Link
-            to={`/client/advanced_filter`}
-            className="btn btn-primary"
-            style={{ whiteSpace: 'nowrap' }}
-          >
-            Advanced Search
-          </Link>
           <button
-            className="btn btn-secondary ms-3"
+            className="btn btn-secondary ms-3 w-25 box-shadow-12 br16"
             onClick={handleClearFilter}
           >
             Clear

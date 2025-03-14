@@ -116,9 +116,9 @@ const EngineComponent = () => {
                         "Content-Type": "application/json",
                         Authorization: "Bearer " + jwtStr,
                     },
+                    body: JSON.stringify(engine.modelNames),
                 }
             );
-
             if (response.ok) {
                 const filteredEngines = engines.filter((e) => e.id !== engine.id);
                 setEngines(filteredEngines);
@@ -131,10 +131,10 @@ const EngineComponent = () => {
     };
 
     return (
-        <div className="car-details-list mt-4 bg-light">
-            <h3>Available Engines</h3>
+        <div className="car-details-list mt-4 bg-light br24 box-shadow-12">
+            <h3>Engines</h3>
             <button
-                className="car-details-button"
+                className="car-details-button mb-3 br24 box-shadow-12"
                 onClick={() => setShowCreateMenu(!showCreateMenu)}
             >
                 {showCreateMenu ? "Hide Create Engine Menu" : "Show Create Engine Menu"}
@@ -162,34 +162,35 @@ const EngineComponent = () => {
                         value={newEngine.horsepower}
                         onChange={(e) => setNewEngine((prev) => ({ ...prev, horsepower: +e.target.value }))}
                     />
-                    <button className="car-details-button mt-2" onClick={handleCreateEngine}>
+                    <button className="car-details-button mt-3 mb-3 br24 box-shadow-12" onClick={handleCreateEngine}>
                         Create Engine
                     </button>
                 </div>
             )}
             <ul className="car-details-elements">
+                <h5>Engines</h5>
                 {engines.map((engine) => (
                     <li key={engine.id} className={editingEngine === engine.id ? "editing" : ""}>
                         <div className="d-flex justify-content-between align-items-center">
                             <span className="car-details-name">
-                                {engine.name} ({engine.volume}L, {engine.horsepower} HP)
+                                <h6>{engine.name} ({engine.volume}L, {engine.horsepower} HP)</h6>
                             </span>
                             <div className="d-flex ml-auto">
                                 <button
-                                    className="car-details-button"
+                                    className="car-details-button br24 box-shadow-12" style={{ width: "75px", marginRight: "15px" }}
                                     onClick={() => handleEditEngine(engine)}
                                 >
                                     {editingEngine === engine.id ? "Cancel" : "Edit"}
                                 </button>
                                 <button
-                                    className="delete-button car-details-button"
+                                    className="delete-button car-details-button br24 box-shadow-12" style={{ width: "75px" }}
                                     onClick={() => handleDeleteEngine(engine)}
                                 >
                                     Delete
                                 </button>
                             </div>
                         </div>
-                        
+
                         <ul className="car-details-elements">
                             <strong>Models:</strong>
                             {engine.modelNames.length > 0 ? (
@@ -226,7 +227,7 @@ const EngineComponent = () => {
                                     onChange={(e) => handleInputChange("horsepower", e.target.value)}
                                     className="form-control"
                                 />
-                                <button className="car-details-button mt-2" onClick={handleSaveEngine}>
+                                <button className="car-details-button mt-3 br24 box-shadow-12" onClick={handleSaveEngine} style={{ width: "75px" }}>
                                     Save
                                 </button>
                             </div>

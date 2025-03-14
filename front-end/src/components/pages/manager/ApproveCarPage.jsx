@@ -21,8 +21,33 @@ const ApproveCarPage = () => {
     return { page, size };
   };
 
-  const fetchData = async (page = 0, size = 5) => {
-    const url = `http://localhost:8080/vehicles?page=${page}&size=${size}`;
+  const getFiltersFromUrl = () => {
+    const params = new URLSearchParams(location.search);
+    return {
+      brandName: params.get("brandName") || "",
+      modelName: params.get("modelName") || "",
+      bodyType: params.get("bodyType") || "",
+      region: params.get("region") || "",
+      fromPrice: params.get("minPrice") || "",
+      toPrice: params.get("maxPrice") || "",
+      fromYear: params.get("minYear") || "",
+      toYear: params.get("maxYear") || "",
+      status: params.get("status") || "ALL",
+    };
+  };
+
+  const fetchData = async (page = 0, size = 5, filters = {}) => {
+    const queryParams = new URLSearchParams();
+    queryParams.append("page", page);
+    queryParams.append("size", size);
+    Object.keys(filters).forEach((key) => {
+      if (filters[key]) {
+        queryParams.append(key, filters[key]);
+      }
+    });
+
+    const url = `http://localhost:8080/vehicles/management/filter?${queryParams.toString()}`;
+
     const responseVehiclesOnModeration = await fetch(url, {
       method: "GET",
       headers: {
@@ -31,7 +56,7 @@ const ApproveCarPage = () => {
       },
       credentials: "include",
     });
-    
+
     const data = await responseVehiclesOnModeration.json();
     setCars(data.content);
     setTotalPages(data.totalPages);
@@ -40,12 +65,15 @@ const ApproveCarPage = () => {
 
   useEffect(() => {
     const { page, size } = getPageAndSizeFromUrl();
-    fetchData(page, size);
+    const filters = getFiltersFromUrl();
+    fetchData(page, size, filters);
   }, [location.search]);
 
   const handlePageChange = (page) => {
     const { size } = getPageAndSizeFromUrl();
-    navigate(`?page=${page}&size=${size}`);
+    const filters = getFiltersFromUrl();
+    navigate(`?page=${page}&size=${size}&${new URLSearchParams(filters).toString()}`);
+    window.scrollTo(0, 0);
   };
 
   const removeCarFromList = (carId) => {
@@ -61,32 +89,40 @@ const ApproveCarPage = () => {
   return (
     <div>
       <WrappedHeader />
-      <div className="card-container p-5">
-      <CarFilter setCars={setCars} />
-      {cars.length > 0 ? (
+      <div className="card-container p-5 pt-4">
+        <CarFilter
+          setCars={setCars}
+          page={currentPage}
+          size={5}
+        />
+        {cars.length > 0 ? (
           <>
-            {onModerationCars.length > 0 && (
-              <div>
-                <hr />
-                <h4 className="text-center">Cars on Moderation</h4>
-                <hr />
-                {onModerationCars.map((car) => (
-                  <ApproveCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
-                ))}
-              </div>
-            )}
-
-            {postedCars.length > 0 && (
-              <div>
-                <hr />
-                <h4 className="text-center">Posted Cars</h4>
-                <hr />
-                {postedCars.map((car) => (
-                  <ApproveCar key={car.id} car={car} removeCarFromList={removeCarFromList} />
-                ))}
-              </div>
-            )}
-
+            <div className="d-flex flex-column align-items-center">
+              {onModerationCars.length > 0 && (
+                <div className="w-100">
+                  <hr className="mt-2" />
+                  <h4 className="text-center">Cars on Moderation</h4>
+                  <hr className="mb-4" />
+                  {onModerationCars.map((car) => (
+                    <div className="col-9 mx-auto" key={car.id}>
+                      <ApproveCar car={car} removeCarFromList={removeCarFromList} />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {postedCars.length > 0 && (
+                <div className="w-100">
+                  <hr className="mt-1" />
+                  <h4 className="text-center">Posted Cars</h4>
+                  <hr className="mb-4" />
+                  {postedCars.map((car) => (
+                    <div className="col-9 mx-auto" key={car.id}>
+                      <ApproveCar car={car} removeCarFromList={removeCarFromList} />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
             <div className="d-flex justify-content-center mt-4">
               <button
                 className="btn btn-outline-primary mx-1"
@@ -116,7 +152,9 @@ const ApproveCarPage = () => {
             </div>
           </>
         ) : (
-          <p>No cars to approve.</p>
+          <div className="d-flex justify-content-center align-items-center mt-5">
+            <p className="text-center">No cars found.</p>
+          </div>
         )}
       </div>
       <WrappedFooter />

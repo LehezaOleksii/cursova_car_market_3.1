@@ -46,7 +46,13 @@ import ChangeEmailSuccess from "./components/login/ChangeEmailSuccess";
 
 const App = () => {
 
-  const isLoggedIn = localStorage.getItem('jwtToken') ? true : false;
+  const expiration = parseInt(localStorage.getItem('jwtTokenExpiration'), 10);
+  var isLoggedIn = false;
+  if (Date.now() > expiration) {
+    isLoggedIn = false;
+  } else {
+    isLoggedIn = true;
+  }
 
   const wrapPrivateRoute = (element, user, redirect, requiredRole) => {
     return (
@@ -92,8 +98,7 @@ const App = () => {
 
       {/* chat */}
       <Route path="/chats" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chats', 'ROLE_CLIENT')} />
-      <Route path="*" element={<Navigate to="/login" />} />
-
+      <Route path="*" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
     </Routes>
   );
 };

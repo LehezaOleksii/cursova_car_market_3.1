@@ -22,14 +22,16 @@ public class VehicleModel {
     private String modelName;
     private int firstProductionYear;
     private int lastProductionYear;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_body_type_id")
     private VehicleBodyType bodyType;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "vehicleModels")
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Engine> engines = new HashSet<>();
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehicle_brand_id")
     private VehicleBrand vehicleBrand;
+    @OneToMany(mappedBy = "vehicleModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Vehicle> vehicles = new HashSet<>();
 
     public VehicleModel(String modelName,
                         int firstProductionYear,

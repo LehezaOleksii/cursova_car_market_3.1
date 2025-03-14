@@ -20,10 +20,8 @@ import com.oleksii.leheza.projects.carmarket.service.interfaces.VehicleService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -118,7 +116,7 @@ public class VehicleServiceImpl implements VehicleService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found while retrieving details vehicle"));
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
         if (vehicle.getStatus() != VehicleStatus.POSTED) {
-            if (role.getOrder() <= UserRole.ROLE_MANAGER.getOrder()) {
+            if (role.getOrder() > UserRole.ROLE_MANAGER.getOrder()) {
                 log.warn("User has not enough permissions");
                 throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
             }
@@ -306,8 +304,13 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public void deleteEngineToModel(Long engineId, Long modelId) {
-        vehicleModelRepository.deleteEngineFromModel(modelId, engineId);
+    public void unassignEngineToModel(Long engineId, Long modelId) {
+        vehicleModelRepository.unassignEngineFromModel(modelId, engineId);
+    }
+
+    @Override
+    public void unassignEngineToVehicles(Long engineId) {
+        vehicleModelRepository.unassignEngineFromVehicles(engineId);
     }
 
     @Override
@@ -405,13 +408,12 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Page<VehicleModerationDto> filterVehiclesModeration(Map<String, String> params, int page, int size) {
+    public Page<VehicleGarageDto> filterVehiclesModeration(Map<String, String> params, int page, int size) {
         Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
         VehicleSearchCriteria criteria = dtoMapper.mapToVehicleSearchCriteria(params);
-        criteria.setStatus(params.get("status"));
         Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
         return vehiclesPage
-                .map(dtoMapper::vehicleToVehicleModerationDto);
+                .map(dtoMapper::vehicleToVehicleGarageDto);
     }
 
     @Override
@@ -429,12 +431,59 @@ public class VehicleServiceImpl implements VehicleService {
         UserRole role = UserRole.valueOf(userRepository.findRoleByEmail(userEmail));
         Vehicle vehicle = vehicleRepository.findById(vehicleId).orElseThrow(() -> new ResourceNotFoundException("Vehicle not found"));
         if (vehicle.getStatus() != VehicleStatus.POSTED) {
-            if (role.getOrder() < UserRole.ROLE_MANAGER.getOrder()) {
+            if (role.getOrder() > UserRole.ROLE_MANAGER.getOrder()) {
                 log.warn("User has not enough permissions");
                 throw new com.oleksii.leheza.projects.carmarket.exceptions.SecurityException("User has not enough permissions");
             }
         }
         return dtoMapper.vehicleToUpdateVehicleDto(vehicle);
+    }
+
+    @Override
+    public Page<VehicleGarageDto> getVehicleGarageDtos(int page, int size) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        Long userId = userRepository.getUserIdByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found"));
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Vehicle> vehicles = vehicleRepository.findAll(pageable);
+        return vehicles.map(vehicle -> {
+            VehicleGarageDto vehicleDto = dtoMapper.vehicleToVehicleGarageDto(vehicle);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = userVehicleLike.map(UserVehicleLike::isLiked).orElse(false);
+            vehicleDto.setUserLiked(isUserLiked);
+            return vehicleDto;
+        });
+    }
+
+    @Override
+    public Page<VehicleGarageDto> getVehicleGarageDtosWithStatus(int page, int size, String status) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        Long userId = userRepository.getUserIdByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Vehicle> vehiclesPage = vehicleRepository.findByStatusFirst(VehicleStatus.ON_MODERATION, pageable);
+        List<VehicleGarageDto> vehicleDtos = mapVehiclesToDtos(vehiclesPage, userId);
+        return new PageImpl<>(vehicleDtos, pageable, vehiclesPage.getTotalElements());
+    }
+
+    @Override
+    public void unassignEngineFromModels(Long engineId, List<String> modelNames) {
+        vehicleModelRepository.unassignEngineFromModels(engineId,modelNames);
+    }
+
+    private List<VehicleGarageDto> mapVehiclesToDtos(Page<Vehicle> vehicles, Long userId) {
+        List<VehicleGarageDto> vehicleDtos = new ArrayList<>();
+        for (Vehicle vehicle : vehicles) {
+            VehicleGarageDto vehicleDto = dtoMapper.vehicleToVehicleGarageDto(vehicle);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = userVehicleLike.map(UserVehicleLike::isLiked).orElse(false);
+            vehicleDto.setUserLiked(isUserLiked);
+            vehicleDtos.add(vehicleDto);
+        }
+        return vehicleDtos;
     }
 
     private UserVehicleLike createUserVehicleLike(Long userId, Long vehicleId) {

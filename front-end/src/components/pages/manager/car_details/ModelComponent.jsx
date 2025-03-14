@@ -398,18 +398,18 @@ const ModelComponent = () => {
             console.error("Error creating model:", error);
         }
     };
-    
+
     return (
-        <div className="car-details-list mt-4 bg-light">
-            <h3>Available Models</h3>
+        <div className="car-details-list mt-4 bg-light br24 box-shadow-12">
+            <h3>Models</h3>
             <button
-                className="car-details-button mb-3"
+                className="car-details-button mb-3 br24 box-shadow-12"
                 onClick={() => setShowCreateModelMenu((prev) => !prev)}
             >
                 {showCreateModelMenu ? "Hide Create Model Menu" : "Show Create Model Menu"}
             </button>
             {showCreateModelMenu && (
-                <div className="create-model-menu">
+                <div>
                     <h4>Create New Model</h4>
                     <label><strong>Model Name</strong></label>
                     <input
@@ -421,7 +421,6 @@ const ModelComponent = () => {
                         }
                     />
                     {errors.modelName && <p className="text-danger">{errors.modelName}</p>}
-
                     <label><strong>First Production Year</strong></label>
                     <input
                         className="form-control"
@@ -434,7 +433,6 @@ const ModelComponent = () => {
                     {errors.firstProductionYear && (
                         <p className="text-danger">{errors.firstProductionYear}</p>
                     )}
-
                     <label><strong>Last Production Year</strong></label>
                     <input
                         className="form-control"
@@ -447,7 +445,6 @@ const ModelComponent = () => {
                     {errors.lastProductionYear && (
                         <p className="text-danger">{errors.lastProductionYear}</p>
                     )}
-
                     <label><strong>Body Type</strong></label>
                     <select
                         className="form-select"
@@ -466,7 +463,6 @@ const ModelComponent = () => {
                     {errors.bodyTypeName && (
                         <p className="text-danger">{errors.bodyTypeName}</p>
                     )}
-
                     <label><strong>Brand</strong></label>
                     <select
                         className="form-select"
@@ -485,9 +481,8 @@ const ModelComponent = () => {
                     {errors.vehicleBrandName && (
                         <p className="text-danger">{errors.vehicleBrandName}</p>
                     )}
-
                     <button
-                        className="car-details-button mt-3"
+                        className="car-details-button mt-3 mb-3 br24 box-shadow-12" 
                         onClick={handleCreateModel}
                     >
                         Create Model
@@ -495,7 +490,7 @@ const ModelComponent = () => {
                 </div>
             )}
             <div className="car-details-elements">
-                <label><strong>Filter by Brand</strong></label>
+                <label><h4>Filter by Brand</h4></label>
                 <input
                     type="text"
                     placeholder="Enter brand name"
@@ -514,13 +509,13 @@ const ModelComponent = () => {
                                         <span className="car-details-name">{model.modelName}</span>
                                         <div className="d-flex ml-auto">
                                             <button
-                                                className="car-details-button"
+                                                className="car-details-button br24 box-shadow-12" style={{ width: "75px", marginRight: "15px" }}
                                                 onClick={() => handleEditModel(model)}
                                             >
                                                 {editingModel === model.id ? "Cancel" : "Edit"}
                                             </button>
                                             <button
-                                                className="delete-button car-details-button"
+                                                className="delete-button car-details-button br24 box-shadow-12" style={{ width: "75px" }}
                                                 onClick={() => handleDeleteModel(model)}
                                             >
                                                 Delete
@@ -595,7 +590,7 @@ const ModelComponent = () => {
                                                                     <strong>Horsepower:</strong> {engine.horsepower} HP
                                                                 </p>
                                                                 <button
-                                                                    className="delete-button car-details-button"
+                                                                    className="delete-button car-details-button br24 box-shadow-12"
                                                                     onClick={() => handleDeleteEngine(engine.id, model.id)}
                                                                 >
                                                                     Delete Engine
@@ -607,13 +602,10 @@ const ModelComponent = () => {
                                                     <p className="text-muted">No engines available for this model.</p>
                                                 )}
                                             </div>
-                                            <button className="car-details-button mt-2" onClick={handleSaveModel}>
+                                            <button className="car-details-button mt-2 br24 box-shadow-12" style={{ width: "125px", marginRight: "15px" }} onClick={handleSaveModel}>
                                                 Save Model
                                             </button>
-                                            <button
-                                                className="car-details-button"
-                                                onClick={handleShowAddEngine}
-                                            >
+                                            <button className="car-details-button mt-2 br24 box-shadow-12" style={{ width: "125px" }} onClick={handleShowAddEngine}>
                                                 {showAddEngineDropdown ? "Cancel" : "Add Engine"}
                                             </button>
                                             {showAddEngineDropdown && (
@@ -632,10 +624,7 @@ const ModelComponent = () => {
                                                             </option>
                                                         ))}
                                                     </select>
-                                                    <button
-                                                        className="car-details-button"
-                                                        onClick={() => handleAddEngine(model.id)}
-                                                    >
+                                                    <button className="car-details-button mt-2 br24 box-shadow-12" style={{ width: "125px" }} onClick={() => handleAddEngine(model.id)}>
                                                         Add Engine
                                                     </button>
                                                 </div>

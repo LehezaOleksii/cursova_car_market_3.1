@@ -19,9 +19,7 @@ public class VehicleBodyType {
     private Long id;
     @OneToMany(mappedBy = "bodyType", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VehicleModel> vehicleModels = new HashSet<>();
-
     private String bodyTypeName;
-
     public VehicleBodyType(String bodyTypeName) {
         this.bodyTypeName = bodyTypeName;
     }

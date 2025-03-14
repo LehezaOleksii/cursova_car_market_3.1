@@ -234,7 +234,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
   }, []);
 
   return (
-    <div className="card mt-3 mb-4 p-3 br16 box-shadow-12">
+    <div className="card mt-4 mb-4 p-3 br16 box-shadow-12">
       <CarStateFilter selectedRadio={selectedRadio} onRadioChange={handleRadioChange} />
       <div className="row">
         <div className="col-md-6 mb-3">
@@ -424,7 +424,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
       </div>
       <div className="row">
         <div className="col-md-6 d-flex align-items-center gap-4">
-          <button className="btn-blue-color btn-primary w-50 br16 box-shadow-12" onClick={handleSearch}>
+          <button className="btn btn-blue-color btn-primary w-50 br16 box-shadow-12" onClick={handleSearch}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -439,13 +439,13 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
           </button>
           <button
             onClick={() => navigate('/advanced_filter')}
-            className="btn-primary btn-blue-color w-50 br16 box-shadow-12"
+            className="btn btn-primary btn-blue-color w-50 br16 box-shadow-12"
           >
             Advanced Search
           </button>
         </div>
         <div className="col-md-6 d-flex align-items-center justify-content-start">
-          <button className="btn btn-secondary w-25 br16 box-shadow-12" onClick={handleClearFilter}>
+          <button className="btn btn-secondary br16 box-shadow-12" onClick={handleClearFilter}>
             Clear filter
           </button>
         </div>

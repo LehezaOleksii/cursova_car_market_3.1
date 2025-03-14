@@ -563,7 +563,7 @@ const AddAuto = () => {
                       value={bodyType}
                       onChange={setBodyType}
                       options={bodyTypes}
-                      placeholder="Select Body Type"
+                      placeholder="Body Type"
                       styles={{
                         control: (base) => ({
                           ...base,

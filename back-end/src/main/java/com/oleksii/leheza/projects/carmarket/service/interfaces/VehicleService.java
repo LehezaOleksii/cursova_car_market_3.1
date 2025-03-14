@@ -66,7 +66,9 @@ public interface VehicleService {
 
     void addEngineToModel(Long engineId, Long modelId);
 
-    void deleteEngineToModel(Long engineId, Long modelId);
+    void unassignEngineToModel(Long engineId, Long modelId);
+
+    void unassignEngineToVehicles(Long engineId);
 
     BrandDto createBrand(BrandDto brandDto);
 
@@ -92,7 +94,13 @@ public interface VehicleService {
 
     Page<VehicleModerationDto> findAll(int page, int size);
 
-    Page<VehicleModerationDto> filterVehiclesModeration(Map<String, String> params, int page, int size);
+    Page<VehicleGarageDto> filterVehiclesModeration(Map<String, String> params, int page, int size);
 
     UpdateVehicleDto getUpdateVehicleDtoById(Long vehicleId);
+
+    Page<VehicleGarageDto> getVehicleGarageDtos(int page, int size);
+
+    Page<VehicleGarageDto> getVehicleGarageDtosWithStatus(int page, int size, String status);
+
+    void unassignEngineFromModels(Long engineId, List<String> modelNames);
 }

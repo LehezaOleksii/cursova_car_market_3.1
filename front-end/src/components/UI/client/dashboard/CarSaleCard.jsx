@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import gearboxIcon from '../../../../resources/gearbox.png';
 import canisterIcon from '../../../../resources/canister.png';
 import "../DashboardCar/car_style.css";
@@ -176,10 +176,10 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                   )}
                 </span>
               </p> <div>
-                <button onClick={handleNavigate} className="  btn-color-blue me-2 br24" style={{padding:"7px"}}>
+                <button onClick={handleNavigate} className="btn btn-primary btn-blue-color me-2 br24" style={{padding:"7px"}}>
                   Change Car Information
                 </button>
-                <button className="btn btn-danger br24" onClick={() => setShowConfirm(true)}>
+                <button className="btn btn-danger br24" style={{padding:"7px"}} onClick={() => setShowConfirm(true)}>
                   Remove Car
                 </button>
               </div>

@@ -88,7 +88,6 @@ const BodyTypeComponent = () => {
                     },
                 }
             );
-
             if (response.ok) {
                 const filteredBrands = bodyTypes.filter((b) => b.id !== brand.id);
                 setBodyTypes(filteredBrands);
@@ -130,10 +129,10 @@ const BodyTypeComponent = () => {
     };
 
     return (
-        <div className="car-details-list mt-4 bg-light">
-            <h3>Available Body types:</h3>
+        <div className="car-details-list mt-4 bg-light br24 box-shadow-12">
+            <h3>Body types</h3>
             <button
-                className="car-details-button"
+                className="car-details-button mb-3 br24 box-shadow-12"
                 onClick={() => setShowCreateMenu(!showCreateMenu)}
             >
                 {showCreateMenu ? "Hide Create body type menu" : "Show Create body type menu"}
@@ -146,7 +145,7 @@ const BodyTypeComponent = () => {
                         value={newBodyTypeName}
                         onChange={(e) => setNewBodyTypeName(e.target.value)}
                     />
-                    <button className="car-details-button" onClick={handleCreateBrand}>
+                    <button className="car-details-button mt-3 mb-3 br24 box-shadow-12" onClick={handleCreateBrand}>
                         Create Body type
                     </button>
                 </div>
@@ -158,13 +157,13 @@ const BodyTypeComponent = () => {
                             <span className="car-details-name">{brand.name}</span>
                             <div className="d-flex ml-auto">
                                 <button
-                                    className="car-details-button"
+                                    className="car-details-button br24 box-shadow-12" style={{ width: "75px", marginRight: "15px" }}
                                     onClick={() => handleEditBodyType(brand)}
                                 >
                                     {editingBodyTypes === brand.id ? "Cancel" : "Edit"}
                                 </button>
                                 <button
-                                    className="delete-button car-details-button"
+                                    className="delete-button car-details-button br24 box-shadow-12" style={{ width: "75px" }}
                                     onClick={() => handleDeleteBodyTypes(brand)}
                                 >
                                     Delete
@@ -178,7 +177,7 @@ const BodyTypeComponent = () => {
                                 value={editedBodyTypes}
                                 onChange={(e) => setEditedBodyTypes(e.target.value)}
                             />
-                            <button className="car-details-button mt-2" onClick={handleSaveBodyType}>
+                            <button className="car-details-button mt-2 br24 box-shadow-12" onClick={handleSaveBodyType} style={{ width: "75px" }}>
                                 Save
                             </button>
                         </div>

@@ -62,6 +62,18 @@ select option {
     font-size: 16px;
 }
 
-.btn-blue-color{
-    background-color: #007BFF;
-}
+.btn-blue-color {
+    background-color: #007bff !important;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3; 
+    transform: translateY(-1px);
+  }
+  
