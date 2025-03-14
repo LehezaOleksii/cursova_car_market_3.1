@@ -60,10 +60,7 @@ public class ExchangeRateUpdater {
                 .build();
         Optional<ExchangeRate> optionalExchangeRate = exchangeRateRepository
                 .findExchangeRateObjectByCurrencyShortNameAAndCurrencyShortNameB(USD, UAH);
-        if (optionalExchangeRate.isPresent()) {
-            exchangeRate = optionalExchangeRate.get();
-        }
-
+        optionalExchangeRate.ifPresent(rate -> exchangeRate.setId(rate.getId()));
         exchangeRateRepository.save(exchangeRate);
     }
 }
