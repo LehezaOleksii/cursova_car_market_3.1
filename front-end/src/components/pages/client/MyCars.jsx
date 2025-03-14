@@ -34,7 +34,7 @@ const MyCars = () => {
       <WrappedHeader />
       <div className="dashboard mt-4">
         {cars.length === 0 ? (
-          <div className="no-cars-message">
+          <div className="no-cars-message mt-5">
             <div className="text-center">You don't have any cars.</div>
           </div>
         ) : (
