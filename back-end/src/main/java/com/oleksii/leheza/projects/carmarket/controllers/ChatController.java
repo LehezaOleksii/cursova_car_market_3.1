@@ -4,7 +4,6 @@ import com.oleksii.leheza.projects.carmarket.dto.Response;
 import com.oleksii.leheza.projects.carmarket.dto.chat.ChatHistory;
 import com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName;
 import com.oleksii.leheza.projects.carmarket.service.interfaces.ChatRoomService;
-import com.oleksii.leheza.projects.carmarket.service.interfaces.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,7 +27,6 @@ import java.util.List;
 public class ChatController {
 
     private final ChatRoomService chatRoomService;
-    private final UserService userService;
 
     @Operation(summary = "Retrieve chat by two users ids", description = "Retrieve Chat by two users ids.")
     @ApiResponses(value = {
@@ -75,7 +73,7 @@ public class ChatController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
     })
     @GetMapping("/users/{id}")
-    public ResponseEntity<List<UserChatName>> getChatsByUserName(@PathVariable String id,//TODO
+    public ResponseEntity<List<UserChatName>> getChatsByUserName(@PathVariable String id,
                                                                  @RequestParam String name) {
         List<UserChatName> chats = chatRoomService.getUserChatsByName(id, name);
         return !chats.isEmpty() ? new ResponseEntity<>(chats, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);

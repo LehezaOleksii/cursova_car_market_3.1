@@ -59,14 +59,8 @@ public interface UserRepository extends
             "FROM User u WHERE u.id IN :userIds")
     List<UserChatName> getUserChatNamesByIds(@Param("userIds") List<Long> userIds);
 
-    @Query("SELECT CONCAT(u.firstName, ' ', u.lastName) FROM User u WHERE u.id = :userId")
-    String findFirstNameAndLastNameById(String userId);
-
     @Query("SELECT u.id FROM User u JOIN u.vehicles v WHERE v.id = :vehicleId")
     String findUserIdByVehicleId(Long vehicleId);
-
-    @Query("SELECT u.email FROM User u WHERE u.id = :id")
-    String findEmailById(String id);
 
     @Query("SELECT new com.oleksii.leheza.projects.carmarket.dto.chat.UserChatName(u.id, u.firstName, u.lastName, u.email, u.profileImageUrl) " +
             "FROM User u WHERE LOWER(u.firstName) LIKE LOWER(CONCAT('%', :name, '%')) " +

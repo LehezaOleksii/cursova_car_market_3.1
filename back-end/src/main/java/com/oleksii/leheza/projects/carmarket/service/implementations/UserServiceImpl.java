@@ -32,7 +32,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,17 +46,6 @@ public class UserServiceImpl implements UserService {
     private final DtoMapper dtoMapper;
     private final VehicleRepository vehicleRepository;
     private final EmailService emailService;
-
-    @Override
-    public void approveManager(Long userId) {
-        userRepository.updateUserRole(userId, UserRole.ROLE_MANAGER);
-        log.info("Update user with id: {} to role: {}", userId, UserRole.ROLE_MANAGER);
-    }
-
-    @Override
-    public List<User> getUsersByRole(UserRole role) {
-        return userRepository.findAllByUserRole(role);
-    }
 
     @Override
     public void updateUserStatusByOtherUserById(Long userId, UserStatus status) {
