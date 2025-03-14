@@ -13,12 +13,14 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       const { userId, jwt, role } = response.data;
       localStorage.setItem('jwtToken', jwt);
+      const expirationTime = Date.now() + 12 * 60 * 60 * 1000;
+      localStorage.setItem('jwtTokenExpiration', expirationTime.toString());
       localStorage.setItem('role', role);
       localStorage.setItem('id', userId);
-  
+
       switch (role) {
         case 'ROLE_CLIENT':
           window.location.href = '/dashboard';
@@ -40,7 +42,7 @@ const Login = () => {
       }
     }
   };
-  
+
 
   return (
     <div className="container">

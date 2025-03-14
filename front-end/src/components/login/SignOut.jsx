@@ -6,6 +6,8 @@ const SignOut = () => {
 
   useEffect(() => {
     localStorage.removeItem('jwtToken');
+    const expirationTime = Date.now();
+    localStorage.setItem('jwtTokenExpiration', expirationTime.toString());
     navigate('/login');
   }, [navigate]);
 
