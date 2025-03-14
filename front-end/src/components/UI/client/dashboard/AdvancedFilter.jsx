@@ -296,7 +296,9 @@ const AdvancedFilter = () => {
     setMaxYear("");
     setMinPrice("");
     setMaxPrice("");
-    setPostedCars()
+    setMinMileage("");
+    setMaxMileage("");
+    setPostedCars();
   };
 
   const setPostedCars = async () => {

@@ -59,12 +59,12 @@ const Header = () => {
                 </li>
                 <li className="nav-item">
                   <Link to={`/advanced_filter`} className="nav-link">
-                    Filter
+                    Advanced filter
                   </Link>
                 </li>
                 <li className="nav-item">
                   <Link to={`/cars?isLiked=true`} className="nav-link">
-                  Favorite cars
+                    Favorite cars
                   </Link>
                 </li>
                 <li className="nav-item">

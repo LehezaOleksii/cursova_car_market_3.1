@@ -11,8 +11,6 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCoun
   const [searchText, setSearchText] = useState('');
   const [externalChats, setExternalChats] = useState([]);
 
-  const [chatId, setChatId] = useState(null);
-
   const allChats = [...chats, ...externalChats];
   const filteredChats = allChats.filter(chat => chat.name.toLowerCase().includes(searchText.toLowerCase()));
 
@@ -121,7 +119,7 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCoun
   };
 
   const handleSearchChange = async (e) => {
-    const name = e.target.value.trim();
+    const name = e.target.value;
     setSearchText(name);
 
     if (!name) {
@@ -139,10 +137,9 @@ const ChatsLeftToolbar = ({ chats, setChats, onSelectChat, setUnreadMessagesCoun
     setUnreadMessagesCount(chats.reduce((acc, chat) => acc + chat.unreadMessages, 0));
   }, [chats, setUnreadMessagesCount]);
 
-  const handleChatClick = (chatId, name, profilePicture, isExternal = false) => {
+  const handleChatClick = (chatId, name, profilePicture) => {
     setExternalChats([]);
     onSelectChat(chatId, name, profilePicture);
-    setChatId(chatId);
     setActiveChat(chatId);
     setSearchText('');
 

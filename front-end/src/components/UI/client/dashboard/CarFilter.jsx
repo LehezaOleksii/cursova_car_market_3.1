@@ -243,6 +243,8 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             onChange={setSelectedBrand}
             options={brands}
             placeholder="Select Brand"
+            menuPortalTarget={document.body}
+            menuShouldScrollIntoView={false}
             styles={{
               control: (base) => ({
                 ...base,
@@ -273,6 +275,8 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             onChange={setSelectedRegion}
             options={regions}
             placeholder="Select Region"
+            menuPortalTarget={document.body}
+            menuShouldScrollIntoView={false}
             styles={{
               control: (base) => ({
                 ...base,
@@ -306,6 +310,8 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             options={models}
             placeholder="Select Model"
             noOptionsMessage={() => "Select brand before model"}
+            menuPortalTarget={document.body}
+            menuShouldScrollIntoView={false}
             styles={{
               control: (base) => ({
                 ...base,
@@ -383,6 +389,8 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
             onChange={setSelectedBodyType}
             options={bodyTypes}
             placeholder="Select Body Type"
+            menuPortalTarget={document.body}
+            menuShouldScrollIntoView={false}
             styles={{
               control: (base) => ({
                 ...base,

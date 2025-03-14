@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SaledCars from "../../client/dashboard/SaledCars";
 import "./ManagerUserDashboard.css";
-import MyCar from "../../client/AddAuto/MyCar";
+import CarSaleCard from "../../client/dashboard/CarSaleCard";
 
 const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
   const [profilePicture, setProfilePicture] = useState("");
   const [cars, setCars] = useState([]);
   const [showCars, setShowCars] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const id = localStorage.getItem("id");
   const jwtStr = localStorage.getItem("jwtToken");
   const navigate = useNavigate();
 
@@ -97,6 +98,10 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
 
   const isEnableToChangeStatus = () =>
     getRoleFormNumber(currentRole) > getRoleFormNumber(user.userRole);
+
+  const removeCarFromList = (carId) => {
+    setCars((prevCars) => prevCars.filter(car => car.id !== carId));
+  };  
 
   return (
     <div className="card  br16 box-shadow-12 mb-4" style={{ paddingRight: '15px' }}>
@@ -200,16 +205,20 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
             </div>
           </div>
         </div>
-        
+
         {
           cars.length > 0 ? (
             cars.map((car) => (
               <div
-              className={`saled-cars ${isAnimating ? "hiding" : showCars ? "visible" : "hidden"}`}
-              style={{ paddingLeft: '20px', paddingRight: '5px'}}
-            >
-              {showCars && <MyCar car={car}/>}
-            </div>
+                className={`saled-cars ${isAnimating ? "hiding" : showCars ? "visible" : "hidden"}`}
+                style={{ paddingLeft: '20px', paddingRight: '5px' }}
+              >
+                {showCars && <CarSaleCard
+                  car={car}
+                  id={id}
+                  removeCarFromList={() => removeCarFromList(car.id)}
+                />}
+              </div>
             ))
           ) : (
             <div
