@@ -37,7 +37,7 @@ public class CarMarketApplication {
     @Bean
     CommandLineRunner runner() {
         return args -> {
-            if(userRepository.findAll().isEmpty()) {
+            if (userRepository.findAll().isEmpty()) {
                 generateMainUsers();
             }
         };
@@ -71,6 +71,8 @@ public class CarMarketApplication {
         String userEmail = "user@gmail.com";
         userRepository.save(User.builder()
                 .email(userEmail)
+                .firstName("Smith")
+                .lastName("Johnson")
                 .password(passwordEncoder().encode(password))
                 .userRole(UserRole.ROLE_MANAGER)
                 .status(UserStatus.ACTIVE)
@@ -78,6 +80,8 @@ public class CarMarketApplication {
         String managerEmail = "manager@gmail.com";
         userRepository.save(User.builder()
                 .email(managerEmail)
+                .firstName("John")
+                .lastName("Doe")
                 .password(passwordEncoder().encode(password))
                 .userRole(UserRole.ROLE_MANAGER)
                 .status(UserStatus.ACTIVE)
