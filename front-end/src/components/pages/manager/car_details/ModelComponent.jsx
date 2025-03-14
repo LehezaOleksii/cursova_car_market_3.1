@@ -136,7 +136,6 @@ const ModelComponent = () => {
         if (!model.vehicleBrandName || model.vehicleBrandName.trim() === "") {
             errors.vehicleBrandName = "Brand is required.";
         }
-
         return errors;
     };
 
@@ -237,7 +236,6 @@ const ModelComponent = () => {
                     },
                 }
             );
-
             if (response.status === 204) {
                 const filteredModels = models.filter((m) => m.id !== model.id);
                 setModels(filteredModels);
@@ -305,7 +303,6 @@ const ModelComponent = () => {
                     );
 
                     setModels(updatedModels);
-                    console.log("Engine added and data updated successfully");
                 } else {
                     console.error("Failed to fetch updated engine data");
                 }
@@ -369,7 +366,6 @@ const ModelComponent = () => {
             setErrors(validationErrors);
             return;
         }
-
         try {
             const response = await fetch("http://localhost:8080/vehicles/models", {
                 method: "POST",
@@ -379,7 +375,6 @@ const ModelComponent = () => {
                 },
                 body: JSON.stringify(newModel),
             });
-
             if (response.ok) {
                 const createdModel = await response.json();
                 setModels((prevModels) => [...prevModels, createdModel]);

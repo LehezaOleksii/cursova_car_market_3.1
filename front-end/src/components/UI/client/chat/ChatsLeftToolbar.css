@@ -90,7 +90,6 @@ ul.padding-left-0 {
   text-overflow: ellipsis;
 }
 
-
 .chat-date {
   margin-top: 4px;
   font-size: 10px;
@@ -311,7 +310,6 @@ button {
   color: #333;
 }
 
-
 .chat-header {
   display: flex;
   align-items: center;
@@ -453,8 +451,8 @@ button {
 .sticky-header {
   position: sticky;
   top: 0;
-  z-index: 1000; /* Ensures it's above other content */
-  background-color: white; /* Add background color to avoid transparency issues */
+  z-index: 1000;
+  background-color: white;
 }
 
 .chat-window {

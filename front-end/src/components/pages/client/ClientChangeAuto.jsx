@@ -256,7 +256,7 @@ const ClientChangeAuto = () => {
       alert("Please enter a valid mileage. Mileage should be less than 9 000 000.");
       return;
     }
-    if (! priceString ||  priceString > 2000000) {
+    if (!priceString || priceString > 2000000) {
       alert("Please enter a valid price. Price should be less than 2 000 000.");
       return;
     }
@@ -289,11 +289,15 @@ const ClientChangeAuto = () => {
         },
         body: JSON.stringify(car),
       });
-
-      if (response.ok) {
+      const role = localStorage.getItem("role");
+      if (role === "ROLE_MANAGER") {
         navigate(`/dashboard`);
       } else {
-        console.error("Error updating car:", response.statusText);
+        if (response.ok) {
+          navigate(`/success_auto_operation`);
+        } else {
+          console.error("Error updating car:", response.statusText);
+        }
       }
     } catch (error) {
       console.error("Error:", error);

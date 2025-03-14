@@ -17,7 +17,7 @@ const ApproveCarPage = () => {
   const getPageAndSizeFromUrl = () => {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 0;
-    const size = parseInt(params.get("size")) || 5;
+    const size = parseInt(params.get("size")) || 10;
     return { page, size };
   };
 
@@ -36,7 +36,7 @@ const ApproveCarPage = () => {
     };
   };
 
-  const fetchData = async (page = 0, size = 5, filters = {}) => {
+  const fetchData = async (page = 0, size = 10, filters = {}) => {
     const queryParams = new URLSearchParams();
     queryParams.append("page", page);
     queryParams.append("size", size);
@@ -93,7 +93,7 @@ const ApproveCarPage = () => {
         <CarFilter
           setCars={setCars}
           page={currentPage}
-          size={5}
+          size={10}
         />
         {cars.length > 0 ? (
           <>

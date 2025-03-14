@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import CarFilter from "../../UI/client/dashboard/CarFilter";
 import SaledCars from "../../UI/client/dashboard/SaledCars";
 import WrappedHeader from "../../WrappedHeader";
@@ -13,7 +13,6 @@ const Dashboard = () => {
   const pageSize = 10;
   const location = useLocation();
   const jwtStr = localStorage.getItem("jwtToken");
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const getPageAndSizeFromUrl = () => {
     const params = new URLSearchParams(location.search);
@@ -56,7 +55,6 @@ const Dashboard = () => {
   const handlePageChange = (page) => {
     if (page < 0 || page >= totalPages) return;
     setCurrentPage(page);
-    setSearchParams({ ...filterState, page, size: pageSize });
   };
 
   return (
@@ -79,7 +77,6 @@ const Dashboard = () => {
             >
               &lt; Previous
             </button>
-
             {[...Array(totalPages).keys()].map((page) => (
               <button
                 key={page}
@@ -89,7 +86,6 @@ const Dashboard = () => {
                 {page + 1}
               </button>
             ))}
-
             <button
               className="btn btn-outline-primary mx-1"
               onClick={() => handlePageChange(currentPage + 1)}

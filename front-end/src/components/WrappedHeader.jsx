@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ClientHeader from "../components/UI/client/Header";
 import ManagerHeader from "../components/UI/manager/Header";
-import AdminHeader from "../components/UI/admin/Header";
 import { connectHeaderWebSocket } from "./chat/connectHeaderWebSocket";
 import Notification from "./Notification";
 

@@ -13,7 +13,7 @@ const AdvancedFilter = () => {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
 
   const [brands, setBrands] = useState([]);
   const [models, setModels] = useState([]);
@@ -52,7 +52,7 @@ const AdvancedFilter = () => {
   const getPageAndSizeFromUrl = () => {
     const params = new URLSearchParams(location.search);
     const page = parseInt(params.get("page")) || 0;
-    const size = parseInt(params.get("size")) || 5;
+    const size = parseInt(params.get("size")) || 10;
     return { page, size };
   };
 
@@ -65,7 +65,7 @@ const AdvancedFilter = () => {
     fetchData(page, size);
   };
 
-  const fetchData = async (page = 0, size = 5) => {
+  const fetchData = async (page = 0, size = 10) => {
     const queryParams = new URLSearchParams();
 
     if (selectedBrand) queryParams.append("brandName", selectedBrand.value);

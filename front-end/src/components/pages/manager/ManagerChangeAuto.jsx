@@ -20,28 +20,28 @@ const ManagerChangeAuto = () => {
     price: "",
     gearbox: "",
     phoneNumber: "",
-    photo: "",    
+    photo: "",
     usageStatus: ""
   });
-  
+
   useEffect(() => {
     const fetchCarData = async () => {
       const url = `http://localhost:8080/vehicles/${carId}/info`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + jwtStr
-          },
-        });
-  
-        const car = await response.json();
-        setCarData(car);
-        setCarPhoto(car.photo)
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + jwtStr
+        },
+      });
+
+      const car = await response.json();
+      setCarData(car);
+      setCarPhoto(car.photo)
     };
     fetchCarData();
   });
-  
+
   const handleSave = async () => {
     const url = `http://localhost:8080/vehicles`;
     const car = {
@@ -56,7 +56,7 @@ const ManagerChangeAuto = () => {
       usageStatus: carData.usageStatus,
       photo: photo && !isBase64(photo) ? await convertImageToBase64(photo) : photo,
     };
-  
+
     await fetch(url, {
       method: "PUT",
       headers: {
@@ -76,181 +76,166 @@ const ManagerChangeAuto = () => {
       return false;
     }
   };
-  
 
-const convertImageToBase64 = (image) => {
-  return new Promise((resolve, reject) => {
-    if (typeof image === 'string') {
-      // If it's a URL, fetch the image and convert it to base64
-      fetch(image)
-        .then(response => response.blob())
-        .then(blob => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result.split(",")[1]);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        })
-        .catch(reject);
-    } else if (image instanceof File) {
-      // If it's a File object, directly read it as base64
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(image);
-    } else {
-      reject(new Error('Invalid image type'));
-    }
-  });
-};
+
+  const convertImageToBase64 = (image) => {
+    return new Promise((resolve, reject) => {
+      if (typeof image === 'string') {
+        fetch(image)
+          .then(response => response.blob())
+          .then(blob => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result.split(",")[1]);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          })
+          .catch(reject);
+      } else if (image instanceof File) {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(image);
+      } else {
+        reject(new Error('Invalid image type'));
+      }
+    });
+  };
 
   return (
     <div className="body">
       <WrappedHeader />
       <div className="container mt-5">
         <div className="row">
-          <div className="col-md-6"> 
-<div
-    className="card-img"
-    style={{
-      height: "390px",
-      backgroundColor: "#ccc",
-      backgroundImage: `url(${photo})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    }}
-  >
-    {photo && (
-      <img
-      src={photo ? `data:image/png;base64,${photo}` : 'default-image-url'}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-      />
-    )}
-  </div>
-  <div className="mt-3">
-    <label htmlFor="carPhoto" className="form-label">
-      Add car photo
-    </label>
-    <input
-      type="file"
-      className="form-control"
-      id="carPhoto"
-      accept="image/*"
-      onChange={(e) => {
-        const imageUrl = URL.createObjectURL(e.target.files[0]);
-        setCarPhoto(imageUrl);
-      }}
-    />
-  </div>
+          <div className="col-md-6">
+            <div
+              className="card-img"
+              style={{
+                height: "390px",
+                backgroundColor: "#ccc",
+                backgroundImage: `url(${photo})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            >
+              {photo && (
+                <img
+                  src={photo ? `data:image/png;base64,${photo}` : 'default-image-url'}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              )}
+            </div>
+            <div className="mt-3">
+              <label htmlFor="carPhoto" className="form-label">
+                Add car photo
+              </label>
+              <input
+                type="file"
+                className="form-control"
+                id="carPhoto"
+                accept="image/*"
+                onChange={(e) => {
+                  const imageUrl = URL.createObjectURL(e.target.files[0]);
+                  setCarPhoto(imageUrl);
+                }}
+              />
+            </div>
           </div>
           <div className="col-md-6">
             <div className="card">
               <div className="card-body">
-                <h5 className="card-title">Add Auto</h5> 
+                <h5 className="card-title">Add Auto</h5>
                 <CarState selectedRadio={carData.usageStatus} onRadioChange={(usageStatus) => setCarData({ ...carData, usageStatus })} />
-                  <div className="row ">
-                    {/* <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.vehicleType}
-                        onChange={(e) =>
-                          setCarData({ ...carData, vehicleType: e.target.value })
-                        }
-                        placeholder="Vehicle type"
-                      />
-                    </div> */}
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.brandName}
-                        onChange={(e) =>
-                          setCarData({ ...carData, brandName: e.target.value })
-                        }
-                        placeholder="Car brand"
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.modelName}
-                        onChange={(e) =>
-                          setCarData({ ...carData, modelName: e.target.value })
-                        }   
-                        placeholder="Car model"
-                      />
-                    </div>
+                <div className="row ">
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.brandName}
+                      onChange={(e) =>
+                        setCarData({ ...carData, brandName: e.target.value })
+                      }
+                      placeholder="Car brand"
+                    />
                   </div>
-                  <div className="row mb-3">
-
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.modelName}
+                      onChange={(e) =>
+                        setCarData({ ...carData, modelName: e.target.value })
+                      }
+                      placeholder="Car model"
+                    />
                   </div>
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.year}
-                        onChange={(e) =>
-                          setCarData({ ...carData, year: e.target.value })
-                        }                         
-                         placeholder="Year"
-                      />
-                    </div>
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.price}
-                        onChange={(e) =>
-                          setCarData({ ...carData, price: e.target.value })
-                        }                         
-                        placeholder="Price"
-                      />
-                    </div>
+                </div>
+                <div className="row mb-3">
+                </div>
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.year}
+                      onChange={(e) =>
+                        setCarData({ ...carData, year: e.target.value })
+                      }
+                      placeholder="Year"
+                    />
                   </div>
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.gearbox}
-                        onChange={(e) =>
-                          setCarData({ ...carData, gearbox: e.target.value })
-                        }                         
-                        placeholder="Gearbox type"
-                      />
-                    </div> 
-                    <div className="col-md-6 mb-3">
-                      <CarFilterField
-                        type="text"
-                        value={carData.mileage}
-                        onChange={(e) =>
-                          setCarData({ ...carData, mileage: e.target.value })
-                        }                        
-                        placeholder="Mileage"
-                      />
-                    </div> 
-                    
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.region}
-                        onChange={(e) =>
-                          setCarData({ ...carData, region: e.target.value })
-                        }
-                        placeholder="Region"
-                      />
-                    </div>
-
-                    <div className="col-md-6">
-                      <CarFilterField
-                        type="text"
-                        value={carData.phoneNumber}
-                        onChange={(e) =>
-                          setCarData({ ...carData, phoneNumber: e.target.value })
-                        }
-                        placeholder="PhoneNumber"
-                      />
-                    </div>
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.price}
+                      onChange={(e) =>
+                        setCarData({ ...carData, price: e.target.value })
+                      }
+                      placeholder="Price"
+                    />
                   </div>
-                    <button type="submit" className="btn btn-primary" onClick={() => handleSave()}>
-                      Save Auto
-                    </button>
+                </div>
+                <div className="row mb-3">
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.gearbox}
+                      onChange={(e) =>
+                        setCarData({ ...carData, gearbox: e.target.value })
+                      }
+                      placeholder="Gearbox type"
+                    />
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <CarFilterField
+                      type="text"
+                      value={carData.mileage}
+                      onChange={(e) =>
+                        setCarData({ ...carData, mileage: e.target.value })
+                      }
+                      placeholder="Mileage"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.region}
+                      onChange={(e) =>
+                        setCarData({ ...carData, region: e.target.value })
+                      }
+                      placeholder="Region"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <CarFilterField
+                      type="text"
+                      value={carData.phoneNumber}
+                      onChange={(e) =>
+                        setCarData({ ...carData, phoneNumber: e.target.value })
+                      }
+                      placeholder="PhoneNumber"
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="btn btn-primary" onClick={() => handleSave()}>
+                  Save Auto
+                </button>
               </div>
             </div>
           </div>

@@ -50,7 +50,6 @@ const CarDetails = () => {
           {activeComponent === "bodyType" && <BodyTypeComponent />}
         </div>
       </div>
-
       <WrappedFooter />
     </div>
   );

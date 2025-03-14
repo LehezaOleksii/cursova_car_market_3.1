@@ -1,5 +1,5 @@
 import React from "react"; 
-import "./CarStateFilter.css"; // Import the custom CSS
+import "./CarStateFilter.css";
 
 const CarStateFilter = ({ selectedRadio, onRadioChange }) => {
   const handleRadioChange = (event) => {

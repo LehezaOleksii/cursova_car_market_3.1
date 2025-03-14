@@ -32,7 +32,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
   };
 
   const page = parseInt(searchParams.get("page")) || 0;
-  const size = parseInt(searchParams.get("size")) || 5;
+  const size = parseInt(searchParams.get("size")) || 10;
 
   useEffect(() => {
     const fetchData = async () => {

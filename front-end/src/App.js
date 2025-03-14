@@ -14,28 +14,15 @@ import ClientChangeAuto from "./components/pages/client/ClientChangeAuto";
 import AdvancedFilter from "./components/UI/client/dashboard/AdvancedFilter";
 import { Navigate } from "react-router-dom";
 
-import ChangeAuto from "./components/pages/manager/ChangeAuto";
 import ManagerDashboard from "./components/pages/manager/ManagerDashboard";
-import Autos from "./components/pages/manager/Autos";
 import ApproveCarPage from "./components/pages/manager/ApproveCarPage";
-import ManagerCabinet from "./components/pages/manager/ManagerCabinet";
 import CarDetails from "./components/pages/manager/car_details/CarDetails";
-
-
-import AdminDashboard from "./components/pages/admin/AdminDashboard";
-import AdminCabinet from "./components/pages/admin/AdminCabinet";
-import UpdateManager from "./components/pages/admin/UpdateManager";
+import SuccessAutoOperation from "./components/pages/client/SuccessAutoOperation";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 
 import "./Styles/style.css";
-import ApproveManagersPage from "./components/pages/admin/ApproveManager";
-import ManagerMyCars from "./components/pages/manager/ManagerMyCars";
-import ManagerAddAuto from "./components/pages/manager/ManagerAddAuto";
-import ManagerChangeAuto from "./components/pages/manager/ChangeAuto";
-import ManagerViewCars from "./components/pages/manager/ManagerViewCars";
-import ManagerSaleCar from "./components/pages/manager/ManagerSaleCar";
 import SignOut from './components/login/SignOut';
 import ForgotPassword from "./components/login/ForgotPassword";
 import OtpVerification from "./components/login/OtpVerification";
@@ -63,6 +50,7 @@ const App = () => {
   };
 
   return (
+    <div className="wrapper">
     <Routes>
       {/* login */}
       <Route path="/login" element={<Login />} />
@@ -84,22 +72,18 @@ const App = () => {
       <Route path="/my_cars" element={wrapPrivateRoute(<MyCars />, isLoggedIn, 'myCars', 'ROLE_CLIENT')} />
       <Route path="/advanced_filter" element={wrapPrivateRoute(<AdvancedFilter />, isLoggedIn, 'advanced_filter', 'ROLE_CLIENT')} />
       <Route path="/cars" element={wrapPrivateRoute(<LikedCars />, isLoggedIn, 'LikedCars', 'ROLE_CLIENT')} />
+      <Route path="/success_auto_operation" element={wrapPrivateRoute(<SuccessAutoOperation />, isLoggedIn, 'SuccessAutoOperation', 'ROLE_CLIENT')} />
 
       {/* manager */}
       <Route path="/users" element={wrapPrivateRoute(<ManagerDashboard />, isLoggedIn, 'ManageDashboard', 'ROLE_MANAGER')} />
       <Route path="/cars/managment" element={wrapPrivateRoute(<ApproveCarPage />, isLoggedIn, 'ApproveCarPage', 'ROLE_MANAGER')} />
       <Route path="/cars/components" element={wrapPrivateRoute(<CarDetails />, isLoggedIn, 'CarsDetails', 'ROLE_MANAGER')} />
 
-      {/* admin */}
-      <Route path="/users" element={wrapPrivateRoute(<AdminDashboard />, isLoggedIn, null, 'ROLE_ADMIN')} />
-      <Route path="/admin/approve/managers" element={wrapPrivateRoute(<ApproveManagersPage />, isLoggedIn, 'ApproveManagerPage', 'ROLE_ADMIN')} />
-      <Route path="/admin/update/managers/:managerId" element={wrapPrivateRoute(<UpdateManager />, isLoggedIn, 'UpdateRoute', 'ROLE_ADMIN')} />
-      <Route path="/admin/cabinet" element={wrapPrivateRoute(<AdminCabinet />, isLoggedIn, 'AdminCabinet', 'ROLE_ADMIN')} />
-
       {/* chat */}
       <Route path="/chats" element={wrapPrivateRoute(<Chat />, isLoggedIn, 'Chats', 'ROLE_CLIENT')} />
       <Route path="*" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
     </Routes>
+</div>
   );
 };
 

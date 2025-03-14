@@ -85,9 +85,6 @@ const Signup = () => {
         },
       });
 
-      console.log("1111111111111111");
-      console.log(response);
-
       if (response.status === 409) {
         setError(response.data);
       } else if (response.status === 201) {

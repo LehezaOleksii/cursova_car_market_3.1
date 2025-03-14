@@ -12,7 +12,6 @@ const Cabinet = ({ Header, Footer }) => {
   const [emialError, setEmailError] = useState("");
   const jwtStr = localStorage.getItem("jwtToken");
   const id = localStorage.getItem("id");
-  const role = localStorage.getItem("role");
 
   const handleFirstNameChange = (e) => {
     const value = e.target.value;
@@ -41,7 +40,6 @@ const Cabinet = ({ Header, Footer }) => {
     setEmailError("");
   };
 
-
   const validateForm = () => {
     let isValid = true;
   
@@ -63,7 +61,6 @@ const Cabinet = ({ Header, Footer }) => {
   
     return isValid;
   };
-  
 
   useEffect(() => {
     const fetchClientData = async () => {
@@ -80,7 +77,6 @@ const Cabinet = ({ Header, Footer }) => {
       setClientData(client);
       setProfileImageUrl(client.profileImageUrl);
     };
-
     fetchClientData();
   }, [id, jwtStr]);
 
@@ -107,7 +103,7 @@ const Cabinet = ({ Header, Footer }) => {
         body: JSON.stringify(client),
       });
 
-      const data = await response.json(); // Get the response from the backend
+      const data = await response.json();
 
       if (response.ok) {
         const isEmailChanged = data.data === 'true';
@@ -125,7 +121,6 @@ const Cabinet = ({ Header, Footer }) => {
       }
     }
   };
-
 
   const isBase64 = (str) => {
     try {
@@ -205,7 +200,6 @@ const Cabinet = ({ Header, Footer }) => {
                   />
                 </label>
               </div>
-
               <div className="text-start" style={{ marginBottom: "35px" }}>
                 <div className="mb-3">
                   <label htmlFor="firstName" className="form-label">
@@ -233,7 +227,6 @@ const Cabinet = ({ Header, Footer }) => {
                     <div className="invalid-feedback">{firstNameError}</div>
                   )}
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="lastName" className="form-label">
                     Last name
@@ -260,7 +253,6 @@ const Cabinet = ({ Header, Footer }) => {
                     <div className="invalid-feedback">{lastNameError}</div>
                   )}
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="email" className="form-label">
                     Email
@@ -288,7 +280,6 @@ const Cabinet = ({ Header, Footer }) => {
                   )}
                 </div>
               </div>
-
               <div className="d-grid">
                 <button
                   type="button"

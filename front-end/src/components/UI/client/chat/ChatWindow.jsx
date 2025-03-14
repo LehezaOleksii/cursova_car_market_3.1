@@ -173,26 +173,19 @@ const ChatWindow = ({
                     }
                     return prevChats;
                 });
-    
-                // Send message
-                client.publish({
+                    client.publish({
                     destination: '/app/chat',
                     body: JSON.stringify(chatMessageToSend),
                 });
-    
-                // Update chat messages
-                setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
+                    setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
                 setMessageInput('');
-    
-                // Update last message
-                updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
+                    updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
             } else {
                 alert("You cannot send a message to yourself.");
             }
         }
     };
     
-
     const getLastSentMessageId = (isSender) => {
         const sentMessages = messages.filter(msg => msg.isSender === isSender && msg.status === 'SENT');
         return sentMessages.length > 0 ? sentMessages[sentMessages.length - 1].id : null;
@@ -283,16 +276,15 @@ const ChatWindow = ({
                 })}
                 <div ref={lastMessageRef}></div>
             </div>
-
             <div className="message-input-container">
                 <input
                     type="text"
                     value={messageInput}
                     onChange={(e) => setMessageInput(e.target.value)}
-                    className="message-input"
+                    className="message-input box-shadow-06"
                     placeholder='Input message'
                 />
-                <button onClick={sendMessage} className="send-button">Send</button>
+                <button onClick={sendMessage} className="send-button box-shadow-12">Send</button>
             </div>
         </div>
     );

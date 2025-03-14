@@ -10,7 +10,6 @@ import "../client/dashboard_car_styles.css";
 
 const AddAuto = () => {
 
-  const id = localStorage.getItem("id");
   const [selectedRadio, setSelectedRadio] = useState("NEW");
   const [photos, setPhotos] = useState([]);
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
@@ -270,8 +269,8 @@ const AddAuto = () => {
       alert("Please enter a valid price.");
       return;
     }
-    
-    if (! priceString.replace(/\D/g, "") ||  priceString.replace(/\D/g, "") > 2000000) {
+
+    if (!priceString.replace(/\D/g, "") || priceString.replace(/\D/g, "") > 2000000) {
       alert("Please enter a valid price. Price should be less than 2 000 000.");
       return;
     }
@@ -310,11 +309,15 @@ const AddAuto = () => {
         },
         body: JSON.stringify(car),
       });
-
-      if (response.ok) {
+      const role = localStorage.getItem("role");
+      if (role === "ROLE_MANAGER") {
         navigate(`/dashboard`);
       } else {
-        console.error("Error adding car:", response.statusText);
+        if (response.ok) {
+          navigate(`/success_auto_operation`);
+        } else {
+          console.error("Error adding car:", response.statusText);
+        }
       }
     } catch (error) {
       console.error("Error:", error);
@@ -352,7 +355,7 @@ const AddAuto = () => {
       <WrappedHeader />
       <div className="container mt-5 mb-4">
         <div className="row">
-        <div className="col-md-7">
+          <div className="col-md-7">
             <label htmlFor="carPhotos" className="photo-wrapper br16">
               {photos.length > 0 ? (
                 <div

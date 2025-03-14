@@ -176,10 +176,10 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                   )}
                 </span>
               </p> <div>
-                <button onClick={handleNavigate} className="btn btn-primary btn-blue-color me-2 br24" style={{padding:"7px"}}>
+                <button onClick={handleNavigate} className="btn btn-primary btn-blue-color me-2 br24" style={{ padding: "7px" }}>
                   Change Car Information
                 </button>
-                <button className="btn btn-danger br24" style={{padding:"7px"}} onClick={() => setShowConfirm(true)}>
+                <button className="btn btn-danger br24" style={{ padding: "7px" }} onClick={() => setShowConfirm(true)}>
                   Remove Car
                 </button>
               </div>
@@ -237,7 +237,6 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
         ></div>
       )}
     </div>
-
   );
 };
 export default CarSaleCard;
