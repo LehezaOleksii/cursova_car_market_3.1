@@ -67,7 +67,7 @@ public class CarMarketApplication {
     }
 
     private void generateMainUsers() {
-        String password = "password";
+        String password = "12345678_Password";
         String userEmail = "user@gmail.com";
         userRepository.save(User.builder()
                 .email(userEmail)
