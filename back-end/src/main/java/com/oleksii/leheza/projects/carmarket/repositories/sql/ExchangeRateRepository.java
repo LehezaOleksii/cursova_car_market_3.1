@@ -15,6 +15,4 @@ public interface ExchangeRateRepository extends JpaRepository<ExchangeRate, Long
 
     @Query("SELECT e FROM ExchangeRate e WHERE e.currencyShortNameA = :currencyShortNameA AND e.currencyShortNameB = :currencyShortNameB")
     Optional<ExchangeRate> findExchangeRateObjectByCurrencyShortNameAAndCurrencyShortNameB(String currencyShortNameA, String currencyShortNameB);
-
-    String currencyShortNameA(String currencyShortNameA);
 }

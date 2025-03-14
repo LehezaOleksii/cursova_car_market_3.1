@@ -56,13 +56,6 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     @Override
-    public Page<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return vehicleRepository.findAllByStatus(status, pageable)
-                .map(dtoMapper::vehicleToVehicleModerationDto);
-    }
-
-    @Override
     public Page<VehicleDashboardDto> findAllPostedVehicles(int page, int size) {
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         Long userId = userRepository.getUserIdByEmail(userEmail).orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -409,11 +402,19 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Page<VehicleGarageDto> filterVehiclesModeration(Map<String, String> params, int page, int size) {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Long userId = userRepository.getUserIdByEmail(userEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("User with email " + userEmail + " not found while retrieving details vehicle"));
         Sort sort = Sort.by(SORT_PROPERTY_VIEWED);
         VehicleSearchCriteria criteria = dtoMapper.mapToVehicleSearchCriteria(params);
         Page<Vehicle> vehiclesPage = vehicleSpecification.getVehiclesWithCriterias(criteria, page, size, sort);
-        return vehiclesPage
-                .map(dtoMapper::vehicleToVehicleGarageDto);
+        return vehiclesPage.map(vehicle -> {
+            VehicleGarageDto vehicleDto = dtoMapper.vehicleToVehicleGarageDto(vehicle);
+            Optional<UserVehicleLike> userVehicleLike = userVehicleLikeRepository.findByUserIdAndVehicleId(userId, vehicle.getId());
+            boolean isUserLiked = userVehicleLike.map(UserVehicleLike::isLiked).orElse(false);
+            vehicleDto.setUserLiked(isUserLiked);
+            return vehicleDto;
+        });
     }
 
     @Override

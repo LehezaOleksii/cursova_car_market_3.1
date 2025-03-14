@@ -28,6 +28,4 @@ public class VehicleGarageDto {
     private String views;
     private boolean isUserLiked;
     private byte[] photo;
-
-
 }

@@ -19,8 +19,6 @@ public interface VehicleService {
 
     void deleteVehicleById(Long vehicleId);
 
-    Page<VehicleModerationDto> getVehicleModerationDtosByStatus(VehicleStatus status, int page, int size);
-
     Page<VehicleDashboardDto> findAllPostedVehicles(int page, int size);
 
     Page<VehicleDashboardDto> filterVehicles(Map<String, String> params, VehicleStatus vehicleStatus, int page, int size);
