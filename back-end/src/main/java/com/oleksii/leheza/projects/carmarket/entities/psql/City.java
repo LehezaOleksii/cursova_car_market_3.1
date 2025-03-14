@@ -1,10 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.entities.psql;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +18,7 @@ public class City {
     @Id
     @GeneratedValue
     private Long id;
-    @Size(min = 1, max = 100)
+    @Column(length = 100, nullable = false)
     private String name;
     private String country;
 

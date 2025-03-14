@@ -1,7 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.entities.psql;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -18,7 +17,6 @@ public class VehicleBrand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 1, max = 255, message = "Brand name should be from 1 to 255 characters")
     private String brandName;
     @OneToMany(mappedBy = "vehicleBrand", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<VehicleModel> vehicleModels = new HashSet<>();

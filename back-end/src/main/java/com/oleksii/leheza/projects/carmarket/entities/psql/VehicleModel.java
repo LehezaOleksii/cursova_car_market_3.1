@@ -1,7 +1,6 @@
 package com.oleksii.leheza.projects.carmarket.entities.psql;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
@@ -18,7 +17,7 @@ public class VehicleModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 1, max = 50, message = "Vehicle model should be from 1 to 50 characters")
+    @Column(length = 50, nullable = false)
     private String modelName;
     private int firstProductionYear;
     private int lastProductionYear;

@@ -5,8 +5,6 @@ import com.oleksii.leheza.projects.carmarket.enums.GearBox;
 import com.oleksii.leheza.projects.carmarket.enums.UsageStatus;
 import com.oleksii.leheza.projects.carmarket.enums.VehicleStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.Year;
@@ -24,9 +22,7 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Year year;
-    @Min(0)
     private int price;
-    @Min(0)
     private long mileage;
     private GearBox gearBox;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +37,7 @@ public class Vehicle {
     private UsageStatus usageStatus;
     private String region;
     private String phoneNumber;
-    @Size(max = 1000)
+    @Column(length = 1000)
     private String description;
     @ManyToMany
     private List<Photo> photos;
