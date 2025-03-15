@@ -401,7 +401,7 @@ const ClientChangeAuto = () => {
   return (
     <div className="body">
       <WrappedHeader />
-      <div className="container mt-5 mb-4">
+      <div className="container mt-5 mb-4" style={{ maxWidth: "88%" }}>
         <div className="row">
           <div className="col-md-7">
             <label htmlFor="carPhotos" className="photo-wrapper br16">
@@ -426,12 +426,11 @@ const ClientChangeAuto = () => {
                   ) : (
                     <div className="add-photo-placeholder">Add Photo</div>
                   )}
-
                 </div>
               ) : (
                 <div className="photo-container"
                   style={{
-                    height: "100%",
+                    height: "80vh",
                     backgroundColor: "#ccc",
                     display: "flex",
                     justifyContent: "center",
@@ -445,7 +444,7 @@ const ClientChangeAuto = () => {
                   Click to add photos
                 </div>
               )}
-              {photos.length > 0 && (
+              {photos.length > 1 && (
                 <>
                   <button className="photo-nav-button left" onClick={prevPhoto}>
                     &#10094;
@@ -480,7 +479,6 @@ const ClientChangeAuto = () => {
       }
     `}
               </style>
-
               <div
                 className="small-image-container add-photo-btn"
                 onClick={() => document.getElementById("carPhotos").click()}
@@ -504,7 +502,6 @@ const ClientChangeAuto = () => {
               >
                 +
               </div>
-
               {photos.map((photo, index) => {
                 const photoSrc =
                   typeof photo === "string"
@@ -573,7 +570,7 @@ const ClientChangeAuto = () => {
           <div className="col-md-5">
             <div className="card  br24 box-shadow-12">
               <div className="card-body">
-                <h5 className="card-title">Add Auto</h5>
+                <h5 className="card-title">Chnage Auto</h5>
                 <CarState
                   selectedRadio={selectedRadio}
                   onRadioChange={setSelectedRadio}

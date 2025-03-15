@@ -130,7 +130,7 @@ const BrandComponent = () => {
     };
 
     return (
-        <div className="car-details-list mt-4 bg-light br24 box-shadow-12">
+        <div className="car-details-list mt-4 bg-light br24 box-shadow-12 card">
             <h3>Brands</h3>
             <button
                 className="car-details-button mb-2 br24 box-shadow-12"

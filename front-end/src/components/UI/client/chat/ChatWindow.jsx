@@ -149,43 +149,43 @@ const ChatWindow = ({
                 recipientId,
                 content: messageInput,
             };
-    
+
             const chatMessage = {
                 senderId,
                 recipientId,
                 content: messageInput,
                 timestamp: new Date().toISOString(),
             };
-    
+
             if (recipientId != senderId) {
                 setChats((prevChats) => {
                     const chatExists = prevChats.some(chat => chat.id === recipientId);
-    
+
                     if (!chatExists) {
                         const newChat = {
                             id: recipientId,
-                            name: recipientName, 
+                            name: recipientName,
                             unreadMessages: 0,
                             lastMessage: { content: messageInput, timestamp: chatMessage.timestamp }
                         };
-    
+
                         return [...prevChats, newChat];
                     }
                     return prevChats;
                 });
-                    client.publish({
+                client.publish({
                     destination: '/app/chat',
                     body: JSON.stringify(chatMessageToSend),
                 });
-                    setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
+                setMessages((prev) => [...prev, { ...chatMessage, isSender: true }]);
                 setMessageInput('');
-                    updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
+                updateLastMessage(recipientId, messageInput, chatMessage.timestamp);
             } else {
                 alert("You cannot send a message to yourself.");
             }
         }
     };
-    
+
     const getLastSentMessageId = (isSender) => {
         const sentMessages = messages.filter(msg => msg.isSender === isSender && msg.status === 'SENT');
         return sentMessages.length > 0 ? sentMessages[sentMessages.length - 1].id : null;

@@ -353,7 +353,7 @@ const AddAuto = () => {
   return (
     <div className="body">
       <WrappedHeader />
-      <div className="container mt-5 mb-4">
+      <div className="container mt-5 mb-4" style={{ maxWidth: "88%" }}>
         <div className="row">
           <div className="col-md-7">
             <label htmlFor="carPhotos" className="photo-wrapper br16">
@@ -370,7 +370,6 @@ const AddAuto = () => {
                         typeof photo === "string"
                           ? `data:image/jpeg;base64,${photo}`
                           : URL.createObjectURL(photo);
-
                       return (
                         <img key={index} src={photoSrc} alt="Car" className="photo-image img" />
                       );
@@ -378,13 +377,12 @@ const AddAuto = () => {
                   ) : (
                     <div className="add-photo-placeholder">Add Photo</div>
                   )}
-
                 </div>
               ) : (
                 <div className="photo-container"
                   style={{
-                    height: "100%",
                     backgroundColor: "#ccc",
+                    height: "80vh",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
@@ -397,7 +395,7 @@ const AddAuto = () => {
                   Click to add photos
                 </div>
               )}
-              {photos.length > 0 && (
+              {photos.length > 1 && (
                 <>
                   <button className="photo-nav-button left" onClick={prevPhoto}>
                     &#10094;
@@ -432,7 +430,6 @@ const AddAuto = () => {
       }
     `}
               </style>
-
               <div
                 className="small-image-container add-photo-btn"
                 onClick={() => document.getElementById("carPhotos").click()}
@@ -523,7 +520,7 @@ const AddAuto = () => {
             </div>
           </div>
           <div className="col-md-5">
-            <div className="card br24">
+            <div className="card br24 box-shadow-12">
               <div className="card-body">
                 <h5 className="card-title">Add Auto</h5>
                 <CarState

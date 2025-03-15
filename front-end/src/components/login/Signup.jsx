@@ -106,7 +106,7 @@ const Signup = () => {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-md-4">
+        <div style={{width:"30vw"}}>
           <div className="card mt-5 shadow" style={{ borderRadius: '20px' }}>
             <div className="card-header text-center">
               <h3>Sign Up</h3>

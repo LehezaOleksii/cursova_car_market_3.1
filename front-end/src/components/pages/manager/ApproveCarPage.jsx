@@ -89,7 +89,7 @@ const ApproveCarPage = () => {
   return (
     <div>
       <WrappedHeader />
-      <div className="card-container p-5 pt-4">
+      <div className="card-container p-5 pt-4" style={{maxWidth: "1600px", marginLeft: "auto", marginRight: "auto"}}>
         <CarFilter
           setCars={setCars}
           page={currentPage}

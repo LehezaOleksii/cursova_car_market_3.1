@@ -63,7 +63,7 @@ const ChangePassword = () => {
   return (
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-md-4">
+        <div  style={{width:"28vw"}}>
           <div className="card mt-5" style={{ borderRadius: '15px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
             <div className="card-header text-center">
               <h3>Reset Password</h3>

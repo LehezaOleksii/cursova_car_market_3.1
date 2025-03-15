@@ -94,11 +94,15 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
               }
               alt="Car"
               style={{
-                height: "200px",
-                width: "360px",
+                width: "25vw",
+                height: "33vh",
+                minHeight: "100px",
+                minWidth: "400px",
+                maxHeight: "233px",
                 objectFit: "cover",
                 borderRadius: "16px",
-                marginLeft: "16px"
+                marginLeft: "16px",
+                marginBottom: "16px"
               }}
             />
           </div>
@@ -137,7 +141,7 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                   </svg>
                   {`${car.mileage.toLocaleString("en-US").replace(/,/g, " ")} km`}
                 </p>
-                <p className="card-text car-field">
+                <p className="card-text car-field" style={{marginTop: window.innerWidth > 1535 ? "1vh" : "0"}}>
                   <img src={canisterIcon
                   } alt="icon" width="18" height="18" style={{ marginRight: "10px" }} />
                   {`${car.engine}`}
@@ -151,14 +155,14 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                   </svg>
                   {`${car.region}`}
                 </p>
-                <p className="card-text car-field">
+                <p className="card-text car-field" style={{marginTop: window.innerWidth > 1535 ? "1vh" : "0"}}>
                   <img src={gearboxIcon} alt="icon" width="16" height="16" style={{ marginRight: "10px" }} />
                   {`${car.gearbox.charAt(0).toUpperCase() + car.gearbox.slice(1).toLowerCase()}`}
                 </p>
               </div>
             </div>
             <div className="mt-3 d-flex justify-content-between align-items-center">
-              <p className="card-text mb-0">
+              <p className="card-text mb-0" style={{marginTop: window.innerWidth > 1535 ? "1vh" : "0"}}>
                 {`Views ${car.views} `}<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                   <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z" />
                   <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0" />
@@ -175,8 +179,8 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
                     </svg>
                   )}
                 </span>
-              </p> <div>
-                <button onClick={handleNavigate} className="btn btn-primary btn-blue-color me-2 br24" style={{ padding: "7px" }}>
+              </p> <div style={{marginTop: window.innerWidth > 1535 ? "1vh" : "0"}}>
+                <button onClick={handleNavigate} className="btn btn-primary btn-blue-color me-2 br24" style={{padding: "7px"}}>
                   Change Car Information
                 </button>
                 <button className="btn btn-danger br24" style={{ padding: "7px" }} onClick={() => setShowConfirm(true)}>

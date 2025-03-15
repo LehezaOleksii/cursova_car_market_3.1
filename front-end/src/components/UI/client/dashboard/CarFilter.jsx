@@ -358,7 +358,6 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
               ))}
             </select>
           </div>
-
           <div className="w-50">
             <select
               value={maxYear}
@@ -416,18 +415,22 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
           />
         </div>
         <div className="col-md-6 d-flex gap-3">
-          <CarFilterField
-            type="number"
-            value={minPrice}
-            onChange={(e) => setMinPrice(e.target.value)}
-            placeholder="From Price"
-          />
-          <CarFilterField
-            type="number"
-            value={maxPrice}
-            onChange={(e) => setMaxPrice(e.target.value)}
-            placeholder="To Price"
-          />
+          <div className="w-50">
+            <CarFilterField
+              type="number"
+              value={minPrice}
+              onChange={(e) => setMinPrice(e.target.value)}
+              placeholder="From Price"
+            />
+          </div>
+          <div className="w-50">
+            <CarFilterField
+              type="number"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              placeholder="To Price"
+            />
+          </div>
         </div>
       </div>
       <div className="row">

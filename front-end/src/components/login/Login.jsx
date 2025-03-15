@@ -54,9 +54,9 @@ const Login = () => {
 
   return (
     <div className="container">
-      <div className="row justify-content-center">
-        <div className="col-md-4">
-          <div className="card mt-5 shadow" style={{ borderRadius: '20px' }}>
+      <div className="row justify-content-center" >
+        <div style={{width:"30vw"}}>
+          <div className="card mt-5 shadow" style={{ borderRadius: '20px', }}>
             <div className="card-header text-center">
               <h3>Login</h3>
             </div>

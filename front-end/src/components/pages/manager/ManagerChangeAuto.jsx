@@ -143,7 +143,7 @@ const ManagerChangeAuto = () => {
           <div className="col-md-6">
             <div className="card">
               <div className="card-body">
-                <h5 className="card-title">Add Auto</h5>
+                <h5 className="card-title">Change Auto</h5>
                 <CarState selectedRadio={carData.usageStatus} onRadioChange={(usageStatus) => setCarData({ ...carData, usageStatus })} />
                 <div className="row ">
                   <div className="col-md-6">

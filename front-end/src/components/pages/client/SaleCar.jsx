@@ -191,15 +191,13 @@ const SaleCar = () => {
         <div className="text-center">
         </div>
       ) : (
-        <div className="container mt-5">
+        <div className="container mt-5" style={{ maxWidth: "88%" }}>
           <div className="row">
             <div className="col-md-8">
-              <div className="photo-wrapper br16">
+              <div className="photo-wrapper br16" style={{height: "80vh"}}>
                 <div
                   className="photo-container"
-                  style={{
-                    transform: `translateX(-${currentPhotoIndex * 100}%)`,
-                  }}
+                  style={{transform: `translateX(-${currentPhotoIndex * 100}%)`}}
                 >
                   {car?.photos?.map((photo, index) => (
                     <img
@@ -243,8 +241,8 @@ const SaleCar = () => {
               </div>
             </div>
             <div className="col-4">
-            <div className="sticky-top" style={{ position: 'sticky', top: 0, zIndex: 0 }}>
-            <div className="card br16 box-shadow-12">
+              <div className="sticky-top" style={{ position: 'sticky', top: 0, zIndex: 0 }}>
+                <div className="card br16 box-shadow-12">
                   <div className="card-body pb-0">
                     <div className="card-header-details">
                       <div class="card-header-details">

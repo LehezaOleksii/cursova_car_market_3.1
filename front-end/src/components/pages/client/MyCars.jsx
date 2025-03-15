@@ -32,7 +32,7 @@ const MyCars = () => {
   return (
     <div>
       <WrappedHeader />
-      <div className="dashboard mt-4">
+      <div className="dashboard mt-4" style={{minWidth: window.innerWidth < 1535 ? "78vw" : "0"}}>
         {cars.length === 0 ? (
           <div className="no-cars-message mt-5">
             <div className="text-center">You don't have any cars.</div>
