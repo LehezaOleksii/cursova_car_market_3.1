@@ -1,57 +1,61 @@
-version: '3'
-
+version: '3.8'
 services:
-  localhost:
-    build:
-      context: ./back-end
-      dockerfile: Dockerfile
-    ports:
-      - '8080:8080'
-    depends_on:
-      - postgres
-      - mongo
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/car_market_database
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 1234
-    networks:
-      - app_network
-
-  frontend:
-    build:
-      context: ./front-end
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    depends_on:
-      - localhost
-    networks:
-      - app_network
-
-  postgres:
-    image: postgres
-    restart: always
+  auto-market-postgres:
+    image: postgres:latest
+    container_name: auto-market-postgres
+    restart: on-failure
     environment:
       POSTGRES_DB: car_market_database
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: car_market_admin
+      POSTGRES_PASSWORD: car_market_admin
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - '5432:5433'
     networks:
       - app_network
 
-  mongo:
+  auto-market-mongo:
     image: mongo:7.0
     restart: on-failure
-    container_name: mongo
-    ports:
-      - "27017:27017"
+    container_name: auto-market-mongo
     environment:
       MONGO_INITDB_ROOT_USERNAME: car_market_admin
       MONGO_INITDB_ROOT_PASSWORD: car_market_admin
       MONGO_INITDB_DATABASE: car_market_db
     volumes:
       - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app_network
+
+  auto-market-backend:
+    build:
+      context: ./back-end
+    container_name: auto-market-backend
+    restart: always
+    ports:
+      - '8080:8080'
+    depends_on:
+      - auto-market-postgres
+      - auto-market-mongo
+    # environment:
+    #   SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/car_market_database
+    #   SPRING_DATASOURCE_USERNAME: car_market_admin
+    #   SPRING_DATASOURCE_PASSWORD: car_market_admin
+    networks:
+      - app_network
+
+  auto-market-frontend:
+    build:
+      context: ./front-end
+    container_name: auto-market-frontend
+    restart: always
+    ports:
+      - '3000:3000'
+    # depends_on:
+      # - auto-market-backend
     networks:
       - app_network
       
@@ -60,5 +64,5 @@ networks:
     driver: bridge
 
 volumes:
-  mysql_data:
+  postgres_data:
   mongo_data:
