@@ -45,7 +45,7 @@ public class EmailServiceImpl implements EmailService {
             messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
             messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
             messageHelper.setSubject(NEW_USER_ACCOUNT_VERIFICATION_SUBJECT);
-            String confirmLink = getCreateUserEmailMessage("http://localhost:3000", token);//TODO change path
+            String confirmLink = getCreateUserEmailMessage("http://auto-market-frontend:3000", token);//TODO change path
             String emailContent = String.format(
                     "Dear user,<br><br>" +
                             "Please click the following link to confirm your account:<br>" +
@@ -70,7 +70,7 @@ public class EmailServiceImpl implements EmailService {
             messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
             messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
             messageHelper.setSubject(UPDATE_USER_ACCOUNT_VERIFICATION_SUBJECT);
-            String confirmLink = getUpdateUserEmailMessage("http://localhost:3000", token);//TODO change path
+            String confirmLink = getUpdateUserEmailMessage("http://auto-market-frontend:3000", token);//TODO change path
             String emailContent = String.format(
                     "Dear user,<br><br>" +
                             "Please click the following link to confirm your new email:<br>" +

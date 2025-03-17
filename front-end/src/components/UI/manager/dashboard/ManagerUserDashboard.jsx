@@ -25,7 +25,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
   };
 
   const changeUserStatus = async (newStatus) => {
-    const url = `http://localhost:8080/users/${user.id}/status/${newStatus}`;
+    const url = `http://auto-market-backend:8080/users/${user.id}/status/${newStatus}`;
     await fetch(url, {
       method: "PUT",
       headers: {
@@ -58,7 +58,7 @@ const ManagerUserDashboard = ({ user, updateUserStatus, currentRole }) => {
         setIsAnimating(false);
       }, 500);
     } else {
-      const url = `http://localhost:8080/vehicles/users/${user.id}`;
+      const url = `http://auto-market-backend:8080/vehicles/users/${user.id}`;
       try {
         const response = await fetch(url, {
           method: "GET",

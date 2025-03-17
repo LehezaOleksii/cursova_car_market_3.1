@@ -10,7 +10,7 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/users/cabinet`;
+      const url = `http://auto-market-backend:8080/users/cabinet`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -35,7 +35,7 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
   };
 
   const fetchUnreadMessagesCount = async () => {
-    const url = `http://localhost:8080/chat/users/${id}/messages/unread`;
+    const url = `http://auto-market-backend:8080/chat/users/${id}/messages/unread`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {

@@ -94,7 +94,7 @@ const SaleCar = () => {
 
   const fetchCar = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/vehicles/${carId}/info`, {
+      const response = await fetch(`http://auto-market-backend:8080/vehicles/${carId}/info`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + jwtStr,
@@ -118,7 +118,7 @@ const SaleCar = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/users/info/vehicleId/${carId}`, {
+      const response = await fetch(`http://auto-market-backend:8080/users/info/vehicleId/${carId}`, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + jwtStr,
@@ -142,7 +142,7 @@ const SaleCar = () => {
   const fetchExchangeRate = async () => {
     try {
       const response = await fetch(
-        'http://localhost:8080/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH',
+        'http://auto-market-backend:8080/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH',
         {
           method: 'GET',
           headers: {
@@ -167,8 +167,8 @@ const SaleCar = () => {
 
   const handleLikeToggle = async () => {
     const url = liked
-      ? `http://localhost:8080/vehicles/${car.id}/like/false`
-      : `http://localhost:8080/vehicles/${car.id}/like/true`;
+      ? `http://auto-market-backend:8080/vehicles/${car.id}/like/false`
+      : `http://auto-market-backend:8080/vehicles/${car.id}/like/true`;
 
     const response = await fetch(url, {
       method: 'PUT',

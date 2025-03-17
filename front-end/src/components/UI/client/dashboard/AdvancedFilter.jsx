@@ -89,7 +89,7 @@ const AdvancedFilter = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:8080/vehicles/filter?${queryParams.toString()}`, {
+      const response = await fetch(`http://auto-market-backend:8080/vehicles/filter?${queryParams.toString()}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -110,28 +110,28 @@ const AdvancedFilter = () => {
     const fetchData = async () => {
       try {
         const [brandsResponse, bodyTypesResponse, gearboxesResponse, regionsResponse] = await Promise.all([
-          fetch(`http://localhost:8080/vehicles/brands`, {
+          fetch(`http://auto-market-backend:8080/vehicles/brands`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/vehicles/body-types`, {
+          fetch(`http://auto-market-backend:8080/vehicles/body-types`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/vehicles/gearboxes`, {
+          fetch(`http://auto-market-backend:8080/vehicles/gearboxes`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/cities`, {
+          fetch(`http://auto-market-backend:8080/cities`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -157,7 +157,7 @@ const AdvancedFilter = () => {
       const fetchModels = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/vehicles/brands/${selectedBrand.value}/models`,
+            `http://auto-market-backend:8080/vehicles/brands/${selectedBrand.value}/models`,
             {
               method: "GET",
               headers: {
@@ -188,7 +188,7 @@ const AdvancedFilter = () => {
       const fetchEngines = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/vehicles/brands/models/${selectedModel.value}/engines`,
+            `http://auto-market-backend:8080/vehicles/brands/models/${selectedModel.value}/engines`,
             {
               method: "GET",
               headers: {
@@ -269,7 +269,7 @@ const AdvancedFilter = () => {
 
     try {
       setCars([]);
-      const response = await fetch(`http://localhost:8080/vehicles/filter?${queryParams.toString()}`, {
+      const response = await fetch(`http://auto-market-backend:8080/vehicles/filter?${queryParams.toString()}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -302,7 +302,7 @@ const AdvancedFilter = () => {
   };
 
   const setPostedCars = async () => {
-    const url = `http://localhost:8080/vehicles/posted`;
+    const url = `http://auto-market-backend:8080/vehicles/posted`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {

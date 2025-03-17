@@ -10,7 +10,7 @@ const Header = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/users/cabinet`;
+      const url = `http://auto-market-backend:8080/users/cabinet`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {

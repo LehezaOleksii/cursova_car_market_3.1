@@ -30,7 +30,7 @@ const Dashboard = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/vehicles/filter?${queryParams.toString()}`,
+        `http://auto-market-backend:8080/vehicles/filter?${queryParams.toString()}`,
         {
           method: "GET",
           headers: {

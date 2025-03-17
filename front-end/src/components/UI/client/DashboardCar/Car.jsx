@@ -14,8 +14,8 @@ const DashboardCar = ({ car }) => {
 
   const handleLikeToggle = async () => {
     const url = liked
-      ? `http://localhost:8080/vehicles/${car.id}/like/false`
-      : `http://localhost:8080/vehicles/${car.id}/like/true`;
+      ? `http://auto-market-backend:8080/vehicles/${car.id}/like/false`
+      : `http://auto-market-backend:8080/vehicles/${car.id}/like/true`;
 
     const response = await fetch(url, {
       method: 'PUT',
@@ -35,7 +35,7 @@ const DashboardCar = ({ car }) => {
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
-        const response = await fetch('http://localhost:8080/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH', {
+        const response = await fetch('http://auto-market-backend:8080/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

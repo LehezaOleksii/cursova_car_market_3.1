@@ -1,7 +1,7 @@
 import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
-const SOCKET_URL = 'http://localhost:8080/ws';
+const SOCKET_URL = 'http://auto-market-backend:8080/ws';
 
 export const connectWebSocket = (senderId, onMessage) => {
   const jwtStr = localStorage.getItem("jwtToken");

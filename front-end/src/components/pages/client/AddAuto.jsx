@@ -133,28 +133,28 @@ const AddAuto = () => {
     const fetchData = async () => {
       try {
         const [brandsResponse, bodyTypesResponse, gearboxesResponse, regionsResponse] = await Promise.all([
-          fetch(`http://localhost:8080/vehicles/brands`, {
+          fetch(`http://auto-market-backend:8080/vehicles/brands`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/vehicles/body-types`, {
+          fetch(`http://auto-market-backend:8080/vehicles/body-types`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/vehicles/gearboxes`, {
+          fetch(`http://auto-market-backend:8080/vehicles/gearboxes`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/cities`, {
+          fetch(`http://auto-market-backend:8080/cities`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -185,7 +185,7 @@ const AddAuto = () => {
       const fetchModels = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/vehicles/brands/${brandName.value}/models`,
+            `http://auto-market-backend:8080/vehicles/brands/${brandName.value}/models`,
             {
               method: "GET",
               headers: {
@@ -216,7 +216,7 @@ const AddAuto = () => {
       const fetchEngines = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/vehicles/brands/models/${modelName.value}/engines`,
+            `http://auto-market-backend:8080/vehicles/brands/models/${modelName.value}/engines`,
             {
               method: "GET",
               headers: {
@@ -301,7 +301,7 @@ const AddAuto = () => {
     };
 
     try {
-      const response = await fetch(`http://localhost:8080/vehicles`, {
+      const response = await fetch(`http://auto-market-backend:8080/vehicles`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
