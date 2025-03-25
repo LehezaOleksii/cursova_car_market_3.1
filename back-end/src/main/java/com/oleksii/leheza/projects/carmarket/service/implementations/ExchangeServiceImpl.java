@@ -13,7 +13,6 @@ public class ExchangeServiceImpl implements ExchangeService {
 
     @Override
     public String getExchangeRateUsdToUah(String CurrencyShortNameA, String CurrencyShortNameB) {
-        String s = exchangeRateRepository.findExchangeRateByCurrencyShortNameAAndCurrencyShortNameB(CurrencyShortNameA, CurrencyShortNameB);
         return exchangeRateRepository.findExchangeRateByCurrencyShortNameAAndCurrencyShortNameB(CurrencyShortNameA, CurrencyShortNameB);
     }
 }

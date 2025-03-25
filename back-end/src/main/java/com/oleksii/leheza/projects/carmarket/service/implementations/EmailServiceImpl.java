@@ -21,6 +21,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -142,17 +144,28 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendConformationEmail(String email, User user) {
+        Optional<EmailConfirmation> existingConfirmation = confirmationRepository.findByUserId(user.getId());
+
+        existingConfirmation.ifPresent(confirmationRepository::delete); // Видалення старого запису
+
         EmailConfirmation confirmation = new EmailConfirmation(user);
         confirmationRepository.save(confirmation);
+
         sendCreateAccountConformationEmailRequest(email, confirmation.getToken());
     }
 
     @Override
     public void sendUpdateConformationEmail(String email, User user) {
+        Optional<EmailConfirmation> existingConfirmation = confirmationRepository.findByUserId(user.getId());
+
+        existingConfirmation.ifPresent(confirmationRepository::delete); // Видалення старого запису
+
         EmailConfirmation confirmation = new EmailConfirmation(user);
         confirmationRepository.save(confirmation);
+
         sendUpdateAccountConformationEmailRequest(email, confirmation.getToken());
     }
+
 
     public String getVerificationUrl(String host, String token) {
         return host + "/confirm-email?token=" + token;

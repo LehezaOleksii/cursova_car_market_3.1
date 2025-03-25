@@ -9,7 +9,7 @@ const MyCars = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/vehicles/garage`;
+      const url = `/vehicles/garage`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {

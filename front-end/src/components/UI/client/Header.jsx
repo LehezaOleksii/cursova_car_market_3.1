@@ -10,12 +10,12 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const url = `http://localhost:8080/users/cabinet`;
+      const url = `/users/cabinet`;
       const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + jwtStr
+          'Authorization': `Bearer ${jwtStr}`
         },
       });
       const data = await response.json();
@@ -35,7 +35,7 @@ const Header = ({ unreadMessagesCount, setUnreadMessagesCount }) => {
   };
 
   const fetchUnreadMessagesCount = async () => {
-    const url = `http://localhost:8080/chat/users/${id}/messages/unread`;
+    const url = `/chat/users/${id}/messages/unread`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {

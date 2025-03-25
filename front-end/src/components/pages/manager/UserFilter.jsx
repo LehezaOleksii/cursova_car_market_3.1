@@ -27,7 +27,7 @@ const UserFilter = ({ setUsers, setFilter, setTotalPages, setCurrentPage, filter
     e.preventDefault();
     try {
       const response = await fetch(
-        `http://localhost:8080/users/filter?page=${currentPage}&size=${pageSize}`,
+        `/users/filter?page=${currentPage}&size=${pageSize}`,
         {
           method: "POST",
           headers: {

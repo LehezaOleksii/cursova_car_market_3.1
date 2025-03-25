@@ -46,7 +46,7 @@ const ApproveCarPage = () => {
       }
     });
 
-    const url = `http://localhost:8080/vehicles/management/filter?${queryParams.toString()}`;
+    const url = `/vehicles/management/filter?${queryParams.toString()}`;
 
     const responseVehiclesOnModeration = await fetch(url, {
       method: "GET",

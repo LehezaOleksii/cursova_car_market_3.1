@@ -15,8 +15,8 @@ const ApproveCar = ({ car, removeCarFromList }) => {
 
   const handleLikeToggle = async () => {
     const url = liked
-      ? `http://localhost:8080/vehicles/${car.id}/like/false`
-      : `http://localhost:8080/vehicles/${car.id}/like/true`;
+      ? `/vehicles/${car.id}/like/false`
+      : `/vehicles/${car.id}/like/true`;
 
     const response = await fetch(url, {
       method: 'PUT',
@@ -36,7 +36,7 @@ const ApproveCar = ({ car, removeCarFromList }) => {
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
-        const response = await fetch('http://localhost:8080/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH', {
+        const response = await fetch('/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const ApproveCar = ({ car, removeCarFromList }) => {
   const priceInUAH = exchangeRate ? Number((car.price * exchangeRate).toFixed(0)) : null;
 
   const handleRemoveCarSubmit = async (carId) => {
-    const url = `http://localhost:8080/vehicles/${car.id}`;
+    const url = `/vehicles/${car.id}`;
     await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -82,7 +82,7 @@ const ApproveCar = ({ car, removeCarFromList }) => {
   };
 
   const blockCar = async () => {
-    const url = `http://localhost:8080/vehicles/${car.id}/disapprove`;
+    const url = `/vehicles/${car.id}/disapprove`;
     await fetch(url, {
       method: "PUT",
       headers: {
@@ -95,7 +95,7 @@ const ApproveCar = ({ car, removeCarFromList }) => {
   };
 
   const approveCar = async () => {
-    const url = `http://localhost:8080/vehicles/${car.id}/approve`;
+    const url = `/vehicles/${car.id}/approve`;
     await fetch(url, {
       method: "PUT",
       headers: {

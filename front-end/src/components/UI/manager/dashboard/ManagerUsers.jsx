@@ -26,9 +26,9 @@ const ManagerUsers = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      let url = `http://localhost:8080/users?page=${currentPage}&size=${pageSize}`;
+      let url = `/users?page=${currentPage}&size=${pageSize}`;
         if (filter !== baseFilter) {
-        url = `http://localhost:8080/users/filter?page=${currentPage}&size=${pageSize}`;
+        url = `/users/filter?page=${currentPage}&size=${pageSize}`;
       }
   
       try {
@@ -63,7 +63,7 @@ const ManagerUsers = () => {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const url = `http://localhost:8080/users/role`;
+        const url = `/users/role`;
         const response = await fetch(url, {
           method: 'GET',
           headers: {

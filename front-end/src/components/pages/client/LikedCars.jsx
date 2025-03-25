@@ -13,7 +13,7 @@ const LikedCars = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const url = `http://localhost:8080/vehicles/liked/filter?isLiked=${isLiked}`;
+            const url = `/vehicles/liked/filter?isLiked=${isLiked}`;
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {

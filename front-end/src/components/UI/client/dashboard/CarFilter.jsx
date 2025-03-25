@@ -38,21 +38,21 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
     const fetchData = async () => {
       try {
         const [brandsResponse, bodyTypes, regionsResponse] = await Promise.all([
-          fetch(`http://localhost:8080/vehicles/brands`, {
+          fetch(`/vehicles/brands`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/vehicles/body-types`, {
+          fetch(`/vehicles/body-types`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://localhost:8080/cities`, {
+          fetch(`/cities`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -77,7 +77,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
       const fetchModels = async () => {
         try {
           const response = await fetch(
-            `http://localhost:8080/vehicles/brands/${selectedBrand.value}/models`,
+            `/vehicles/brands/${selectedBrand.value}/models`,
             {
               method: "GET",
               headers: {
@@ -102,7 +102,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
   }, [selectedBrand, jwtStr]);
 
   const setPostedCars = async () => {
-    const url = `http://localhost:8080/vehicles`;
+    const url = `/vehicles`;
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -173,7 +173,7 @@ const CarFilter = ({ setCars, setTotalPages, setCurrentPage, setFilterState }) =
     try {
       setCars([]);
       queryParams.append("vehicleStatus", "POSTED");
-      const url = `http://localhost:8080/vehicles/filter?${queryParams.toString()}`;
+      const url = `/vehicles/filter?${queryParams.toString()}`;
       const response = await fetch(url, {
         method: "GET",
         headers: {
