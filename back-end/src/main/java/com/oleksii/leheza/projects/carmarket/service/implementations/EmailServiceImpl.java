@@ -21,6 +21,8 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,7 +47,7 @@ public class EmailServiceImpl implements EmailService {
             messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
             messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
             messageHelper.setSubject(NEW_USER_ACCOUNT_VERIFICATION_SUBJECT);
-            String confirmLink = getCreateUserEmailMessage("http://auto-market-frontend:3000", token);//TODO change path
+            String confirmLink = getCreateUserEmailMessage("http://localhost:3000", token);//TODO change path
             String emailContent = String.format(
                     "Dear user,<br><br>" +
                             "Please click the following link to confirm your account:<br>" +
@@ -70,7 +72,7 @@ public class EmailServiceImpl implements EmailService {
             messageHelper.setFrom(USER_EMAIL); // TODO prod input "from" variable
             messageHelper.setTo(USER_EMAIL);  // TODO prod input "to" variable
             messageHelper.setSubject(UPDATE_USER_ACCOUNT_VERIFICATION_SUBJECT);
-            String confirmLink = getUpdateUserEmailMessage("http://auto-market-frontend:3000", token);//TODO change path
+            String confirmLink = getUpdateUserEmailMessage("http://localhost:3000", token);//TODO change path
             String emailContent = String.format(
                     "Dear user,<br><br>" +
                             "Please click the following link to confirm your new email:<br>" +
@@ -142,17 +144,28 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendConformationEmail(String email, User user) {
+        Optional<EmailConfirmation> existingConfirmation = confirmationRepository.findByUserId(user.getId());
+
+        existingConfirmation.ifPresent(confirmationRepository::delete); // Видалення старого запису
+
         EmailConfirmation confirmation = new EmailConfirmation(user);
         confirmationRepository.save(confirmation);
+
         sendCreateAccountConformationEmailRequest(email, confirmation.getToken());
     }
 
     @Override
     public void sendUpdateConformationEmail(String email, User user) {
+        Optional<EmailConfirmation> existingConfirmation = confirmationRepository.findByUserId(user.getId());
+
+        existingConfirmation.ifPresent(confirmationRepository::delete); // Видалення старого запису
+
         EmailConfirmation confirmation = new EmailConfirmation(user);
         confirmationRepository.save(confirmation);
+
         sendUpdateAccountConformationEmailRequest(email, confirmation.getToken());
     }
+
 
     public String getVerificationUrl(String host, String token) {
         return host + "/confirm-email?token=" + token;
