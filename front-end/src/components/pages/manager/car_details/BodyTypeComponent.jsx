@@ -12,7 +12,7 @@ const BodyTypeComponent = () => {
     useEffect(() => {
         const fetchBodyTypes = async () => {
             try {
-                const response = await fetch("http://auto-market-backend:8080/vehicles/body-types/dtos", {
+                const response = await fetch("/vehicles/body-types/dtos", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const BodyTypeComponent = () => {
             };
 
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/body-types`,
+                `/vehicles/body-types`,
                 {
                     method: "PUT",
                     headers: {
@@ -79,7 +79,7 @@ const BodyTypeComponent = () => {
     const handleDeleteBodyTypes = async (brand) => {
         try {
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/body-types/${brand.id}`,
+                `/vehicles/body-types/${brand.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -106,7 +106,7 @@ const BodyTypeComponent = () => {
             name: newBodyTypeName,
         };
         try {
-            const response = await fetch("http://auto-market-backend:8080/vehicles/body-types", {
+            const response = await fetch("/vehicles/body-types", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

@@ -126,28 +126,28 @@ const ClientChangeAuto = () => {
     const fetchData = async () => {
       try {
         const [brandsResponse, bodyTypesResponse, gearboxesResponse, regionsResponse] = await Promise.all([
-          fetch(`http://auto-market-backend:8080/vehicles/brands`, {
+          fetch(`/vehicles/brands`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://auto-market-backend:8080/vehicles/body-types`, {
+          fetch(`/vehicles/body-types`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://auto-market-backend:8080/vehicles/gearboxes`, {
+          fetch(`/vehicles/gearboxes`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
               Authorization: "Bearer " + jwtStr,
             },
           }),
-          fetch(`http://auto-market-backend:8080/cities`, {
+          fetch(`/cities`, {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -178,7 +178,7 @@ const ClientChangeAuto = () => {
       const fetchEngines = async () => {
         try {
           const response = await fetch(
-            `http://auto-market-backend:8080/vehicles/brands/models/${modelName}/engines`,
+            `/vehicles/brands/models/${modelName}/engines`,
             {
               method: "GET",
               headers: {
@@ -205,7 +205,7 @@ const ClientChangeAuto = () => {
       const fetchModels = async () => {
         try {
           const response = await fetch(
-            `http://auto-market-backend:8080/vehicles/brands/${brandName}/models`,
+            `/vehicles/brands/${brandName}/models`,
             {
               method: "GET",
               headers: {
@@ -281,7 +281,7 @@ const ClientChangeAuto = () => {
     };
 
     try {
-      const response = await fetch(`http://auto-market-backend:8080/vehicles/${carId}`, {
+      const response = await fetch(`/vehicles/${carId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -330,7 +330,7 @@ const ClientChangeAuto = () => {
 
   Promise.all(promises)
     .then((byteArrays) => {
-      fetch(`http://auto-market-backend:8080/vehicles/${carId}`, {
+      fetch(`/vehicles/${carId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -348,7 +348,7 @@ const ClientChangeAuto = () => {
     const fetchCarData = async () => {
       if (carId) {
         try {
-          const url = `http://auto-market-backend:8080/vehicles/${carId}/update_info`;
+          const url = `/vehicles/${carId}/update_info`;
           const response = await fetch(url, {
             method: 'GET',
             headers: {

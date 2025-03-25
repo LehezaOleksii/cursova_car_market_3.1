@@ -34,7 +34,7 @@ const ModelComponent = () => {
     useEffect(() => {
         const fetchBodyTypes = async () => {
             try {
-                const response = await fetch("http://auto-market-backend:8080/vehicles/body-types", {
+                const response = await fetch("/vehicles/body-types", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const ModelComponent = () => {
     useEffect(() => {
         const fetchBrands = async () => {
             try {
-                const response = await fetch("http://auto-market-backend:8080/vehicles/brands", {
+                const response = await fetch("/vehicles/brands", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -84,7 +84,7 @@ const ModelComponent = () => {
     useEffect(() => {
         const fetchModels = async () => {
             try {
-                const response = await fetch("http://auto-market-backend:8080/vehicles/models/dtos", {
+                const response = await fetch("/vehicles/models/dtos", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -190,7 +190,7 @@ const ModelComponent = () => {
             };
 
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/models`,
+                `/vehicles/models`,
                 {
                     method: "PUT",
                     headers: {
@@ -227,7 +227,7 @@ const ModelComponent = () => {
     const handleDeleteModel = async (model) => {
         try {
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/models/${model.id}`,
+                `/vehicles/models/${model.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -249,7 +249,7 @@ const ModelComponent = () => {
 
     const handleDeleteEngine = async (engineId, modelId) => {
         try {
-            const response = await fetch(`http://auto-market-backend:8080/vehicles/models/${modelId}/engines/${engineId}`, {
+            const response = await fetch(`/vehicles/models/${modelId}/engines/${engineId}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
@@ -275,7 +275,7 @@ const ModelComponent = () => {
         if (!selectedEngineId) return;
 
         try {
-            const response = await fetch(`http://auto-market-backend:8080/vehicles/models/${modelId}/engines`, {
+            const response = await fetch(`/vehicles/models/${modelId}/engines`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -285,7 +285,7 @@ const ModelComponent = () => {
             });
 
             if (response.ok) {
-                const updatedResponse = await fetch(`http://auto-market-backend:8080/vehicles/engines`, {
+                const updatedResponse = await fetch(`/vehicles/engines`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -318,7 +318,7 @@ const ModelComponent = () => {
     const handleShowAddEngine = async () => {
         setShowAddEngineDropdown((prev) => !prev);
         try {
-            const response = await fetch(`http://auto-market-backend:8080/vehicles/engines`, {
+            const response = await fetch(`/vehicles/engines`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -367,7 +367,7 @@ const ModelComponent = () => {
             return;
         }
         try {
-            const response = await fetch("http://auto-market-backend:8080/vehicles/models", {
+            const response = await fetch("/vehicles/models", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

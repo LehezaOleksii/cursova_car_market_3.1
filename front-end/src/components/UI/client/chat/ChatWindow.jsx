@@ -82,7 +82,7 @@ const ChatWindow = ({
     const fetchChatHistory = async () => {
         try {
             const response = await fetch(
-                `http://auto-market-backend:8080/chat/history/firstUserId/${senderId}/secondUserId/${recipientId}`,
+                `/chat/history/firstUserId/${senderId}/secondUserId/${recipientId}`,
                 {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${jwtStr}` },

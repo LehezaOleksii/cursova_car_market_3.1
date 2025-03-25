@@ -64,7 +64,7 @@ const Cabinet = ({ Header, Footer }) => {
 
   useEffect(() => {
     const fetchClientData = async () => {
-      const url = `http://auto-market-backend:8080/users/cabinet`;
+      const url = `/users/cabinet`;
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -81,7 +81,7 @@ const Cabinet = ({ Header, Footer }) => {
   }, [id, jwtStr]);
 
   const handleSave = async () => {
-    const url = `http://auto-market-backend:8080/users/cabinet`;
+    const url = `/users/cabinet`;
     if (validateForm()) {
       const client = {
         firstname: clientData.firstname,

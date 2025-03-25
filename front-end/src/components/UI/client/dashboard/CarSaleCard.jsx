@@ -15,8 +15,8 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
 
   const handleLikeToggle = async () => {
     const url = liked
-      ? `http://auto-market-backend:8080/vehicles/${car.id}/like/false`
-      : `http://auto-market-backend:8080/vehicles/${car.id}/like/true`;
+      ? `/vehicles/${car.id}/like/false`
+      : `/vehicles/${car.id}/like/true`;
 
     const response = await fetch(url, {
       method: 'PUT',
@@ -36,7 +36,7 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
-        const response = await fetch('http://auto-market-backend:8080/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH', {
+        const response = await fetch('/exchanges?CurrencyShortNameA=USD&CurrencyShortNameB=UAH', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const CarSaleCard = ({ car, removeCarFromList }) => {
   const priceInUAH = exchangeRate ? Number((car.price * exchangeRate).toFixed(0)) : null;
 
   const handleRemoveCarSubmit = async (carId) => {
-    const url = `http://auto-market-backend:8080/vehicles/${car.id}`;
+    const url = `/vehicles/${car.id}`;
     await fetch(url, {
       method: 'DELETE',
       headers: {

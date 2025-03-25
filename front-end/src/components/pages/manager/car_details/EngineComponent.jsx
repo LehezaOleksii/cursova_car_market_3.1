@@ -22,7 +22,7 @@ const EngineComponent = () => {
     useEffect(() => {
         const fetchEngines = async () => {
             try {
-                const response = await fetch("http://auto-market-backend:8080/vehicles/engines/dtos", {
+                const response = await fetch("/vehicles/engines/dtos", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -46,7 +46,7 @@ const EngineComponent = () => {
 
     const handleCreateEngine = async () => {
         try {
-            const response = await fetch("http://auto-market-backend:8080/vehicles/engines", {
+            const response = await fetch("/vehicles/engines", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -83,7 +83,7 @@ const EngineComponent = () => {
 
     const handleSaveEngine = async () => {
         try {
-            const response = await fetch(`http://auto-market-backend:8080/vehicles/engines`, {
+            const response = await fetch(`/vehicles/engines`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -109,7 +109,7 @@ const EngineComponent = () => {
     const handleDeleteEngine = async (engine) => {
         try {
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/engines/${engine.id}`,
+                `/vehicles/engines/${engine.id}`,
                 {
                     method: "DELETE",
                     headers: {

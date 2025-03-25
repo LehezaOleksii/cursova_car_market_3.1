@@ -12,7 +12,7 @@ const BrandComponent = () => {
     useEffect(() => {
         const fetchBrands = async () => {
             try {
-                const response = await fetch("http://auto-market-backend:8080/vehicles/brands/dtos", {
+                const response = await fetch("/vehicles/brands/dtos", {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -51,7 +51,7 @@ const BrandComponent = () => {
             };
 
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/brands`,
+                `/vehicles/brands`,
                 {
                     method: "PUT",
                     headers: {
@@ -79,7 +79,7 @@ const BrandComponent = () => {
     const handleDeleteBrand = async (brand) => {
         try {
             const response = await fetch(
-                `http://auto-market-backend:8080/vehicles/brands/${brand.id}`,
+                `/vehicles/brands/${brand.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -107,7 +107,7 @@ const BrandComponent = () => {
             name: newBrandName,
         };
         try {
-            const response = await fetch("http://auto-market-backend:8080/vehicles/brands", {
+            const response = await fetch("/vehicles/brands", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
