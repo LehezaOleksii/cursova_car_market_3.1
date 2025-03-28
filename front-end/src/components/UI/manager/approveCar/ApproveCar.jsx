@@ -224,7 +224,7 @@ const ApproveCar = ({ car, removeCarFromList }) => {
                       Approve Car
                     </button>
                     <button className="btn btn-danger br24 box-shadow-12" onClick={blockCar} style={{ padding: "7px", width: "130px" }}>
-                      Disapprove Car
+                      Declined Car
                     </button>
                   </>
                 ) : (
