@@ -570,9 +570,9 @@ public class VehicleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Operation(summary = "Disapprove an existing vehicle", description = "Disapprove an existing vehicle.")
+    @Operation(summary = "Decline an existing vehicle", description = "Decline an existing vehicle.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Vehicle disapprove successfully"),
+            @ApiResponse(responseCode = "200", description = "Vehicle declined successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Vehicle is not found",
@@ -582,7 +582,7 @@ public class VehicleController {
     })
     @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PutMapping("/{vehicleId}/disapprove")
-    public ResponseEntity<?> disapproveVehicle(@PathVariable Long vehicleId) {
+    public ResponseEntity<?> declinedVehicle(@PathVariable Long vehicleId) {
         Vehicle vehicle = vehicleService.getVehicleById(vehicleId);
         emailService.sendVehicleApproveStatus(vehicle, vehicle.getUser().getEmail(), VehicleApproveStatus.REJECTED);
         vehicleService.deleteVehicleById(vehicleId);
